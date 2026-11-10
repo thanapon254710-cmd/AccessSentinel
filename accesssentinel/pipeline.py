@@ -1,5 +1,6 @@
 """End-to-end AccessSentinel pipeline (D3): Gateway events -> Kafka(dual view) -> {HDFS sink, TCN, graph path}
 -> risk tiers -> four-path escalation -> TGN -> PDP -> enforcement callbacks -> feedback."""
+import heapq, itertools
 from collections import deque
 import numpy as np
 from .broker import DualViewBroker
@@ -38,6 +39,10 @@ class AccessSentinel:
                           escalated={"high": 0, "res": 0, "sweep": 0, "samp": 0}, seeds_total=0)
         self._win_end = None
         self._last_sweep = None
+        self.coll_log = []        # diagnostic: (t_end, user, S_coll, group members) for every TGN group score
+        # event-time reordering buffer: (t, kind, seq, event); kind 0 = TCN view, 1 = resource view
+        self._buf, self._seq = [], itertools.count()
+        self._wm = {0: float('-inf'), 1: float('-inf')}   # max event time consumed per view
 
     # ---- ingest -----------------------------------------------------------
     def warmup(self, events):
@@ -53,14 +58,24 @@ class AccessSentinel:
         self.stats["events"] += 1
         self.broker.publish_event(ev)
 
-    def drain(self, timeout: float = 0.0) -> int:
-        """Consumer side: storage path, TCN detection path, resource-keyed graph path."""
+    def drain(self, timeout: float = 0.0, final: bool = False) -> int:
+        """Consumer side: storage path, TCN detection path, resource-keyed graph path.
+        Consumed events are buffered and released in event-time order, up to the slower view's
+        watermark (everything when final=True), so window closing does not depend on how many
+        records a poll happened to return."""
         n = 0
         for _, _, e in self.g_sink.poll(timeout=timeout): self.store.append(e); n += 1      # storage path
-        for _, _, e in self.g_tcn.poll(): self._tcn_step(e); self._now = max(self._now, e.t); n += 1
-        for _, _, e in self.g_graph.poll():                                                # resource-keyed view
-            self.esc.observe(e); self.recent.append(e); self._now = max(self._now, e.t); n += 1
-        if n and self._now != float('-inf'):
+        for k, grp in ((0, self.g_tcn), (1, self.g_graph)):
+            for _, _, e in grp.poll():
+                heapq.heappush(self._buf, (e.t, k, next(self._seq), e))
+                self._wm[k] = max(self._wm[k], e.t); n += 1
+        limit = float('inf') if final else min(self._wm.values())
+        while self._buf and self._buf[0][0] <= limit:
+            t, k, _, e = heapq.heappop(self._buf)
+            if k == 0: self._tcn_step(e)
+            else: self.esc.observe(e); self.recent.append(e)
+            self._now = max(self._now, t)
+            if self._buf and self._buf[0][0] <= limit and self._buf[0][0] == t: continue   # same-time items first
             self._recheck(self._now); self._advance(self._now)
         return n
 
@@ -69,6 +84,7 @@ class AccessSentinel:
 
     def run(self, events):
         for e in events: self.ingest(e)
+        self.drain(final=True)
         self.store.flush(); self.feedback.flush()
 
     def run_stream(self, events, idle_timeout: float = 5.0, poll_timeout: float = 0.2, batch: int = 200):
@@ -81,6 +97,7 @@ class AccessSentinel:
         last = time.time()
         while time.time() - last < idle_timeout:
             if self.drain(poll_timeout): last = time.time()
+        self.drain(final=True)
         self.store.flush(); self.feedback.flush()
 
     # ---- TCN path ---------------------------------------------------------
@@ -137,5 +154,6 @@ class AccessSentinel:
         if sample.n_edges == 0: return
         self.stats["tgn_calls"] += 1; self.stats["seeds_total"] += len(seeds)
         for u, (s, members) in self.tgn.group_scores(sample, self.tgn.score_edges(sample)).items():
+            self.coll_log.append((t_end, u, float(s), tuple(members)))
             self.pdp.set_collective(u, s, t_end)
             self._refresh(u, t_end)
