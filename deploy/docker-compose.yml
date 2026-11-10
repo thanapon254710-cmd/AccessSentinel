@@ -1,0 +1,23 @@
+# Free, open-source single-node stack: Apache Kafka (KRaft, no ZooKeeper) + Apache Hadoop HDFS (WebHDFS on).
+# UNTESTED in the authoring sandbox (no Docker there). Start:  docker compose -f deploy/docker-compose.yml up -d
+services:
+  kafka:
+    image: apache/kafka:3.9.0          # official image; default single-node KRaft config listens on localhost:9092
+    ports: ["9092:9092"]
+
+  namenode:
+    image: apache/hadoop:3
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports: ["9870:9870", "8020:8020"]  # 9870 = WebHDFS / UI
+    env_file: ./hadoop.env
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+
+  datanode:
+    image: apache/hadoop:3
+    hostname: datanode
+    command: ["hdfs", "datanode"]
+    ports: ["9864:9864"]               # WebHDFS redirects writes here
+    env_file: ./hadoop.env
+    depends_on: [namenode]
