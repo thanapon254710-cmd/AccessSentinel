@@ -9,7 +9,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 1 Audit and architecture | Done (2026-11-11) |
 | 2 Infrastructure | Done (2026-11-11) — verified live |
 | 3 Gateway + protected apps | Done (2026-11-11) — verified live |
-| 4 Kafka streaming + HDFS | Not started |
+| 4 Kafka streaming + HDFS | Done (2026-11-11) — verified live incl. crash tests |
 | 5 TCN | Not started (library model exists; see audit D1, D2, D10) |
 | 6 Four-path escalation | Not started (library logic exists) |
 | 7 TGN | Not started (library model exists; see audit D8, D9) |
@@ -117,6 +117,72 @@ Not done / known limits:
 - HTTPS is not configured (`AS_COOKIE_SECURE=false` in dev).
 - The in-process `accesssentinel/gateway.py` (simulator model) is unchanged and separate from the service.
 
+### 2026-11-11 — Phase 4 (Kafka streaming + HDFS history)
+
+Added:
+- **Reliable consumer framework** (`streaming/consumer.py`): manual offset commits only after the handler
+  reports its work durable; per-record dead-letter queue (`<topic>.dlq`, headers: reason, source topic/
+  partition/offset, group, time) whose writes must be acknowledged before the offset is committed; transient
+  failures retried with exponential backoff (nothing committed meanwhile = backpressure); checkpoint-and-commit
+  on rebalance, discard-and-reread if that fails; graceful SIGTERM; heartbeat-file health checks.
+  Audit defect **D4 fixed**.
+- **History lake** (`adapters/hdfs_lake.py`): Parquet on HDFS, `events/date=YYYY-MM-DD/app=<a>/` and
+  `<dataset>/date=YYYY-MM-DD/` for risk-scores, group-scores, pdp-decisions, analyst-feedback; date/app
+  partition pruning; user history; id-based dedup on read; compaction with dedup; drop-in for the pipeline's
+  `HistoricalStore` interface (sweeps in Phase 6). `LocalFsClient` = labelled development-only fallback
+  (`AS_HISTORY_BACKEND=local`). Audit defect **D12 (layout) fixed**.
+- **HDFS sink** service (`streaming/hdfs_sink.py`, group `hdfs-sink`): independent of the real-time path;
+  buffers and writes one file per partition at 2000 rows or 30 s; Redis marks of written ids (set only after
+  the write) skip redelivered records; compacts partitions above 24 files.
+- **Repartitioner** service (`streaming/repartitioner.py`, group `repartitioner`): `access-events` (key u) ->
+  `access-events-by-resource` (key `app:resource#floor(t/900 s)`), payload unchanged, committed only after Kafka
+  acknowledged the batch. Shared `broker.resource_key()` used by the in-process and Kafka brokers.
+- **Spool replay** in the gateway (every 60 s): rename-then-replay, file deleted only when nothing is in flight.
+- Tools: `python -m accesssentinel.streaming.lag` (consumer lag), `python -m accesssentinel.history`
+  (partitions, user history, time range, records, compact, export to Parquet for training),
+  `scripts/smoke_streaming.py` (traffic / verify / poison).
+- `adapters/parquet_io.py`: single-threaded Parquet reads (see "Found while verifying").
+- `tests/test_streaming.py` (22 tests).
+
+Design decisions:
+- Delivery: at-least-once everywhere, made effectively-once in HDFS by (1) skip-if-already-written marks in
+  Redis and (2) id dedup on read and in compaction. The resource-keyed topic may carry a redelivered record
+  after a crash; its consumers (Phases 6-7) drop it by event_id.
+- Only schema-v1 events are accepted on the deployed `access-events` topic; anything else is dead-lettered.
+- Other topics are stored generically (record_id, ts, key, JSON payload) until their schemas exist (Phases 5-9).
+- Crash-consistency test hook `AS_FAULT_INJECT=crash-before-mark|crash-after-mark` (sink only; ignored when
+  `AS_ENVIRONMENT=prod`).
+
+Verified (all executed on this machine, inside the Docker network):
+- `pytest -q tests` -> **73 passed, 4 skipped**.
+- 120 gateway requests: **10/10** checks - lag 0; all 120 in HDFS exactly once in date/app partitions with
+  matching (u, a, r, y); all 120 in the resource-keyed topic with key `app:resource#bucket`, one partition per key.
+- Poison record on `access-events`: dead-lettered by both groups with reason + source offset; lag back to 0.
+- Gateway replayed the 5 events spooled during the Phase 3 Kafka-outage test; spool empty afterwards.
+- Timed SIGKILLs of sink and repartitioner (400 queued events): 400/400 exactly once. Note: the log showed both
+  kills landed before the sink's first flush, so this did not exercise the write/commit window; hence:
+- **Crash experiment A** (`crash-after-mark`, exit 137 after write + mark, before commit; 200 events): restart
+  skipped all 200 redelivered records; 0 raw duplicates; 10/10.
+- **Crash experiment B** (`crash-before-mark`, worst case; 200 events): 200 raw duplicate rows as predicted,
+  history read still returned each event exactly once; compaction removed exactly the duplicates; 10/10.
+- Scale-out: 2 repartitioner replicas split partitions 0-3 / 4-7.
+- Regression: infra check 4/4, gateway smoke 29/29. Memory: hdfs-sink 88 MB, repartitioner 28 MB.
+
+Found while verifying:
+- Processes that read Parquet in the Linux image aborted at exit ("terminate called without an active
+  exception", exit 134) in 30-50 % of runs with pyarrow 21, 22 and 26; `use_threads=False` reads: 0/40.
+  All reads now go through `adapters/parquet_io.py`; history CLI 0/10 aborts afterwards.
+- Unit tests caught: a lost DLQ write could have let its offset be committed (failed DLQ records are now
+  re-sent before retrying); offsets of a batch could have been committed on shutdown while that batch was
+  failing (offsets now advance only after the handler succeeds).
+
+Not done / known limits:
+- No Kafka transactions (exactly-once in Kafka itself); duplicates are handled by ids as described.
+- Small-file compaction runs inside the sink for partitions it writes to; no scheduled compaction of past days.
+- History reads fetch whole Parquet files over WebHDFS and filter in Python (adequate at prototype scale).
+- HDFS replication factor is 1 (single DataNode, development cluster).
+
 ### Remaining
 
-Phases 4–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D1–D4, D6, D8–D14.
+Phases 5–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D1–D3, D6 (TCN state still in-process until
+Phase 5), D8–D11, D13, D14, and D12's `FeedbackLoop.flush()` duplicate re-flush (Phase 9).

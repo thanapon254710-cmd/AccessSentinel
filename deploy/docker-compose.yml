@@ -188,6 +188,35 @@ services:
       app-finance: {condition: service_healthy}
       app-docs: {condition: service_healthy}
 
+  # ---------------------------------------------------------------- stream processing (Phase 4)
+  repartitioner:                    # access-events (key=user) -> access-events-by-resource (key=app:res#bucket)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.repartitioner"]
+    mem_limit: 256m
+    healthcheck: &stream-health
+      test: ["CMD", "python", "-m", "accesssentinel.streaming.runtime"]
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 20s
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+
+  hdfs-sink:                        # storage path: independent consumer group -> HDFS Parquet history
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.hdfs_sink"]
+    environment:
+      <<: *app-env
+      AS_SINK_FLUSH_ROWS: ${AS_SINK_FLUSH_ROWS:-2000}
+      AS_SINK_FLUSH_SECONDS: ${AS_SINK_FLUSH_SECONDS:-30}
+      AS_FAULT_INJECT: ${AS_FAULT_INJECT:-}          # crash-consistency experiments only; ignored in prod
+    mem_limit: 384m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      datanode: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
   # ---------------------------------------------------------------- one-off tooling container
   tools:
     <<: *app

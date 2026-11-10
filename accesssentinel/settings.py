@@ -59,6 +59,23 @@ class Settings(BaseSettings):
     spool_dir: str = "accesssentinel_data/spool"    # local fallback when Kafka cannot accept an event
     demo_user_password: Optional[SecretStr] = None  # seed only; refused when environment=prod
 
+    # --- Stream processing and history (Phase 4) ---------------------------------------------------
+    history_backend: str = "hdfs"                   # hdfs | local (local = development-only fallback)
+    history_local_dir: str = "accesssentinel_data/history"
+    consumer_batch: int = 500
+    sink_flush_rows: int = 2000                     # HDFS sink: write a file at this many buffered rows ...
+    sink_flush_seconds: float = 30.0                # ... or when the oldest buffered row is this old
+    sink_compact_max_files: int = 24                # compact a partition once it has more part files
+    dedup_ttl_seconds: int = 86400                  # how long written ids are remembered for redelivery dedup
+    spool_replay_seconds: float = 60.0              # gateway: how often to replay spooled events
+
+    @field_validator("history_backend")
+    @classmethod
+    def _backend(cls, v: str) -> str:
+        if v not in {"hdfs", "local"}:
+            raise ValueError("AS_HISTORY_BACKEND must be hdfs or local")
+        return v
+
     @field_validator("environment")
     @classmethod
     def _env(cls, v: str) -> str:

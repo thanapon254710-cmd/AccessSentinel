@@ -60,6 +60,8 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `db-init` | Creates the PostgreSQL schema and the demo catalog/users, then exits | — |
 | `app-hr`, `app-finance`, `app-docs` | Protected demo applications (internal network only) | — |
 | `gateway` | Proxy / Access-Control Gateway: login, first-line ACL, PDP decision cache, Kafka events | http://localhost:8000 |
+| `repartitioner` | Builds the resource-keyed view `access-events-by-resource` | — |
+| `hdfs-sink` | Writes access events, scores, decisions and feedback to HDFS (Parquet) | — |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -112,6 +114,25 @@ Watch events arrive in Kafka:
 docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:29092 --topic access-events --property print.key=true
 ```
 
+### Historical data in HDFS
+
+Run these inside Docker (they reach HDFS by service name):
+
+```powershell
+docker compose run --rm tools python -m accesssentinel.history partitions
+docker compose run --rm tools python -m accesssentinel.history user alice --hours 24
+docker compose run --rm tools python -m accesssentinel.streaming.lag
+```
+
+Browse files in the HDFS UI: http://localhost:9870 -> Utilities -> Browse the file system -> `/accesssentinel/events`.
+
+Streaming end-to-end check (traffic through the gateway, then HDFS + resource-view verification):
+
+```powershell
+docker compose run --rm -T tools python scripts/smoke_streaming.py traffic --n 120 > run.json
+Get-Content run.json | docker compose run --rm -T tools python scripts/smoke_streaming.py verify
+```
+
 ## 6. Host-side Python environment (tests, training)
 
 ```powershell
@@ -157,4 +178,6 @@ docker compose down -v         # remove containers AND all data (Kafka, HDFS, Po
 | Containers restart or are killed | Not enough Docker memory (§1) |
 | Demo login fails with *Invalid user ID or password* | The password is `AS_DEMO_USER_PASSWORD` as it was when `db-init` first ran. After changing it: `docker compose run --rm db-init python -m accesssentinel.db.init_db --seed-demo --reset-demo-passwords` |
 | `Too many failed attempts` | 5 failed logins lock that user ID for 15 minutes |
+| `hdfs-sink` or `repartitioner` unhealthy | `docker compose logs hdfs-sink`; the health check fails when the consume loop has not run for 60 s |
+| Dead-lettered records | Inspect `<topic>.dlq` with the console consumer and `--property print.headers=true` |
 | Slow file operations | The repository is inside OneDrive. Consider pausing OneDrive sync for `.venv\` |

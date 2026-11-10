@@ -83,14 +83,27 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
             await asyncio.sleep(settings.catalog_refresh_seconds if state["catalog"] else 2.0)
             await load_catalog()
 
+    async def spool_replay_loop() -> None:
+        while True:
+            await asyncio.sleep(settings.spool_replay_seconds)
+            try:
+                res = await run_in_threadpool(publisher.replay_spool)
+                if res.get("files"):
+                    log.info("spool replay: %s", res)
+            except Exception as e:  # noqa: BLE001
+                log.warning("spool replay failed: %s", type(e).__name__)
+
     @asynccontextmanager
     async def lifespan(_app):
         await load_catalog()
-        task = asyncio.create_task(refresh_loop())
+        tasks = [asyncio.create_task(refresh_loop())]
+        if hasattr(publisher, "replay_spool"):
+            tasks.append(asyncio.create_task(spool_replay_loop()))
         try:
             yield
         finally:
-            task.cancel()
+            for task in tasks:
+                task.cancel()
             for fn in cleanup or []:
                 try:
                     await fn()

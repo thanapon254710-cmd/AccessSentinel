@@ -7,6 +7,8 @@ from collections import defaultdict
 from typing import Iterable, List
 import pyarrow as pa
 import pyarrow.parquet as pq
+
+from .parquet_io import read_parquet_bytes
 from ..events import AccessEvent
 
 
@@ -53,7 +55,7 @@ class WebHdfsStore:
             d = self._dir(hour)
             for name in sorted(self.client.list(d)):
                 with self.client.read(f"{d}/{name}") as r:
-                    tbl = pq.read_table(io.BytesIO(r.read()))
+                    tbl = read_parquet_bytes(r.read())
                 for row in tbl.to_pylist():
                     row["c"] = json.loads(row["c"])
                     if isinstance(row.get("meta"), str): row["meta"] = json.loads(row["meta"])
@@ -70,7 +72,7 @@ class WebHdfsStore:
         if len(names) <= 1: return len(names)
         tables = []
         for n in names:
-            with self.client.read(f"{d}/{n}") as r: tables.append(pq.read_table(io.BytesIO(r.read())))
+            with self.client.read(f"{d}/{n}") as r: tables.append(read_parquet_bytes(r.read()))
         sink = io.BytesIO(); pq.write_table(pa.concat_tables(tables, promote_options="default"), sink, compression="snappy")
         merged = f"part-compact-{uuid.uuid4().hex[:8]}.parquet"
         self.client.write(f"{d}/{merged}", data=sink.getvalue(), overwrite=True)

@@ -4,8 +4,9 @@
   delivery callbacks, so request latency is independent of broker latency (D3 Step 8, request-time).
 * Idempotent producer, acks=all: retries do not create duplicates inside Kafka.
 * If the local buffer is full or delivery finally fails (broker down longer than message.timeout.ms),
-  the record is appended to a local JSONL spool instead of being dropped. Replaying the spool into Kafka
-  is part of Phase 4. Spooled records keep their event_id, so consumers can deduplicate a replay.
+  the record is appended to a local JSONL spool instead of being dropped. `replay_spool()` (run
+  periodically by the gateway) re-publishes it. Spooled records keep their event_id, so consumers
+  deduplicate a replay.
 """
 import json
 import os
@@ -30,7 +31,7 @@ class EventPublisher:
             "message.timeout.ms": message_timeout_ms, "queue.buffering.max.messages": 100_000,
         })
         self._lock = threading.Lock()
-        self.counts = {"submitted": 0, "delivered": 0, "spooled": 0}
+        self.counts = {"submitted": 0, "delivered": 0, "spooled": 0, "replayed": 0}
         self.last_error: Optional[str] = None
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._serve, name="event-publisher", daemon=True)
@@ -55,6 +56,45 @@ class EventPublisher:
         except TypeError:
             out["in_flight"] = None
         out["last_error"] = self.last_error
+        return out
+
+    def replay_spool(self, flush_timeout: float = 30.0) -> dict:
+        """Re-publish spooled events (Phase 4). Each spool file is first renamed to *.replaying under the
+        spool lock, so new failures go to a fresh file. A record that fails again is re-spooled by the
+        delivery callback; the *.replaying file is deleted only when nothing is left in flight, otherwise it
+        is retried next time (duplicates are dropped downstream by event_id). Skips if Kafka is unreachable."""
+        out = {"files": 0, "replayed": 0, "kept": 0}
+        if not os.path.isdir(self.spool_dir):
+            return out
+        names = sorted(n for n in os.listdir(self.spool_dir) if n.endswith((".jsonl", ".jsonl.replaying")))
+        if not names:
+            return out
+        try:
+            self.producer.list_topics(self.topic, timeout=5)
+        except Exception:  # noqa: BLE001
+            return out
+        for n in names:
+            path = os.path.join(self.spool_dir, n)
+            if not n.endswith(".replaying"):
+                with self._lock:
+                    os.replace(path, path + ".replaying")
+                path += ".replaying"
+            with open(path, encoding="utf-8") as f:
+                rows = [json.loads(line) for line in f if line.strip()]
+            for row in rows:
+                ev = row["event"]
+                self.producer.produce(row.get("topic", self.topic), key=str(ev["u"]).encode(),
+                                      value=json.dumps(ev, separators=(",", ":")).encode(),
+                                      on_delivery=self._on_delivery)
+            remaining = self.producer.flush(flush_timeout)
+            out["files"] += 1
+            if remaining:
+                out["kept"] += 1
+                continue
+            os.remove(path)
+            out["replayed"] += len(rows)
+        with self._lock:
+            self.counts["replayed"] = self.counts.get("replayed", 0) + out["replayed"]
         return out
 
     def close(self, timeout: float = 10.0) -> None:

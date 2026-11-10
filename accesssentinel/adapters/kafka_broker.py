@@ -3,6 +3,7 @@ same attributes (user_topic / resource_topic with .group(name).poll()), same res
 import json
 from typing import Callable, List, Optional
 from ..config import StreamConfig
+from ..broker import resource_key
 from ..events import AccessEvent
 from ..topics import ACCESS_EVENTS, ACCESS_EVENTS_BY_RESOURCE, topic_name
 
@@ -78,7 +79,7 @@ class KafkaDualViewBroker:
                                        topic_name(ACCESS_EVENTS_BY_RESOURCE, self.prefix)], self.cfg.n_partitions, 1)
 
     def resource_key(self, ev: AccessEvent) -> str:
-        return f"{ev.rkey}#{int(ev.t // self.cfg.time_bucket)}"
+        return resource_key(ev, self.cfg.time_bucket)
 
     def publish_event(self, ev: AccessEvent):
         self.user_topic.publish(ev.u, ev)

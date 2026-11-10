@@ -6,8 +6,8 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 | D3 step / component | Module |
 |---|---|
 | Step 1 event tuple (Eq. 1), Gateway | `events.py`, `schema.py`, `gateway.py` (simulator model), `services/gateway/` (deployed) |
-| Step 2 Kafka, user-keyed + resource-keyed views, composite key | `broker.py` |
-| Step 3 historical store (HDFS) | `storage.py` |
+| Step 2 Kafka, user-keyed + resource-keyed views, composite key | `broker.py` (in-process), `streaming/` (deployed: consumer framework, repartitioner) |
+| Step 3 historical store (HDFS) | `storage.py` (in-process), `adapters/hdfs_lake.py` + `streaming/hdfs_sink.py` (deployed), `history.py` (CLI) |
 | Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `features.py`, `state_store.py`, `tcn.py` |
 | Step 5 tiers, T_recheck | `risk.py` |
 | Step 6 four-path escalation (Eq. 4) | `escalation.py` |
