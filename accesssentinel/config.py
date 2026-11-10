@@ -27,7 +27,7 @@ class TCNConfig:
 class RiskConfig:
     theta_low: float = 0.4                    # [D3]
     theta_high: float = 0.6                   # [D3]
-    t_recheck: float = 10.0                   # [D3] 10 event-time steps; here: event-time units (seconds) [IMPL]
+    t_recheck: float = 600.0                  # [D3] wall-clock interval, initialised to 10 min (Step 5)
 
 
 @dataclass

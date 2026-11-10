@@ -1,0 +1,17 @@
+.git
+.venv
+venv
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+.env
+.env.*
+!.env.example
+accesssentinel_data
+**/*.pt
+**/*.pth
+**/*.ckpt
+**/*.log
+docs
+tests
+dashboard/node_modules

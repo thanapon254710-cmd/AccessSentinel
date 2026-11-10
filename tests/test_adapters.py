@@ -68,3 +68,14 @@ def test_hdfs_parquet_roundtrip_and_compaction(tmp_path):
     st.compact(0); assert len(cl.list("/accesssentinel/events/hour=000000")) == 1
     assert {e.u for e in st.read_range(0, 3600)} >= {"x", "y"}
     st.write_feedback([{"u": "a"}]); assert cl.list("/accesssentinel/feedback")
+
+
+def test_hdfs_read_range_cost_is_independent_of_range(tmp_path):
+    """Regression: read_range used one WebHDFS status call per hour in [t0, t1]; (0, 1e12) never finished."""
+    cl = FakeHdfs(str(tmp_path)); st = WebHdfsStore(cl, flush_every=100)
+    for i in range(5): st.append(ev(f"u{i}", 100 + i * 3600, i=i))
+    calls = {"status": 0}; orig = cl.status
+    def counting(path, strict=True):
+        calls["status"] += 1; return orig(path, strict)
+    cl.status = counting
+    assert len(st.read_range(0, 1e12)) == 5 and calls["status"] <= 2

@@ -4,6 +4,7 @@ import json
 from typing import Callable, List, Optional
 from ..config import StreamConfig
 from ..events import AccessEvent
+from ..topics import ACCESS_EVENTS, ACCESS_EVENTS_BY_RESOURCE, topic_name
 
 
 def ev_to_bytes(ev: AccessEvent) -> bytes:
@@ -50,7 +51,8 @@ class KafkaTopic:
         self._p.poll(0)                                    # serve delivery callbacks
 
     def group(self, name: str) -> KafkaConsumerGroup:
-        return KafkaConsumerGroup(self.name, f"{self._prefix}-{name}", self.bootstrap, self._cf)
+        gid = f"{self._prefix}-{name}" if self._prefix else name
+        return KafkaConsumerGroup(self.name, gid, self.bootstrap, self._cf)
 
 
 class KafkaDualViewBroker:
@@ -65,19 +67,15 @@ class KafkaDualViewBroker:
         self.producer = producer_factory({"bootstrap.servers": bootstrap, "enable.idempotence": True, "linger.ms": 5})
         if create_topics:
             self.ensure_topics()
-        self.user_topic = KafkaTopic(f"{prefix}.access-events", bootstrap, self.producer, prefix, consumer_factory)
-        self.resource_topic = KafkaTopic(f"{prefix}.access-events-by-resource", bootstrap, self.producer, prefix,
-                                         consumer_factory)
+        self.user_topic = KafkaTopic(topic_name(ACCESS_EVENTS, prefix), bootstrap, self.producer, prefix,
+                                     consumer_factory)
+        self.resource_topic = KafkaTopic(topic_name(ACCESS_EVENTS_BY_RESOURCE, prefix), bootstrap, self.producer,
+                                         prefix, consumer_factory)
 
     def ensure_topics(self):
-        from confluent_kafka.admin import AdminClient, NewTopic
-        admin = AdminClient({"bootstrap.servers": self.bootstrap})
-        futs = admin.create_topics([NewTopic(f"{self.prefix}.access-events", self.cfg.n_partitions, 1),
-                                    NewTopic(f"{self.prefix}.access-events-by-resource", self.cfg.n_partitions, 1)])
-        for f in futs.values():
-            try: f.result()
-            except Exception as e:
-                if "TOPIC_ALREADY_EXISTS" not in str(e): raise
+        from ..provision import ensure_topics
+        ensure_topics(self.bootstrap, [topic_name(ACCESS_EVENTS, self.prefix),
+                                       topic_name(ACCESS_EVENTS_BY_RESOURCE, self.prefix)], self.cfg.n_partitions, 1)
 
     def resource_key(self, ev: AccessEvent) -> str:
         return f"{ev.rkey}#{int(ev.t // self.cfg.time_bucket)}"

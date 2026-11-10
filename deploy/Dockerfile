@@ -1,0 +1,24 @@
+# One image for every AccessSentinel Python service; each compose service picks its command.
+FROM python:3.11.10-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+# CPU-only PyTorch from the official wheel index (much smaller than the default CUDA build).
+RUN pip install --index-url https://download.pytorch.org/whl/cpu "torch==2.15.0"
+
+COPY requirements/ requirements/
+RUN pip install -r requirements/services.txt
+
+COPY accesssentinel/ accesssentinel/
+COPY scripts/ scripts/
+
+# Unprivileged runtime user.
+RUN useradd --uid 10001 --create-home app && chown -R app:app /app
+USER app
+
+CMD ["python", "-c", "import accesssentinel, sys; print('accesssentinel', accesssentinel.__version__); sys.exit(0)"]

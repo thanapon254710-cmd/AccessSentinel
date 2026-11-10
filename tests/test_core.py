@@ -48,7 +48,8 @@ def test_split_is_72_18_10():
 def test_risk_tiers_and_recheck():
     r = RiskMonitor(RiskConfig())
     assert r.update("a", 0.2, 0) == Tier.LOW and r.update("b", 0.5, 0) == Tier.MEDIUM and r.update("c", 0.7, 0) == Tier.HIGH
-    assert r.due_rechecks(5) == [] and r.due_rechecks(10) == ["b"]
+    assert RiskConfig().t_recheck == 600.0                       # D3 Step 5: 10 minutes
+    assert r.due_rechecks(599) == [] and r.due_rechecks(600) == ["b"]
     assert r.drain_high() == {"c"} and r.drain_high() == set()
 
 

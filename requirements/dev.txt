@@ -1,0 +1,2 @@
+-r services.txt
+pytest>=8

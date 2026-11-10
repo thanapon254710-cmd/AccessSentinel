@@ -20,8 +20,16 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 
 All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the paper) or `[IMPL]` (a choice D3 leaves open).
 
+## Project status and infrastructure
+- Implementation status, defects and roadmap: `docs/PHASE1_AUDIT.md`; running log: `docs/PROGRESS.md`.
+- Docker stack (Kafka, HDFS, PostgreSQL, Redis) and Windows setup: `docs/SETUP_WINDOWS.md`. Short version:
+
+      copy .env.example .env        # then set the two passwords
+      docker compose up -d --build
+      docker compose run --rm tools # live check: Kafka, HDFS, PostgreSQL, Redis
+
 ## Run
-    pip/conda: python>=3.10, torch (CPU is enough), numpy, pandas, pytest
+    pip install -r requirements.txt   # python>=3.10; torch CPU build is enough
     pytest -q tests
     python run_demo.py --quick     # a few minutes on CPU
     python run_demo.py             # fuller training
@@ -33,7 +41,7 @@ All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the p
 
 ## D3 gaps filled by implementation choices (confirm with the team)
 1. TCN kernel size (2), dense width, focal-loss gamma/alpha, epochs.
-2. T_recheck = 10 "event-time steps" is treated as 10 time units (s). A forced re-score of an unchanged window would return the same score, so `window_at()` refreshes the newest inter-arrival feature to "time since last event".
+2. T_recheck = 600 s (D3 Step 5: wall-clock interval initialised to 10 min). A forced re-score of an unchanged window would return the same score, so `window_at()` refreshes the newest inter-arrival feature to "time since last event".
 3. Sweep selection rule (sensitive resources touched by >= 4 distinct users over T_sweep) and sampling (exactly max(1, round(gamma*N)) users).
 4. Group g(u) = connected component of users sharing >= 2 sensitive resources; S_coll = mean of the top 25% edge scores over the group; users with no coupled group get no S_coll.
 5. theta_coll (PDP) and S_coll TTL are not in D3.
@@ -44,9 +52,9 @@ All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the p
 Adapters: `accesssentinel/adapters/kafka_broker.py` (confluent-kafka) and `adapters/hdfs_store.py` (WebHDFS + Parquet).
 They plug into the same pipeline (`AccessSentinel(..., store=..., broker=...)`).
 
-1. Start the services (Docker is the only manual step):
+1. Start the services (see `docs/SETUP_WINDOWS.md`; `.env` must exist):
 
-       docker compose -f deploy/docker-compose.yml up -d
+       docker compose up -d --build
 
 2. HDFS from your host: WebHDFS redirects writes to the datanode by hostname, so add this line to your hosts file
    (`/etc/hosts`, or `C:\Windows\System32\drivers\etc\hosts`): `127.0.0.1 datanode`. Check the UI at http://localhost:9870.
@@ -58,11 +66,11 @@ They plug into the same pipeline (`AccessSentinel(..., store=..., broker=...)`).
 
    `--kafka` and `--hdfs` are independent; omit either to keep the in-process stand-in for that part.
 
-**Status:** both adapters pass tests against fakes of the Kafka and HDFS client APIs (`tests/test_adapters.py`), including
-Parquet round-trip and small-file compaction. They have NOT been run against a live broker or cluster (no Docker in the
-authoring sandbox). Expect to fix small config issues on first contact (ports, hostnames, topic permissions).
+**Sta**Status (2026-11-11):** both adapters have now been run against the live Docker stack by `scripts/check_infra.py`
+(Kafka: per-user partitioning/order and resource-view co-location; HDFS: Parquet write/read, compaction, feedback write).
+The full `run_demo.py --kafka/--hdfs` pipeline has not yet been run live; that is part of Phase 4.
 
-Notes: user-keyed partitioning relies on Kafka's default key partitioner; offsets auto-commit (at-least-once, so a crash can
-re-score a few events). The keyed TCN window state is still in-process; with several consumer processes, each owns the
+: user-keyed partitioning relies on Kafka's default key partitioner; offsets auto-commit, which can commit before
+processing finishes (a crash may skip events; fixed in Phase 4, audit D4). The keyed TCN window state is still in-process; with several consumer processes, each owns the
 partitions (users) Kafka assigns it, but state is lost on restart until you move it to Flink/Kafka Streams/Redis.
 Without a state backend, the first events after a restart are scored on short windows.

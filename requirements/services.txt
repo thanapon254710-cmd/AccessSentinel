@@ -1,0 +1,7 @@
+# Infrastructure clients and service runtime (Phase 2+).
+-r core.txt
+confluent-kafka>=2.5,<3
+hdfs>=2.7,<3            # WebHDFS client, pure Python
+redis>=5,<9
+psycopg[binary]>=3.2,<4
+pydantic-settings>=2.4,<3

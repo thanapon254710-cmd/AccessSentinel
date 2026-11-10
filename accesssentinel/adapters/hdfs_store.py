@@ -39,12 +39,18 @@ class WebHdfsStore:
             self.client.write(f"{self._dir(hour)}/part-{uuid.uuid4().hex[:8]}.parquet", data=sink.getvalue(), overwrite=True)
         self._buf.clear(); self._pending = 0
 
+    def _hours(self) -> List[int]:
+        """Existing hour partitions, from ONE directory listing (cost independent of the queried range)."""
+        root = f"{self.base}/events"
+        if self.client.status(root, strict=False) is None: return []
+        return sorted(int(n.split("=", 1)[1]) for n in self.client.list(root) if n.startswith("hour="))
+
     def read_range(self, t0: float, t1: float) -> List[AccessEvent]:
         self.flush()
         out = []
-        for hour in range(int(t0 // 3600), int(t1 // 3600) + 1):
+        lo, hi = int(t0 // 3600), int(t1 // 3600)
+        for hour in (h for h in self._hours() if lo <= h <= hi):
             d = self._dir(hour)
-            if self.client.status(d, strict=False) is None: continue
             for name in sorted(self.client.list(d)):
                 with self.client.read(f"{d}/{name}") as r:
                     tbl = pq.read_table(io.BytesIO(r.read()))
