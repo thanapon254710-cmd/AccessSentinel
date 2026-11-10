@@ -48,7 +48,9 @@ class HdfsSinkHandler:
         return decode_json_object(rec.value)
 
     def handle(self, records: List[Record]):
-        ids = [record_id(r) for r in records]
+        # dedup keys are namespaced by dataset: an access event and the risk score of that event are
+        # different records even when they share an event_id
+        ids = [f"{self.dataset_of[r.topic]}:{record_id(r)}" for r in records]
         already = self.dedup.seen([i for i in ids if i not in self._ids_set])
         now = time.time()
         for rec, rid in zip(records, ids):
@@ -64,7 +66,7 @@ class HdfsSinkHandler:
                 d = rec.data
                 ts = d.get("t") or d.get("ts") or d.get("decided_at") or (rec.timestamp_ms / 1000.0) or now
                 self._records.setdefault(self.dataset_of[rec.topic], []).append(
-                    {"record_id": rid, "ts": float(ts), "key": (rec.key or b"").decode(errors="replace"),
+                    {"record_id": rid.split(":", 1)[1], "ts": float(ts), "key": (rec.key or b"").decode(errors="replace"),
                      "payload": d, "_kafka_partition": rec.partition, "_kafka_offset": rec.offset,
                      "_ingested_at": now})
             if self._oldest is None:

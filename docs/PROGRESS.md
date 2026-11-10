@@ -10,7 +10,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 2 Infrastructure | Done (2026-11-11) — verified live |
 | 3 Gateway + protected apps | Done (2026-11-11) — verified live |
 | 4 Kafka streaming + HDFS | Done (2026-11-11) — verified live incl. crash tests |
-| 5 TCN | Not started (library model exists; see audit D1, D2, D10) |
+| 5 TCN | Done (2026-11-11) — trained, evaluated (synthetic), deployed, verified live |
 | 6 Four-path escalation | Not started (library logic exists) |
 | 7 TGN | Not started (library model exists; see audit D8, D9) |
 | 8 PDP + enforcement | Not started (library logic exists; see audit D3) |
@@ -182,7 +182,85 @@ Not done / known limits:
 - History reads fetch whole Parquet files over WebHDFS and filter in Python (adequate at prototype scale).
 - HDFS replication factor is 1 (single DataNode, development cluster).
 
+### 2026-11-11 — Phase 5 (TCN individual detection)
+
+Added:
+- **Synthetic dataset v2** (`datasets/synth.py`): shaped like the deployed catalog (3 apps, 15 resources,
+  7 roles, real ACL), schema-v1 events, 260 users x 28 days = 132,881 events. Normal behaviour with hard
+  negatives (overtime, VPN travel, laptop replacement, month-end finance exports, flash crowds). Individual
+  attacks: compromised account, insider exfiltration (own device + office network), access-control probing,
+  low-and-slow. Collusion: coordinated collection, split exfiltration (for Phase 7). Time splits
+  (18 / 4 / 6 days), attacker users disjoint across splits, at most 25 % attackers per role, labels kept
+  outside the events. Audit defect **D2 fixed** (insiders are no longer separable by network/device alone).
+- **Behavioural features** (`ml/features.py`, d = 50): catalog one-hot (no hashing, audit **D11 fixed**) plus
+  context relative to the user's own history (new network/device/resource, familiarity, deny rate, short-term
+  rates, sensitive/export volume, sequential object ids, hour deviation, rate ratio, cold start).
+  Profile = serialisable stream state; Preprocessor (vocab + scaler) fitted on the training period only.
+- **Leak-free dataset** (`ml/dataset.py`): time-ordered online replay, train-only preprocessing, index-based
+  window gathering (27 MB instead of ~500 MB). Audit defect **D1 fixed**.
+- **Training + evaluation** (`ml/train_tcn.py`, `ml/evaluation.py`): D3 TCN unchanged; early stopping on
+  validation PR-AUC; Platt calibration on validation; 5-fold user-grouped CV; test-period evaluation against a
+  hand-written rule baseline and a last-event logistic-regression baseline; per-scenario, per-instance,
+  user-day and latency metrics; JSON + Markdown report. `tcn.py` calibration warnings fixed (audit **D14**).
+- **Model registry** (`ml/registry.py`): immutable versions with model, preprocessor and manifest (data
+  fingerprint, config, git commit, test summary); atomic `CURRENT` promotion; `TcnScorer` can only be built
+  from a saved trained model. Audit defect **D10 fixed**.
+- **TCN worker** service (`streaming/tcn_worker.py`, 2 replicas): Redis-held profiles (stateless workers,
+  audit **D6 fixed**), batched scoring, `risk-scores` records with model_version, tiers 0.4 / 0.6, Redis risk
+  state, Medium-tier recheck queue (T_recheck = 600 s, live traffic only), hot model reload, refuses to consume
+  without a trained model. StreamConsumer gained a `tick` hook.
+- `scripts/replay_synthetic.py` (publish / verify / recheck-demo), `tests/test_tcn_pipeline.py` (12 tests).
+
+Results — **synthetic data only** (`experiments/results/tcn-20261110T194520Z-beeb9b.md`; seed 7, wall time 37 min on a 20-thread CPU):
+
+| Test period (unseen attackers) | ROC-AUC | PR-AUC | P@0.6 | R@0.6 | F1@0.6 | FPR@0.6 | attacks detected | normal user-days flagged |
+|---|---|---|---|---|---|---|---|---|
+| TCN | 0.990 | 0.917 | 0.636 | 0.922 | 0.753 | 0.017 | 13/13 | 5.8 % |
+| Logistic regression (last event) | 0.990 | 0.886 | 0.683 | 0.835 | 0.751 | 0.013 | 12/13 | 9.0 % |
+| Rule (untrained) | 0.944 | 0.634 | 0.973 | 0.128 | 0.226 | 0.000 | 6/13 | 0.2 % |
+
+- 5-fold user-grouped CV (training period): ROC-AUC 0.998 ± 0.002, PR-AUC 0.961 ± 0.036.
+- Recall @0.6 by attack: compromised account 0.997, access-control probing 0.917, insider exfiltration 0.910
+  (logistic regression 0.658), low-and-slow 0.662 (logistic regression 0.730: the TCN's weakest case, which
+  D3's periodic sweep, Path C, is meant to cover).
+- **Distribution-shift finding:** 335 of the TCN's 450 false positives @0.6 are month-end finance exports
+  (40 % of those benign events flagged). The 28-day window contains one month-end and it lies in the test
+  period, so neither training nor validation contained that seasonal pattern. Reported as is; motivates the
+  analyst-feedback/retraining loop (Phase 9) and longer training histories.
+- The behavioural features carry most of the signal (a non-sequential model is close on ROC-AUC); the sequence
+  model adds recall on insider exfiltration and reduces false alarms on normal user-days (5.8 % vs 9.0 %).
+- Latency (CPU): 7.4 ms per single window (20 threads, offline); 0.36 ms per event in the batched workers.
+
+Verified live:
+- Workers without a model: healthy, not consuming (1,009 events waiting). After promotion both loaded the model
+  within ~1 s, split partitions 0-3 / 4-7 and drained the backlog.
+- Replay of the held-out test users (13 unseen attackers + 30 normal users, 21,410 events) with one worker
+  SIGKILLed mid-run (it had scored ~8,500): **19/19** - every event scored once (22,418 total = backlog +
+  replay, 0 duplicates), **live scores = offline scores (max |diff| 4.8e-8)**, all 13 attacks detected with the
+  same timings as offline, 10/118 normal test user-days flagged.
+- Medium-tier recheck (test settings T_recheck = 60 s): last event 0.4927 Medium (= offline) -> recheck 60 s
+  later 0.1621 Low -> removed from the queue.
+- Regression after recreating all services: infra 4/4, gateway smoke 29/29, streaming 10/10.
+
+Found while verifying:
+- **Bug fixed in the Phase 4 sink:** risk scores carry the event_id of the event they score; the sink used that
+  id and a dedup memory shared across topics, so 22,598 of 22,599 scores were skipped as "duplicates" of their
+  access events. Dedup keys are now namespaced by dataset and records prefer their own id; regression test
+  added; the sink's `risk-scores` offsets were rewound and all 22,599 scores are now in HDFS.
+- Generator v1 of this phase made 10 of 11 finance analysts attackers (a "role = attacker" shortcut); fixed
+  with a larger population and a per-role cap enforced by the generator and a test.
+- Two of my own test assertions were vacuous (always true); rewritten to test real behaviour.
+- The 1,008 events produced by Phases 3-4 test scripts (machine-speed bursts, many deliberate denials) were
+  mostly scored High. That is consistent with the model but means a realistic live demo needs human-paced
+  traffic: follow-up.
+
+Not done / known limits:
+- All metrics are synthetic; no real access-log dataset has been evaluated.
+- Thresholds stay at D3's initial 0.4 / 0.6 (not re-calibrated to a target alert rate).
+- Collusion scenarios exist in the data but are evaluated in Phase 7 (their volumes are small for now).
+- Rechecks use the inactivity-refreshed window only (D3 Step 5); no new event context is synthesised.
+
 ### Remaining
 
-Phases 5–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D1–D3, D6 (TCN state still in-process until
-Phase 5), D8–D11, D13, D14, and D12's `FeedbackLoop.flush()` duplicate re-flush (Phase 9).
+Phases 6–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D8–D9 (TGN, Phase 7),
+D12's `FeedbackLoop.flush()` re-flush (Phase 9), D13 (escalation workload cap, Phase 6).

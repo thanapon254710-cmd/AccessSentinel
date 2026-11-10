@@ -8,15 +8,15 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 | Step 1 event tuple (Eq. 1), Gateway | `events.py`, `schema.py`, `gateway.py` (simulator model), `services/gateway/` (deployed) |
 | Step 2 Kafka, user-keyed + resource-keyed views, composite key | `broker.py` (in-process), `streaming/` (deployed: consumer framework, repartitioner) |
 | Step 3 historical store (HDFS) | `storage.py` (in-process), `adapters/hdfs_lake.py` + `streaming/hdfs_sink.py` (deployed), `history.py` (CLI) |
-| Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `features.py`, `state_store.py`, `tcn.py` |
-| Step 5 tiers, T_recheck | `risk.py` |
+| Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `tcn.py` (model); in-process: `features.py`, `state_store.py`; deployed: `ml/` (features, dataset, training, registry), `streaming/tcn_worker.py` |
+| Step 5 tiers, T_recheck | `risk.py` (in-process), `streaming/tcn_worker.py` (deployed) |
 | Step 6 four-path escalation (Eq. 4) | `escalation.py` |
 | Step 7 graph (users/resources/apps; access, membership, co-access) + TGN | `graph.py`, `tgn.py` |
 | Step 8 PDP Allow/Block, request- and session-time enforcement | `pdp.py`, `gateway.py` |
 | Step 9 feedback loop (analyst-verified only) | `feedback.py` |
 | Step 10 capacity equations (8)–(12) | `scaling.py` |
 | Orchestration | `pipeline.py` |
-| Synthetic data with ground truth | `simulator.py` |
+| Synthetic data with ground truth | `simulator.py` (v1, in-process demo), `datasets/synth.py` (v2, training/evaluation) |
 
 All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the paper) or `[IMPL]` (a choice D3 leaves open).
 

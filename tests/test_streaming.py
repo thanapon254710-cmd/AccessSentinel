@@ -364,4 +364,17 @@ def test_fault_injection_points_exit_at_the_right_moment(tmp_path, monkeypatch, 
     with pytest.raises(SystemExit):
         h.checkpoint(False)
     assert exits == [137] and len(h.lake.read_events(0, 2e9)) == 1
-    assert (e.event_id in dedup.ids) == (point == "crash-after-mark")
+    assert (f"access-events:{e.event_id}" in dedup.ids) == (point == "crash-after-mark")
+
+
+def test_sink_keeps_event_and_its_risk_score_apart(tmp_path):
+    """Regression (found live in Phase 5): a risk score carries the event_id of the event it scores; the sink
+    must not treat it as a duplicate of that access event."""
+    h = HdfsSinkHandler(lake(tmp_path), MemoryDedup(), flush_rows=1)
+    e = ev()
+    score = {"score_id": e.event_id, "event_id": e.event_id, "u": e.u, "t": e.t, "s_ind": 0.7, "trigger": "event"}
+    fc = FakeConsumer([[Msg("access-events", 0, 0, payload(e)), Msg("risk-scores", 0, 0, json.dumps(score).encode())]])
+    sc = StreamConsumer(fc, h.topics(), h, DeadLetterQueue(FakeProducer(), "g"), sleep=lambda s: None)
+    sc.poll_once()
+    assert h.stats["duplicates_skipped"] == 0
+    assert len(h.lake.read_events(0, 2e9)) == 1 and h.lake.read_records("risk-scores", 0, 2e9)[0]["record_id"] == e.event_id

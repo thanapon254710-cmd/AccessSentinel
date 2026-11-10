@@ -81,7 +81,13 @@ def predict(model, X, batch=2048, device="cpu"):
     """Probability-like score; applies Platt calibration if fitted so theta_low/high (0.4/0.6) are meaningful."""
     z = predict_logits(model, X, batch, device)
     a, b = getattr(model, "platt", (1.0, 0.0))
-    return 1.0 / (1.0 + np.exp(-(a * z + b)))
+    return platt_sigmoid(z, a, b)
+
+
+def platt_sigmoid(z, a: float, b: float) -> np.ndarray:
+    """Numerically stable sigmoid(a*z + b) (no overflow warnings for large |z|; audit D14)."""
+    x = np.clip(a * np.asarray(z, dtype=np.float64) + b, -60.0, 60.0)
+    return 1.0 / (1.0 + np.exp(-x))
 
 
 def fit_platt(logits, y):
@@ -92,7 +98,7 @@ def fit_platt(logits, y):
     def closure():
         opt.zero_grad(); l = F.binary_cross_entropy_with_logits(a * z + b, t); l.backward(); return l
     opt.step(closure)
-    return float(a), float(b)
+    return float(a.detach()), float(b.detach())
 
 
 def train_tcn(X, y, cfg: TCNConfig, train_idx, val_idx, epochs=None, device="cpu", seed=0, verbose=True):

@@ -17,7 +17,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AS_", env_file=".env", env_file_encoding="utf-8",
-                                      extra="ignore")
+                                      extra="ignore", env_ignore_empty=True)   # VAR= means "use the default"
 
     environment: str = "dev"                 # dev | test | prod
     log_level: str = "INFO"
@@ -68,6 +68,13 @@ class Settings(BaseSettings):
     sink_compact_max_files: int = 24                # compact a partition once it has more part files
     dedup_ttl_seconds: int = 86400                  # how long written ids are remembered for redelivery dedup
     spool_replay_seconds: float = 60.0              # gateway: how often to replay spooled events
+
+    # --- TCN individual detection (Phase 5) -----------------------------------------------------------
+    model_dir: str = "models"                       # registry root; workers serve <model_dir>/tcn/CURRENT
+    tcn_recheck_seconds: Optional[float] = None     # None -> RiskConfig.t_recheck (600 s, D3); override for tests
+    tcn_live_window_seconds: float = 3600.0         # events older than this are history/replay: no rechecks
+    tcn_model_poll_seconds: float = 30.0            # how often workers look for a newly promoted model
+    torch_threads: int = 2
 
     @field_validator("history_backend")
     @classmethod

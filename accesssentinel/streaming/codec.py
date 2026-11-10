@@ -43,7 +43,8 @@ def record_id(rec: Record) -> str:
     if isinstance(d, AccessEvent):
         return d.event_id
     if isinstance(d, dict):
-        for k in ("record_id", "event_id", "decision_id", "feedback_id", "score_id"):
+        # a record's OWN id first: e.g. a risk score also carries the event_id of the event it scores
+        for k in ("record_id", "score_id", "decision_id", "feedback_id", "event_id"):
             if isinstance(d.get(k), str) and d[k]:
                 return d[k]
     return f"{rec.topic}:{rec.partition}:{rec.offset}"

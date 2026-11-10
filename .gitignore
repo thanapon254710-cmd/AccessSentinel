@@ -29,3 +29,5 @@ accesssentinel_data/
 .idea/
 .DS_Store
 Thumbs.db
+# Trained model artifacts (reproducible with accesssentinel.ml.train_tcn; results are in experiments/results)
+models/

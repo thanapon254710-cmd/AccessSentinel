@@ -62,6 +62,7 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `gateway` | Proxy / Access-Control Gateway: login, first-line ACL, PDP decision cache, Kafka events | http://localhost:8000 |
 | `repartitioner` | Builds the resource-keyed view `access-events-by-resource` | — |
 | `hdfs-sink` | Writes access events, scores, decisions and feedback to HDFS (Parquet) | — |
+| `tcn-worker` (×2) | TCN individual risk scores -> `risk-scores` (needs a trained model) | — |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -131,6 +132,26 @@ Streaming end-to-end check (traffic through the gateway, then HDFS + resource-vi
 ```powershell
 docker compose run --rm -T tools python scripts/smoke_streaming.py traffic --n 120 > run.json
 Get-Content run.json | docker compose run --rm -T tools python scripts/smoke_streaming.py verify
+```
+
+### Train the TCN (individual risk model)
+
+The workers only score with a trained, promoted model. Train on the host (about 40 minutes on a 20-thread CPU;
+add `--cv-folds 0` to skip cross-validation, about 15 minutes):
+
+```powershell
+.venv\Scripts\python -m accesssentinel.ml.train_tcn --model-dir models --promote
+```
+
+This writes `models\tcn\<version>\` (git-ignored; mounted read-only into the workers, which pick up a newly
+promoted version within 30 s) and an evaluation report in `experiments\results\<version>.md`. All training
+data is synthetic (`accesssentinel/datasets/synth.py`).
+
+Replay held-out synthetic users through the live pipeline and check the workers (parity + detection):
+
+```powershell
+docker compose run --rm -T tools python scripts/replay_synthetic.py publish --normal 30 --reset > replay.json
+Get-Content replay.json | docker compose run --rm -T tools python scripts/replay_synthetic.py verify
 ```
 
 ## 6. Host-side Python environment (tests, training)

@@ -86,8 +86,10 @@ class DeadLetterQueue:
 class StreamConsumer:
     def __init__(self, consumer, topics: List[str], handler: Handler, dlq: DeadLetterQueue, *,
                  batch_size: int = 500, poll_timeout: float = 1.0, max_backoff: float = 30.0,
-                 heartbeat: Optional[Callable[[], None]] = None, sleep: Callable[[float], None] = time.sleep):
+                 heartbeat: Optional[Callable[[], None]] = None, sleep: Callable[[float], None] = time.sleep,
+                 tick: Optional[Callable[[], None]] = None):
         self.c, self.h, self.dlq = consumer, handler, dlq
+        self.tick = tick or (lambda: None)                # periodic work between polls (e.g. TCN rechecks)
         self.batch_size, self.poll_timeout, self.max_backoff = batch_size, poll_timeout, max_backoff
         self.heartbeat = heartbeat or (lambda: None)
         self.sleep = sleep
@@ -138,6 +140,7 @@ class StreamConsumer:
             self.stats["handled"] += len(batch)
         self.pending.update(advanced)
         self._commit_if_durable(force=False)
+        self._retry("tick", self.tick)
 
     # ------------------------------------------------------------------ internals
     def _dead_letter(self, rec: Record, reason: str) -> None:
