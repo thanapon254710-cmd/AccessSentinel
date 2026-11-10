@@ -33,7 +33,7 @@ class WebHdfsStore:
     def flush(self):
         for hour, evs in self._buf.items():
             if not evs: continue
-            rows = [{**e.__dict__, "c": json.dumps(e.c)} for e in evs]
+            rows = [{**e.__dict__, "c": json.dumps(e.c), "meta": json.dumps(e.meta)} for e in evs]
             sink = io.BytesIO(); pq.write_table(pa.Table.from_pylist(rows), sink, compression="snappy")
             self.client.makedirs(self._dir(hour))
             self.client.write(f"{self._dir(hour)}/part-{uuid.uuid4().hex[:8]}.parquet", data=sink.getvalue(), overwrite=True)
@@ -55,7 +55,9 @@ class WebHdfsStore:
                 with self.client.read(f"{d}/{name}") as r:
                     tbl = pq.read_table(io.BytesIO(r.read()))
                 for row in tbl.to_pylist():
-                    row["c"] = json.loads(row["c"]); e = AccessEvent(**row)
+                    row["c"] = json.loads(row["c"])
+                    if isinstance(row.get("meta"), str): row["meta"] = json.loads(row["meta"])
+                    e = AccessEvent(**row)
                     if t0 < e.t <= t1: out.append(e)
         out.sort(key=lambda e: e.t)
         return out
@@ -69,7 +71,7 @@ class WebHdfsStore:
         tables = []
         for n in names:
             with self.client.read(f"{d}/{n}") as r: tables.append(pq.read_table(io.BytesIO(r.read())))
-        sink = io.BytesIO(); pq.write_table(pa.concat_tables(tables), sink, compression="snappy")
+        sink = io.BytesIO(); pq.write_table(pa.concat_tables(tables, promote_options="default"), sink, compression="snappy")
         merged = f"part-compact-{uuid.uuid4().hex[:8]}.parquet"
         self.client.write(f"{d}/{merged}", data=sink.getvalue(), overwrite=True)
         for n in names: self.client.delete(f"{d}/{n}")

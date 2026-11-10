@@ -1,2 +1,3 @@
 -r services.txt
 pytest>=8
+fakeredis>=2.23

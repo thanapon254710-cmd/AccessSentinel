@@ -135,6 +135,59 @@ services:
       retries: 20
     networks: [accesssentinel]
 
+  # ---------------------------------------------------------------- schema + demo catalog (Phase 3)
+  db-init:                          # idempotent: creates tables, upserts the demo catalog and users
+    <<: *app
+    command: ["python", "-m", "accesssentinel.db.init_db", "--seed-demo"]
+    restart: "no"
+    depends_on:
+      postgres: {condition: service_healthy}
+
+  # ---------------------------------------------------------------- protected demo applications
+  # No host ports: reachable only through the gateway on the internal network, and only with the
+  # gateway's upstream token. Least privilege: the apps receive only that token, not the rest of .env.
+  app-hr: &demo-app
+    <<: *app
+    env_file: []
+    environment: &demo-env
+      AS_APP_ID: hr
+      AS_UPSTREAM_TOKEN: ${AS_UPSTREAM_TOKEN:?Set AS_UPSTREAM_TOKEN in .env}
+      AS_LOG_LEVEL: ${AS_LOG_LEVEL:-INFO}
+    command: ["uvicorn", "--factory", "accesssentinel.services.demo_app:build", "--host", "0.0.0.0",
+              "--port", "8000", "--no-access-log"]
+    mem_limit: 256m
+    healthcheck: &py-health
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  app-finance:
+    <<: *demo-app
+    environment: {<<: *demo-env, AS_APP_ID: finance}
+
+  app-docs:
+    <<: *demo-app
+    environment: {<<: *demo-env, AS_APP_ID: docs}
+
+  # ---------------------------------------------------------------- Proxy / Access-Control Gateway
+  gateway:
+    <<: *app
+    command: ["uvicorn", "--factory", "accesssentinel.services.gateway.main:build", "--host", "0.0.0.0",
+              "--port", "8000", "--no-access-log"]
+    ports: ["8000:8000"]
+    volumes: [gateway-spool:/app/accesssentinel_data/spool]
+    mem_limit: 384m
+    healthcheck: *py-health
+    depends_on:
+      db-init: {condition: service_completed_successfully}
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      app-hr: {condition: service_healthy}
+      app-finance: {condition: service_healthy}
+      app-docs: {condition: service_healthy}
+
   # ---------------------------------------------------------------- one-off tooling container
   tools:
     <<: *app
@@ -153,6 +206,7 @@ volumes:
   hdfs-data:
   pg-data:
   redis-data:
+  gateway-spool:
 
 networks:
   accesssentinel:

@@ -1,4 +1,4 @@
-# AccessSentinel — Windows setup (Phase 2 infrastructure)
+# AccessSentinel — Windows setup
 
 Tested on Windows 11, Docker Desktop 28.3 (WSL 2 backend), Python 3.11, on 2026-11-11.
 
@@ -31,7 +31,8 @@ Run all commands from the repository root (the folder containing `README.md`).
 copy .env.example .env
 ```
 
-Open `.env` and replace both `change-me` values (`AS_POSTGRES_PASSWORD`, `AS_REDIS_PASSWORD`) with random strings, for example:
+Open `.env` and replace every `change-me` value (`AS_POSTGRES_PASSWORD`, `AS_REDIS_PASSWORD`, `AS_UPSTREAM_TOKEN`,
+`AS_INTERNAL_TOKEN`, `AS_DEMO_USER_PASSWORD`) with random strings, for example:
 
 ```powershell
 python -c "import secrets; print(secrets.token_urlsafe(24))"
@@ -56,6 +57,9 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `datanode` | HDFS DataNode (WebHDFS data transfer) | `localhost:9864` |
 | `postgres` | PostgreSQL 16 (operational state) | `localhost:5432` |
 | `redis` | Redis 7 (shared state, decision cache; AOF on, no eviction) | `localhost:6379` |
+| `db-init` | Creates the PostgreSQL schema and the demo catalog/users, then exits | — |
+| `app-hr`, `app-finance`, `app-docs` | Protected demo applications (internal network only) | — |
+| `gateway` | Proxy / Access-Control Gateway: login, first-line ACL, PDP decision cache, Kafka events | http://localhost:8000 |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -77,7 +81,38 @@ docker compose run --rm tools
 Expected result: four `PASS` lines (kafka, hdfs, postgres, redis) and `4/4 checks passed`. Each check does a
 real round trip through the same adapters the pipeline uses, then deletes its temporary data.
 
-## 5. Host-side Python environment (tests, training)
+## 5. Use the protected applications
+
+Open http://localhost:8000 and sign in. Every demo user has one identity across the three applications:
+
+| User ID | Role | Notable access |
+|---|---|---|
+| `alice` | hr_manager | HR employees, payroll (incl. export), reviews, recruiting |
+| `bob`, `judy` | finance_analyst | Finance invoices, budget, payments, vendor banking (read) |
+| `carol`, `dave`, `ivan` | staff | HR directory, handbook, policies only |
+| `erin` | legal | Contracts, IP filings |
+| `frank` | executive | Board minutes, budget, audit reports |
+| `grace` | auditor | Audit reports, payments, payroll (read) |
+| `henry` | it_admin | Policies and handbook (write) |
+
+The password for all demo users is the value of `AS_DEMO_USER_PASSWORD` in your `.env`.
+The start page lists every resource, whether it is sensitive, and your permissions on it. Try links you are
+not allowed to open as well: denied requests are recorded too. URL forms: `/apps/<app>/<resource>`,
+`/apps/<app>/<resource>/<id>`, `/apps/<app>/<resource>/export`.
+
+End-to-end check (logs in as three users, verifies every resulting Kafka event and the audit log):
+
+```powershell
+.venv\Scripts\python scripts\smoke_gateway.py
+```
+
+Watch events arrive in Kafka:
+
+```powershell
+docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server kafka:29092 --topic access-events --property print.key=true
+```
+
+## 6. Host-side Python environment (tests, training)
 
 ```powershell
 python -m venv .venv
@@ -101,7 +136,7 @@ from host Python, add this line to `C:\Windows\System32\drivers\etc\hosts` (need
 127.0.0.1 datanode
 ```
 
-## 6. Stop, restart, reset
+## 7. Stop, restart, reset
 
 ```powershell
 docker compose stop            # stop, keep containers and data
@@ -110,7 +145,7 @@ docker compose down            # remove containers, keep data volumes
 docker compose down -v         # remove containers AND all data (Kafka, HDFS, PostgreSQL, Redis)
 ```
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause / fix |
 |---|---|
@@ -120,4 +155,6 @@ docker compose down -v         # remove containers AND all data (Kafka, HDFS, Po
 | `topics not provisioned` in the Kafka check | `kafka-init` did not run or failed: `docker compose logs kafka-init`, then `docker compose up kafka-init` |
 | HDFS check fails mentioning `datanode` from the host | Expected without the hosts-file entry (§5). Run the check in Docker instead |
 | Containers restart or are killed | Not enough Docker memory (§1) |
+| Demo login fails with *Invalid user ID or password* | The password is `AS_DEMO_USER_PASSWORD` as it was when `db-init` first ran. After changing it: `docker compose run --rm db-init python -m accesssentinel.db.init_db --seed-demo --reset-demo-passwords` |
+| `Too many failed attempts` | 5 failed logins lock that user ID for 15 minutes |
 | Slow file operations | The repository is inside OneDrive. Consider pausing OneDrive sync for `.venv\` |

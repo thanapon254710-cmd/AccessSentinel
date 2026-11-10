@@ -5,7 +5,7 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 
 | D3 step / component | Module |
 |---|---|
-| Step 1 event tuple (Eq. 1), Gateway | `events.py`, `gateway.py` |
+| Step 1 event tuple (Eq. 1), Gateway | `events.py`, `schema.py`, `gateway.py` (simulator model), `services/gateway/` (deployed) |
 | Step 2 Kafka, user-keyed + resource-keyed views, composite key | `broker.py` |
 | Step 3 historical store (HDFS) | `storage.py` |
 | Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `features.py`, `state_store.py`, `tcn.py` |
@@ -27,6 +27,7 @@ All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the p
       copy .env.example .env        # then set the two passwords
       docker compose up -d --build
       docker compose run --rm tools # live check: Kafka, HDFS, PostgreSQL, Redis
+      # gateway + 3 protected demo apps: http://localhost:8000 (users/password: docs/SETUP_WINDOWS.md §5)
 
 ## Run
     pip install -r requirements.txt   # python>=3.10; torch CPU build is enough

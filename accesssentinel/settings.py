@@ -46,6 +46,19 @@ class Settings(BaseSettings):
     redis_db: int = 0
     redis_password: Optional[SecretStr] = None
 
+    # --- Gateway and protected applications --------------------------------------------------------
+    upstream_token: Optional[SecretStr] = None      # gateway -> demo apps; apps reject requests without it
+    internal_token: Optional[SecretStr] = None      # service -> gateway internal API (session revocation)
+    cookie_secure: bool = False                     # True when served over HTTPS
+    session_idle_seconds: int = 1800
+    session_max_seconds: int = 8 * 3600
+    login_max_failures: int = 5                     # per user, within login_lock_seconds
+    login_lock_seconds: int = 900
+    max_body_bytes: int = 1_000_000
+    catalog_refresh_seconds: float = 30.0
+    spool_dir: str = "accesssentinel_data/spool"    # local fallback when Kafka cannot accept an event
+    demo_user_password: Optional[SecretStr] = None  # seed only; refused when environment=prod
+
     @field_validator("environment")
     @classmethod
     def _env(cls, v: str) -> str:
@@ -76,10 +89,14 @@ class Settings(BaseSettings):
         return dict(host=self.redis_host, port=self.redis_port, db=self.redis_db,
                     password=self._require(self.redis_password, "AS_REDIS_PASSWORD"))
 
+    def secret(self, name: str) -> str:
+        """Value of a required secret field, e.g. secret('upstream_token'); raises if unset."""
+        return self._require(getattr(self, name), f"AS_{name.upper()}")
+
     def redacted(self) -> dict:
         """Settings safe to print/log (secrets masked)."""
         out = self.model_dump()
-        for k in ("postgres_password", "redis_password"):
+        for k in ("postgres_password", "redis_password", "upstream_token", "internal_token", "demo_user_password"):
             out[k] = "***" if out.get(k) else None
         return out
 

@@ -17,6 +17,9 @@ RUN pip install -r requirements/services.txt
 COPY accesssentinel/ accesssentinel/
 COPY scripts/ scripts/
 
+# Spool for events Kafka could not accept; created here so a named volume inherits the runtime user's ownership.
+RUN mkdir -p /app/accesssentinel_data/spool
+
 # Unprivileged runtime user.
 RUN useradd --uid 10001 --create-home app && chown -R app:app /app
 USER app
