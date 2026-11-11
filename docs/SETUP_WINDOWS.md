@@ -64,6 +64,8 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `hdfs-sink` | Writes access events, scores, decisions and feedback to HDFS (Parquet) | — |
 | `tcn-worker` (×2) | TCN individual risk scores -> `risk-scores` (needs a trained model) | — |
 | `escalation` | Four-path escalation (A high, B resource, C sweep, D sample) -> `escalations.*` | — |
+| `graph-index` | Temporal edge index in Redis for TGN neighbourhoods | — |
+| `tgn-worker-rt`, `tgn-worker-bg` | TGN collusion analysis of escalated users -> `group-scores` (needs a trained TGN) | — |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -178,6 +180,23 @@ Offline evaluation of the policy, including a kappa sensitivity study (about 5 m
 
 ```powershell
 .venv\Scripts\python -m accesssentinel.ml.escalation_eval --model-dir models --kappas 3,6,10,15
+```
+
+### Train the TGN (collusion model)
+
+```powershell
+.venv\Scripts\python -m accesssentinel.ml.train_tgn --model-dir models --promote
+```
+
+Two-stage training plus two ablations on the synthetic collusion-study dataset; about 1-2 hours on an idle
+20-thread CPU (much longer while the Docker stack is busy). Report in `experiments\results\tgn-<version>.md`.
+The TGN workers pick up a promoted model within 30 s.
+
+Live check (replays a held-out group or a benign team meeting through the pipeline and compares with offline):
+
+```powershell
+docker compose run --rm -T tools python scripts/smoke_tgn.py collusion --index 5
+docker compose run --rm -T tools python scripts/smoke_tgn.py team
 ```
 
 ## 6. Host-side Python environment (tests, training)

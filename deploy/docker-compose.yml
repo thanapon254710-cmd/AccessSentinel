@@ -252,6 +252,30 @@ services:
       redis: {condition: service_healthy}
       datanode: {condition: service_healthy}
 
+  # ---------------------------------------------------------------- collusion detection (Phase 7)
+  graph-index:                      # resource-keyed view -> temporal edge index in Redis (TGN neighbourhoods)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.graph_index"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+  tgn-worker-rt: &tgn-worker        # escalations.realtime -> group-scores (needs a trained TGN)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.tgn_worker", "realtime"]
+    volumes: [../models:/app/models:ro]
+    mem_limit: 768m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+  tgn-worker-bg:                    # escalations.background -> group-scores (never delays real-time work)
+    <<: *tgn-worker
+    command: ["python", "-m", "accesssentinel.streaming.tgn_worker", "background"]
+
   # ---------------------------------------------------------------- one-off tooling container
   tools:
     <<: *app

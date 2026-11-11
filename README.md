@@ -11,7 +11,7 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 | Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `tcn.py` (model); in-process: `features.py`, `state_store.py`; deployed: `ml/` (features, dataset, training, registry), `streaming/tcn_worker.py` |
 | Step 5 tiers, T_recheck | `risk.py` (in-process), `streaming/tcn_worker.py` (deployed) |
 | Step 6 four-path escalation (Eq. 4) | `escalation.py` (in-process); deployed: `escalation_engine.py`, `streaming/escalation_service.py`; evaluation: `ml/escalation_eval.py` |
-| Step 7 graph (users/resources/apps; access, membership, co-access) + TGN | `graph.py`, `tgn.py` |
+| Step 7 graph (users/resources/apps; access, membership, co-access) + TGN | `tgn.py` (model); in-process: `graph.py`; deployed: `ml/tgn_graph.py`, `ml/tgn_train.py`, `ml/train_tgn.py`, `ml/tgn_registry.py`, `streaming/graph_index.py`, `streaming/tgn_worker.py` |
 | Step 8 PDP Allow/Block, request- and session-time enforcement | `pdp.py`, `gateway.py` |
 | Step 9 feedback loop (analyst-verified only) | `feedback.py` |
 | Step 10 capacity equations (8)–(12) | `scaling.py` |

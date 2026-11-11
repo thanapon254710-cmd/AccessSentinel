@@ -14,6 +14,9 @@ GROUP_TOPICS = {
     "repartitioner": ["access-events"],
     "tcn": ["access-events"],
     "escalation": ["risk-scores", "access-events-by-resource"],
+    "graph-index": ["access-events-by-resource"],
+    "tgn-rt": ["escalations.realtime"],
+    "tgn-bg": ["escalations.background"],
 }
 
 

@@ -61,6 +61,19 @@ class SynthConfig:
         "coordinated_collection": (3, 1, 2), "split_exfiltration": (2, 1, 2)})
     group_size: int = 3
     max_attacker_share_per_role: float = 0.25      # guards against "role = attacker" shortcuts
+    # Phase 7 (off by default so the Phase 5 dataset stays byte-identical):
+    collusion_v2: bool = False      # shared cross-app target sets, "familiar" variants, staggered bursts
+    benign_teams: bool = False      # hard negatives: recurring team meetings co-accessing sensitive resources
+
+    @classmethod
+    def collusion_study(cls, seed: int = 11) -> "SynthConfig":
+        """Preset for the TGN (Phase 7): enough collusion groups in train / validation / test, benign team
+        co-access as hard negatives, fewer individual attacks (those are the TCN's job)."""
+        return cls(n_users=700, days=28, split_days=(16, 5, 7), seed=seed,
+                   attacks={"compromised_account": (2, 1, 1), "insider_exfiltration": (2, 1, 1),
+                            "bac_probe": (2, 1, 1), "low_and_slow": (2, 1, 1)},
+                   collusion_groups={"coordinated_collection": (6, 2, 4), "split_exfiltration": (5, 2, 4)},
+                   group_size=3, collusion_v2=True, benign_teams=True)
     events_per_day_median: float = 22.0
     office_subnets: int = 5
 
@@ -347,6 +360,87 @@ class _Gen:
                                   p["device"], lab, obj=base + i * 20 + j)
         self.instances[inst] = info
 
+    def collusion_v2(self, kind: str, members: List[str], split: str, inst: str):
+        """Group behaviour for the TGN study. Each member's accesses look ordinary in isolation (permitted
+        resources, own device and network, normal rates); the signal is the coordination: the same targets or
+        disjoint record ranges of one target, in synchronised short bursts that recur across days.
+        familiar=True: the group abuses resources its members USUALLY use (no novelty signal)."""
+        rng = self.rng
+        lab = Label(collusion=1, scenario=kind, instance=inst, group=inst)
+        familiar = bool(rng.random() < 0.4)
+        info = {"kind": kind, "members": members, "split": split, "familiar": familiar, "bursts": []}
+        base_h = float(rng.uniform(9.5, 16.0))
+        if kind == "coordinated_collection":
+            pool = sorted(set().union(*[set(self.permitted(m, "read", sensitive=1)) for m in members]))
+            score = {k: sum(self.users[m]["pref"].get(k, 0.0) for m in members) for k in pool}
+            ranked = sorted(pool, key=lambda k: (-score[k], k)) if familiar else sorted(pool, key=lambda k: (score[k], k))
+            targets = ranked[: int(rng.integers(3, 6))]
+            info["targets"] = [f"{a}:{r}" for a, r in targets]
+            for _ in range(int(rng.integers(3, 6))):
+                d = self.pick_day(split)
+                t0 = self.day_start(d) + (base_h + float(rng.normal(0, 0.4))) * HOUR
+                info["bursts"].append(t0)
+                for u in members:
+                    p = self.users[u]
+                    mine = [k for k in targets if k in self.perms[p["role"]]] or self.permitted(u, "read", sensitive=1)
+                    for k in mine:
+                        for _ in range(int(rng.integers(1, 4))):
+                            self.emit(u, t0 + float(rng.uniform(0, 900)), *k, "view", self.ip_in(p["subnet"]),
+                                      p["device"], lab, obj=int(rng.integers(1, 400)))
+        else:
+            common = [k for k in self.all_res
+                      if self.sens[k] == 1 and all(k in self.perms[self.users[m]["role"]] for m in members)]
+            score = {k: sum(self.users[m]["pref"].get(k, 0.0) for m in members) for k in common}
+            target = max(common, key=lambda k: (score[k], k)) if familiar else min(common, key=lambda k: (score[k], k))
+            info["target"] = f"{target[0]}:{target[1]}"
+            for _ in range(int(rng.integers(3, 5))):
+                d = self.pick_day(split)
+                night = rng.random() < 0.2
+                hour = float(rng.uniform(20, 23)) if night else base_h + float(rng.normal(0, 0.4))
+                t0 = self.day_start(d) + hour * HOUR
+                info["bursts"].append(t0)
+                base = int(rng.integers(1, 300))
+                for i, u in enumerate(members):
+                    p = self.users[u]
+                    t = t0 + i * float(rng.uniform(30, 120))
+                    for j in range(int(rng.integers(8, 16))):
+                        self.emit(u, t, *target, "view", self.ip_in(p["subnet"]), p["device"], lab, obj=base + i * 40 + j)
+                        t += float(rng.uniform(15, 45))
+        self.instances[inst] = info
+
+    def team_meetings(self):
+        """Hard negatives for collusion detection: recurring meetings where 3-5 colleagues of one role co-access
+        the sensitive resources their job revolves around (familiar, permitted, weekly at a fixed time)."""
+        rng = self.rng
+        for role in ("hr_manager", "finance_analyst", "legal", "auditor", "executive"):
+            people = [u for u, p in sorted(self.users.items()) if p["role"] == role and u not in self.attackers]
+            sens = sorted(k for k, ps in self.perms[role].items() if self.sens[k] == 1 and "read" in ps)
+            for _team in range(max(1, len(people) // 8)):
+                if len(people) < 3 or not sens:
+                    break
+                team = list(rng.choice(people, size=min(len(people), int(rng.integers(3, 6))), replace=False))
+                res = [sens[int(i)] for i in rng.choice(len(sens), size=min(len(sens), int(rng.integers(1, 3))), replace=False)]
+                for u in team:                                   # team resources become habitual for members
+                    pref = self.users[u]["pref"]
+                    for k in res:
+                        pref[k] = pref.get(k, 0.0) + 0.15
+                    tot = sum(pref.values())
+                    self.users[u]["pref"] = {k: v / tot for k, v in pref.items()}
+                weekday, hour = int(rng.integers(0, 5)), float(rng.uniform(9.5, 15.5))
+                self.meetings.append({"role": role, "team": team, "resources": [f"{a}:{r}" for a, r in res],
+                                      "weekday": weekday, "hour": round(hour, 2)})
+                for d in range(self.cfg.days):
+                    if datetime.fromtimestamp(self.day_start(d), tz=timezone.utc).weekday() != weekday:
+                        continue
+                    t0 = self.day_start(d) + (hour + float(rng.normal(0, 0.2))) * HOUR
+                    for u in team:
+                        p = self.users[u]
+                        for _ in range(int(rng.integers(2, 7))):
+                            k = res[int(rng.integers(len(res)))]
+                            o = "edit" if "write" in self.perms[role][k] and rng.random() < 0.2 else "view"
+                            self.emit(u, t0 + float(rng.uniform(0, 3000)), *k, o, self.ip_in(p["subnet"]), p["device"],
+                                      Label(scenario="benign_team_coaccess"), obj=int(rng.integers(1, 200)))
+
     # ------------------------------------------------------------------ assembly
     def run(self) -> SynthDataset:
         cfg = self.cfg
@@ -384,7 +478,21 @@ class _Gen:
             for split, n in zip(SPLITS, counts):
                 for i in range(n):
                     pool = [u for u in users if u not in self.attackers and can_take(u)]
-                    if kind == "split_exfiltration":
+                    if kind == "split_exfiltration" and cfg.collusion_v2:
+                        sens = [k for k in self.all_res if self.sens[k] == 1]
+                        members = []
+                        for j in range(len(sens)):                   # rotate, skip targets without enough readers
+                            k = sens[(i + j) % len(sens)]
+                            picked, extra = [], {}
+                            for u in pool:                           # cap counts the members chosen so far
+                                r = self.users[u]["role"]
+                                if k in self.permitted(u, "read") and (role_att[r] + extra.get(r, 0) + 1) / role_n[r] <= cfg.max_attacker_share_per_role:
+                                    picked.append(u); extra[r] = extra.get(r, 0) + 1
+                                if len(picked) == cfg.group_size:
+                                    break
+                            if len(picked) == cfg.group_size:
+                                members = picked; break
+                    elif kind == "split_exfiltration":
                         self.split_target = [("hr", "payroll"), ("finance", "payments"), ("docs", "contracts")][i % 3]
                         pool = [u for u in pool if self.split_target in self.permitted(u, "read")]
                         members = pool[:cfg.group_size]
@@ -396,10 +504,15 @@ class _Gen:
                             if len(members) == cfg.group_size:
                                 break
                     if len(members) < 2:
+                        if cfg.collusion_v2:
+                            raise ValueError(f"population too small to form {kind} group {split}-{i} under the per-role cap")
                         continue
                     for m in members:
                         take(m)
                     plan.append((kind, members, split, f"{kind}-{split}-{i}"))
+        self.meetings = []
+        if cfg.benign_teams:
+            self.team_meetings()                       # also makes the team resources habitual for members
         for d in range(cfg.days):
             for u in self.users:
                 self.normal_day(u, d)
@@ -408,6 +521,8 @@ class _Gen:
         for kind, members, split, inst in plan:
             if kind in INDIVIDUAL:
                 self.attack(kind, members[0], split, inst)
+            elif cfg.collusion_v2:
+                self.collusion_v2(kind, members, split, inst)
             else:
                 if kind == "split_exfiltration":
                     self.split_target = next(t for t in [("hr", "payroll"), ("finance", "payments"), ("docs", "contracts")]
@@ -421,7 +536,9 @@ class _Gen:
         bounds = {s: (self.day_start(a), self.day_start(b)) for s, (a, b) in self.split_day_ranges.items()}
         for u in self.attackers:
             self.users[u]["attacker"] = True
-        return SynthDataset(evs, labels, self.users, bounds, self.instances, cfg)
+        ds = SynthDataset(evs, labels, self.users, bounds, self.instances, cfg)
+        ds.meetings = self.meetings
+        return ds
 
 
 def generate(cfg: SynthConfig = None) -> SynthDataset:

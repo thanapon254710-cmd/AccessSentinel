@@ -12,7 +12,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 4 Kafka streaming + HDFS | Done (2026-11-11) — verified live incl. crash tests |
 | 5 TCN | Done (2026-11-11) — trained, evaluated (synthetic), deployed, verified live |
 | 6 Four-path escalation | Done (2026-11-11) — evaluated (synthetic), deployed, each path verified live |
-| 7 TGN | Not started (library model exists; see audit D8, D9) |
+| 7 TGN | Done (2026-11-11) — two-stage TGN trained and evaluated (synthetic), deployed, live parity verified |
 | 8 PDP + enforcement | Not started (library logic exists; see audit D3) |
 | 9 Feedback + dashboard | Not started |
 | 10 Integration + experiments | Not started |
@@ -331,7 +331,82 @@ Not done / known limits:
 - Path B fires very often on popular sensitive resources at kappa 3 (synthetic: ~1.3 trigger users per minute).
 - Escalations are produced but not yet consumed: the TGN worker is Phase 7.
 
+### 2026-11-11 — Phase 7 (TGN collusion detection)
+
+Added:
+- **Collusion-study dataset preset** (`SynthConfig.collusion_study()`, opt-in flags `collusion_v2`, `benign_teams`;
+  the default Phase 5 dataset stays byte-identical, fingerprint beeb9bffdb1d7160): 700 users, 347,914 events,
+  23 collusion groups (train 11 / validation 4 / test 8; 6 "familiar" groups abusing resources their members
+  usually use), coordinated collection with shared cross-app targets and split exfiltration with disjoint record
+  ranges in synchronised bursts; 34 recurring benign team meetings (hard negatives). Groups that cannot be formed
+  under the per-role cap now raise instead of being silently skipped (the Phase 6 finding).
+- **Temporal graph** (`ml/tgn_graph.py`, D3 Eq. 5): user/resource/application nodes; timestamped access edges with
+  label-free attributes (familiarity = distinct earlier days, sequential record ids, sensitivity, operation,
+  outcome, hour), membership and co-access edges; bounded neighbourhoods (1 h window, <= 20 resources,
+  <= 8 co-accessors each); T = 10 slices, 17 node features (incl. synchronised co-access and burstiness).
+- **Two-stage training** (`ml/tgn_train.py`, `ml/train_tgn.py`): D3 TGN unchanged (2 GCN, emb 50, GRU, attention
+  over T = 10, sigma(W[h_i;h_j]+b), Adam 1e-3, L2 1e-6). Stage 1 self-supervised on benign graphs only (real vs
+  corrupted edges, 300 epochs); stage 2 fine-tuning on collusion labels (synthetic stand-ins for analyst-verified
+  incidents); tau_edge and theta_coll calibrated on validation. Audit defect **D9 fixed**.
+- **Learned grouping g(u)** from TGN-suspicious edges (score >= tau_edge) on shared resources; S_coll = mean of the
+  top suspicious edge scores; undefined for users without a coupled group. Audit defect **D8 fixed**.
+- **TGN registry** (`ml/tgn_registry.py`), **graph-index** service (`streaming/graph_index.py`), **TGN workers**
+  for real-time and background escalations (`streaming/tgn_worker.py`) publishing `group-scores` and `coll:<u>`.
+- `scripts/smoke_tgn.py` (live parity check), `tests/test_tgn.py` (14 tests).
+
+Results — **synthetic data only** (`experiments/results/tgn-20261111T104626Z-ccc61d.md`; one training seed; 8 test groups, 64 positive
+test windows, so uncertainty is wide):
+
+| Test period: escalated seed in a colluding group? | ROC-AUC | PR-AUC | precision | recall | FPR | team meetings flagged | test groups detected |
+|---|---|---|---|---|---|---|---|
+| TGN, two-stage (D3; promoted) | 0.843 | 0.568 | 0.643 | 0.422 | 0.024 | 12 % | 8/8 |
+| TGN, stage 2 only (ablation) | 0.736 | 0.495 | 0.358 | 0.531 | 0.097 | 41 % | 7/8 |
+| Static GNN, T = 1 (ablation) | 0.872 | 0.643 | 0.500 | 0.625 | 0.064 | 50 % | 8/8 |
+| Rule: >= 2 shared sensitive resources | 0.581 | 0.111 | 0.099 | 0.453 | 0.423 | 41 % | 8/8 |
+| Rule: uncommon concurrent co-access | 0.510 | 0.097 | 0.222 | 0.031 | 0.011 | 0 % | 1/8 |
+
+- Learned graph models clearly outperform both rules (the co-access rule flags 63 % of ordinary sensitive-access
+  windows).
+- Stage-1 self-supervision helps: PR-AUC 0.568 vs 0.495 and a four-times lower false-positive rate.
+- **The temporal component did not improve ranking in this study**: the static T = 1 ablation has the higher
+  PR-AUC (0.643). Its advantage is fewer false alarms on recurring team meetings (12 % vs 50 %). A likely reason:
+  the strongest coordination features (burstiness, synchronised co-access) are computed over the whole window,
+  so the static model sees them too. The D3 TGN is promoted for fidelity and its lowest false-positive rate;
+  the comparison is reported, not hidden.
+- Member identification: recall 1.00, precision 0.54 (groups include extra co-accessors of busy resources).
+- Weakest case: coordinated collection on unfamiliar resources (22 % of windows flagged).
+- Latency: 8.7 ms median per escalated user (featurise + TGN + grouping).
+- Wall time 5.6 h: training ran while the live stack competed for the CPU (static ablation alone 4.9 h).
+
+Verified live:
+- TGN workers without a model: healthy, not consuming (58 + 15 escalations waiting); loaded the promoted model
+  within ~1 s and drained the backlog.
+- **Train/serve parity** (`smoke_tgn.py`, histories replayed through gateway topic -> repartitioner -> graph index
+  -> escalation -> TGN worker): 4/4 cases identical to offline (members and S_coll, max diff 6e-8).
+  Outcomes: split_exfiltration-test-1 **detected** (S_coll 0.9996, group contains all 3 colluders + 1 other);
+  coordinated_collection-test-0 and split_exfiltration-test-0 missed at the tested window (S_coll 0.65 / 0.57);
+  a benign HR team meeting correctly not flagged (0.805 < 0.9).
+- group-scores archived in HDFS; all consumer groups at lag 0; infra 4/4, gateway smoke 29/29; 18 services healthy.
+
+Found while verifying:
+- **Out-of-order annotation bug:** the resource-keyed view (key includes a time bucket) can deliver one user's
+  accesses to one resource out of time order; annotating edges on arrival produced impossible familiarity counts
+  (up to 96 "earlier days" in a 28-day dataset) and broke parity. The index now stores order-independent state
+  (day sets, time-keyed objects) and derives edge attributes at query time; regression test with shuffled
+  arrival order added; index rebuilt from Kafka.
+- My first live check mixed two replays of the same synthetic window after the rebuild; replays are now shifted
+  by whole weeks (all features invariant) so runs are isolated.
+- The collusion-study generator initially exceeded the per-role attacker cap (27 %) because group members were
+  checked one at a time; fixed and enforced by a test; population raised to 700.
+- The week-shifted replays spread records over hundreds of dates, so the HDFS sink wrote ~1,900 small files
+  (transient lag 21k, drained in ~90 s). Scheduled compaction of past dates remains open.
+
+Not done / known limits:
+- Single training seed; no confidence intervals. Synthetic data only.
+- No persistent cross-call node memory (D3/[14] design: GCN + GRU + attention per neighbourhood).
+- The temporal advantage claimed by D3 is not demonstrated on this dataset (see above).
+
 ### Remaining
 
-Phases 7–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D8–D9 (TGN, Phase 7),
-D12's `FeedbackLoop.flush()` re-flush (Phase 9).
+Phases 8–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D12's
+`FeedbackLoop.flush()` re-flush (Phase 9).
