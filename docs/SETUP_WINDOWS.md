@@ -66,6 +66,7 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `escalation` | Four-path escalation (A high, B resource, C sweep, D sample) -> `escalations.*` | — |
 | `graph-index` | Temporal edge index in Redis for TGN neighbourhoods | — |
 | `tgn-worker-rt`, `tgn-worker-bg` | TGN collusion analysis of escalated users -> `group-scores` (needs a trained TGN) | — |
+| `pdp` | Policy Decision Point: Allow/Block for the gateway, session revocation, audit | — |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -199,6 +200,35 @@ docker compose run --rm -T tools python scripts/smoke_tgn.py collusion --index 5
 docker compose run --rm -T tools python scripts/smoke_tgn.py team
 ```
 
+### Policy Decision Point (enforcement)
+
+The PDP runs in `enforce` mode by default. `shadow` mode decides and audits without enforcing (useful while
+calibrating thresholds, and for running the machine-speed smoke scripts of earlier phases):
+
+```powershell
+$env:AS_PDP_MODE="shadow"; docker compose up -d pdp
+Remove-Item Env:AS_PDP_MODE; docker compose up -d pdp
+```
+
+Analyst and operator actions:
+
+```powershell
+docker compose run --rm tools python -m accesssentinel.pdp_admin list
+docker compose run --rm tools python -m accesssentinel.pdp_admin status ivan
+docker compose run --rm tools python -m accesssentinel.pdp_admin release ivan --by analyst1 --note "false positive"
+docker compose run --rm tools python -m accesssentinel.pdp_admin policy-block dave --by hr-admin --reason "offboarding"
+docker compose run --rm tools python -m accesssentinel.pdp_admin audit ivan
+```
+
+Before a live demo, reset the demo users' monitoring state (their earlier test traffic looks bot-like):
+
+```powershell
+docker compose run --rm tools python scripts/reset_demo_state.py --all-demo
+```
+
+Live enforcement checks: `docker compose run --rm -T tools python scripts/smoke_pdp.py individual` (also
+`expiry`, `policy`, `group`).
+
 ## 6. Host-side Python environment (tests, training)
 
 ```powershell
@@ -246,4 +276,5 @@ docker compose down -v         # remove containers AND all data (Kafka, HDFS, Po
 | `Too many failed attempts` | 5 failed logins lock that user ID for 15 minutes |
 | `hdfs-sink` or `repartitioner` unhealthy | `docker compose logs hdfs-sink`; the health check fails when the consume loop has not run for 60 s |
 | Dead-lettered records | Inspect `<topic>.dlq` with the console consumer and `--property print.headers=true` |
+| A demo user gets *Access is suspended by the continuous-monitoring risk policy* | The PDP blocked them (often because of earlier scripted traffic). `pdp_admin status <user>`, then `pdp_admin release` or `scripts/reset_demo_state.py <user>` |
 | Slow file operations | The repository is inside OneDrive. Consider pausing OneDrive sync for `.venv\` |

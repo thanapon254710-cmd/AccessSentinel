@@ -46,7 +46,10 @@ class PDP:
         elif s_ind is not None and s_ind >= self.rcfg.theta_high: d, why = Decision.BLOCK, "individual"
         elif s_coll is not None and s_coll >= self.cfg.theta_coll: d, why = Decision.BLOCK, "collective"
         else: d, why = Decision.ALLOW, "ok"
-        rec = DecisionRecord(u, t, d, why, s_ind, s_coll)
         prev = self.current.get(u)
+        if (d == Decision.ALLOW and prev is not None and prev.decision == Decision.BLOCK
+                and t - prev.t < self.cfg.block_ttl):
+            return prev, False                    # sticky: a lower or missing score never lifts a Block (audit D3)
+        rec = DecisionRecord(u, t, d, why, s_ind, s_coll)
         self.current[u] = rec
         return rec, (prev is None or prev.decision != d)

@@ -23,6 +23,7 @@ x-app: &app
     AS_REDIS_HOST: redis
     AS_REDIS_PORT: "6379"
     AS_MODEL_DIR: /app/models
+    AS_GATEWAY_INTERNAL_URL: http://gateway:8000
   networks: [accesssentinel]
 
 services:
@@ -275,6 +276,22 @@ services:
   tgn-worker-bg:                    # escalations.background -> group-scores (never delays real-time work)
     <<: *tgn-worker
     command: ["python", "-m", "accesssentinel.streaming.tgn_worker", "background"]
+
+  # ---------------------------------------------------------------- policy decision point (Phase 8)
+  pdp:                              # risk-scores + group-scores + policy C -> decision:<u> for the gateway
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.pdp_service"]
+    environment:
+      <<: *app-env
+      AS_PDP_MODE: ${AS_PDP_MODE:-enforce}                # shadow = decide and audit without enforcing
+      AS_GATEWAY_INTERNAL_URL: http://gateway:8000
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      db-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      gateway: {condition: service_healthy}
 
   # ---------------------------------------------------------------- one-off tooling container
   tools:

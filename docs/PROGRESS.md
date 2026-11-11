@@ -13,7 +13,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 5 TCN | Done (2026-11-11) — trained, evaluated (synthetic), deployed, verified live |
 | 6 Four-path escalation | Done (2026-11-11) — evaluated (synthetic), deployed, each path verified live |
 | 7 TGN | Done (2026-11-11) — two-stage TGN trained and evaluated (synthetic), deployed, live parity verified |
-| 8 PDP + enforcement | Not started (library logic exists; see audit D3) |
+| 8 PDP + enforcement | Done (2026-11-11) — sticky lifecycle, outbox audit, enforcement verified live |
 | 9 Feedback + dashboard | Not started |
 | 10 Integration + experiments | Not started |
 
@@ -406,7 +406,64 @@ Not done / known limits:
 - No persistent cross-call node memory (D3/[14] design: GCN + GRU + attention per neighbourhood).
 - The temporal advantage claimed by D3 is not demonstrated on this dataset (see above).
 
+### 2026-11-11 — Phase 8 (Policy Decision Point and enforcement)
+
+Added:
+- **PDP engine** (`pdp_engine.py`, D3 Eq. 7): Block when S_ind >= 0.6 (individual), S_coll >= the TGN's calibrated
+  theta_coll for every member of g(u) (collective), or organisational policy C denies (policy); otherwise Allow
+  subject to the gateway ACL. **Explicit Block lifecycle** (audit defect **D3 fixed**, also in the in-process
+  `pdp.py`): sticky - lower or missing scores never release a Block; risk blocks end at expiry (24 h) or by
+  analyst release, which opens a grace period (1 h) so the same ongoing evidence cannot re-block at once; policy
+  blocks end only when the policy is lifted; evidence older than 10 / 15 min (backlogs) is not enforced; a new
+  kind of evidence on an already-blocked user is recorded as an `evidence` transition; manual analyst blocks with
+  optional TTL; **shadow mode** (decide and audit without enforcing) for calibration.
+- **Transactional outbox**: each state change and its decision record are written in one Redis transaction; the
+  service drains the outbox to Kafka `pdp-decisions` (-> HDFS), the PostgreSQL `pdp_decisions` audit table and
+  session revocation (queued before the outbox is acknowledged, retried on failure).
+- **PDP service** (`streaming/pdp_service.py`): consumes `risk-scores` + `group-scores`, re-reads policy C from
+  PostgreSQL every 15 s (outage -> existing decisions stay in force), expires blocks, revokes sessions through the
+  gateway's internal API. Request-time enforcement uses the existing gateway decision cache.
+- PostgreSQL schema v2: `policy_blocks` (policy C), `pdp_decisions` (audit trail).
+- `pdp_admin` CLI (status, list, release, block, policy-block, policy-unblock, audit) - the Phase 9 dashboard
+  uses the same engine; `scripts/reset_demo_state.py` (test environments only); `scripts/smoke_pdp.py`;
+  `tests/test_pdp.py` (14 tests).
+
+Verified live (enforce mode, real gateway, real demo accounts):
+- First start over the full history: 71,345 risk scores ignored as stale, 0 users blocked.
+- **ivan** (staff): 5 requests at human pace -> Low tier, not blocked. Access-control probing -> **suspended after
+  7 attack requests, 1.4 s after the attack began** (D3's exposure window: gateway -> Kafka -> TCN -> PDP ->
+  decision cache); active session terminated (old cookie -> 401); new login refused (403); still blocked 20 s
+  later; Block in the audit trail; analyst release restored access. 9/9.
+- **henry**: manual 20 s block enforced, access returned after expiry, expiry recorded. 4/4.
+- **dave**: policy block refused login; analyst release refused (policy-locked); lifting the policy restored
+  access. 3/3.
+- **Group-wide**: a TGN group above theta_coll (held-out split_exfiltration-test-1, 4 members) -> every member
+  blocked; the 3 true colluders had already been blocked individually by the TCN (their collective evidence is
+  recorded as `evidence` transitions), the 4th member - not a colluder - was blocked only collectively. 3/3.
+- **ML outage**: all TCN and TGN workers stopped for 45 s -> all 8 blocked users stayed blocked.
+- Audit trail: 17 decision transitions in PostgreSQL = 17 records in HDFS.
+- Regression (PDP in shadow mode, demo state reset): infra 4/4, gateway smoke 29/29, streaming 10/10, escalation
+  A 1/1, C 3/3; shadow mode recorded 9 would-be blocks without affecting the gateway. Enforce mode restored.
+- `pytest -q tests` -> 128 passed, 4 skipped.
+
+Found while verifying:
+- Group-wide enforcement first looked incomplete: members already blocked individually kept their original
+  reason and the collective evidence was silently dropped. Now recorded as an `evidence` transition (block and
+  expiry unchanged), so the audit shows every reason; regression test added.
+- D3's group-wide rule blocks every member of g(u); with the TGN's member precision of 0.54 (Phase 7) this
+  blocks innocent co-accessors, as happened live (1 of 4). Analyst release is the remedy; a narrower scope is a
+  policy choice for the team.
+
+Operational notes:
+- The Phase 3-6 smoke scripts drive demo accounts at machine speed; with enforcement on they are (correctly)
+  blocked. Run them with `AS_PDP_MODE=shadow` after `scripts/reset_demo_state.py --all-demo`.
+- Before a live demo, reset the demo users' monitoring state; their earlier test traffic is bot-like.
+
+Not done / known limits:
+- No step-up authentication or partial restrictions: decisions are Allow/Block only (as in D3).
+- Thresholds are the initial D3 values (theta_high) and the TGN's validation calibration (theta_coll), not
+  calibrated to a target alert rate.
+
 ### Remaining
 
-Phases 8–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D12's
-`FeedbackLoop.flush()` re-flush (Phase 9).
+Phases 9–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defect: D12's `FeedbackLoop.flush()` re-flush (Phase 9).

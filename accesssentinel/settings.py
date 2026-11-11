@@ -82,6 +82,17 @@ class Settings(BaseSettings):
     esc_t_sweep: Optional[float] = None
     esc_analysis_window: Optional[float] = None
 
+    # --- Policy Decision Point (Phase 8) ---------------------------------------------------------------
+    pdp_mode: str = "enforce"                       # enforce | shadow (decide + audit, do not enforce)
+    gateway_internal_url: str = "http://localhost:8000"   # containers: http://gateway:8000 (session revocation)
+
+    @field_validator("pdp_mode")
+    @classmethod
+    def _pdp_mode(cls, v: str) -> str:
+        if v not in {"enforce", "shadow"}:
+            raise ValueError("AS_PDP_MODE must be enforce or shadow")
+        return v
+
     @field_validator("history_backend")
     @classmethod
     def _backend(cls, v: str) -> str:

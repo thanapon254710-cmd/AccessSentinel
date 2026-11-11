@@ -5,11 +5,13 @@ Schema changes are applied by `python -m accesssentinel.db.init_db` (create-if-m
 """
 from datetime import datetime
 
-from sqlalchemy import (JSON, BigInteger, Boolean, CheckConstraint, DateTime, ForeignKey, ForeignKeyConstraint,
+from typing import Optional
+
+from sqlalchemy import (JSON, BigInteger, Boolean, CheckConstraint, DateTime, Float, ForeignKey, ForeignKeyConstraint,
                         Integer, String, Text, UniqueConstraint, func)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2              # v2 (Phase 8): policy_blocks, pdp_decisions
 
 
 class Base(DeclarativeBase):
@@ -71,6 +73,39 @@ class AclRule(Base):
     resource_key: Mapped[str] = mapped_column(String(64), nullable=False)
     role: Mapped[str] = mapped_column(String(64), nullable=False)
     permission: Mapped[str] = mapped_column(String(16), nullable=False)
+
+
+class PolicyBlock(Base):
+    """Organisational policy context C (D3 Step 8): an administrator's standing deny for a user. Only lifting
+    the policy ends such a block; neither ML scores nor an analyst release do."""
+    __tablename__ = "policy_blocks"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    created_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+
+class PdpDecision(Base):
+    """Audit trail of every PDP decision transition (also published to Kafka `pdp-decisions` -> HDFS)."""
+    __tablename__ = "pdp_decisions"
+    decision_id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    t: Mapped[float] = mapped_column(Float, nullable=False, index=True)
+    decision: Mapped[str] = mapped_column(String(8), nullable=False)
+    transition: Mapped[str] = mapped_column(String(24), nullable=False)
+    reason: Mapped[str] = mapped_column(String(32), nullable=False)
+    mode: Mapped[str] = mapped_column(String(8), nullable=False)
+    enforced: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    actor: Mapped[str] = mapped_column(String(128), nullable=False)
+    s_ind: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    s_coll: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    group_id: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    expires_at: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    record: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 
 class AuditLog(Base):

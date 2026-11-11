@@ -81,8 +81,13 @@ class TGNConfig:
 
 @dataclass
 class PDPConfig:
-    theta_coll: float = 0.6                   # [IMPL] D3 gives no collective threshold
+    theta_coll: float = 0.6                   # [IMPL] D3 gives no collective threshold (deployed: calibrated TGN value)
     coll_ttl: float = 3600.0                  # [IMPL] collective score expires after this long
+    block_ttl: float = 24 * 3600.0            # [IMPL] a risk-based Block lasts until released or this expiry (A3)
+    release_grace: float = 3600.0             # [IMPL] after an analyst release, ML evidence cannot re-block for this long
+    max_score_age: float = 600.0              # [IMPL] older risk scores (e.g. a backlog after restart) are not enforced
+    max_group_score_age: float = 900.0        # [IMPL] same for TGN group scores
+    policy_poll_seconds: float = 15.0         # [IMPL] how often organisational policy C is re-read
 
 
 @dataclass

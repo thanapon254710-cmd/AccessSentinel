@@ -17,6 +17,7 @@ GROUP_TOPICS = {
     "graph-index": ["access-events-by-resource"],
     "tgn-rt": ["escalations.realtime"],
     "tgn-bg": ["escalations.background"],
+    "pdp": ["risk-scores", "group-scores"],
 }
 
 
