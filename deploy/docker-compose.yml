@@ -235,6 +235,23 @@ services:
       kafka-init: {condition: service_completed_successfully}
       redis: {condition: service_healthy}
 
+  # ---------------------------------------------------------------- four-path escalation (Phase 6)
+  escalation:                       # Paths A-D -> escalations.realtime / escalations.background (for the TGN)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.escalation_service"]
+    environment:
+      <<: *app-env
+      AS_ESC_GAMMA: ${AS_ESC_GAMMA:-}                     # empty = D3 initial values (EscalationConfig)
+      AS_ESC_KAPPA: ${AS_ESC_KAPPA:-}
+      AS_ESC_T_SWEEP: ${AS_ESC_T_SWEEP:-}
+      AS_ESC_ANALYSIS_WINDOW: ${AS_ESC_ANALYSIS_WINDOW:-}
+    mem_limit: 384m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      datanode: {condition: service_healthy}
+
   # ---------------------------------------------------------------- one-off tooling container
   tools:
     <<: *app

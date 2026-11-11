@@ -9,8 +9,11 @@ from typing import Dict, List
 from ..topics import TOPICS, topic_name
 
 GROUP_TOPICS = {
-    "hdfs-sink": ["access-events", "risk-scores", "group-scores", "pdp-decisions", "analyst-feedback"],
+    "hdfs-sink": ["access-events", "risk-scores", "escalations.realtime", "escalations.background", "group-scores",
+                  "pdp-decisions", "analyst-feedback"],
     "repartitioner": ["access-events"],
+    "tcn": ["access-events"],
+    "escalation": ["risk-scores", "access-events-by-resource"],
 }
 
 

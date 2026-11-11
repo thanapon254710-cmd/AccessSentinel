@@ -76,6 +76,12 @@ class Settings(BaseSettings):
     tcn_model_poll_seconds: float = 30.0            # how often workers look for a newly promoted model
     torch_threads: int = 2
 
+    # --- Escalation (Phase 6): optional overrides of EscalationConfig (D3 defaults when unset) --------
+    esc_gamma: Optional[float] = None
+    esc_kappa: Optional[int] = None
+    esc_t_sweep: Optional[float] = None
+    esc_analysis_window: Optional[float] = None
+
     @field_validator("history_backend")
     @classmethod
     def _backend(cls, v: str) -> str:

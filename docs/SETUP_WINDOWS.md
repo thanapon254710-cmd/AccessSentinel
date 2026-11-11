@@ -63,6 +63,7 @@ This builds one image (`accesssentinel/app:dev`, CPU PyTorch) and starts:
 | `repartitioner` | Builds the resource-keyed view `access-events-by-resource` | — |
 | `hdfs-sink` | Writes access events, scores, decisions and feedback to HDFS (Parquet) | — |
 | `tcn-worker` (×2) | TCN individual risk scores -> `risk-scores` (needs a trained model) | — |
+| `escalation` | Four-path escalation (A high, B resource, C sweep, D sample) -> `escalations.*` | — |
 
 Containers talk to each other by service name (`kafka:29092`, `namenode:9870`, `postgres`, `redis`).
 Data lives in named Docker volumes and survives restarts.
@@ -152,6 +153,31 @@ Replay held-out synthetic users through the live pipeline and check the workers 
 ```powershell
 docker compose run --rm -T tools python scripts/replay_synthetic.py publish --normal 30 --reset > replay.json
 Get-Content replay.json | docker compose run --rm -T tools python scripts/replay_synthetic.py verify
+```
+
+### Escalation (which users go to the graph analysis)
+
+Each path can be triggered on its own (Path D needs the sampling rate raised for the test, then restored):
+
+```powershell
+docker compose run --rm -T tools python scripts/smoke_escalation.py a
+docker compose run --rm -T tools python scripts/smoke_escalation.py b
+docker compose run --rm -T tools python scripts/smoke_escalation.py c
+$env:AS_ESC_GAMMA="1"; docker compose up -d escalation
+docker compose run --rm -T tools python scripts/smoke_escalation.py d
+Remove-Item Env:AS_ESC_GAMMA; docker compose up -d escalation
+```
+
+Run a sweep (Path C) at any reference time over the HDFS history:
+
+```powershell
+docker compose run --rm tools python -m accesssentinel.streaming.escalation_service sweep-now --at 2026-10-03T18:00 --publish
+```
+
+Offline evaluation of the policy, including a kappa sensitivity study (about 5 minutes; needs a trained TCN):
+
+```powershell
+.venv\Scripts\python -m accesssentinel.ml.escalation_eval --model-dir models --kappas 3,6,10,15
 ```
 
 ## 6. Host-side Python environment (tests, training)

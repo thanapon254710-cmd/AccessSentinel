@@ -14,13 +14,15 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 from ..events import AccessEvent
-from ..topics import (ACCESS_EVENTS, ANALYST_FEEDBACK, GROUP_SCORES, PDP_DECISIONS, RISK_SCORES, topic_name)
+from ..topics import (ACCESS_EVENTS, ANALYST_FEEDBACK, ESCALATIONS_BACKGROUND, ESCALATIONS_REALTIME, GROUP_SCORES,
+                      PDP_DECISIONS, RISK_SCORES, topic_name)
 from .codec import decode_access_event, decode_json_object, record_id
 from .consumer import Record
 
 log = logging.getLogger("accesssentinel.hdfs_sink")
 
-SINK_TOPICS = (ACCESS_EVENTS, RISK_SCORES, GROUP_SCORES, PDP_DECISIONS, ANALYST_FEEDBACK)
+SINK_TOPICS = (ACCESS_EVENTS, RISK_SCORES, ESCALATIONS_REALTIME, ESCALATIONS_BACKGROUND, GROUP_SCORES, PDP_DECISIONS,
+               ANALYST_FEEDBACK)
 
 
 class HdfsSinkHandler:

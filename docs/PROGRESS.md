@@ -11,7 +11,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 3 Gateway + protected apps | Done (2026-11-11) — verified live |
 | 4 Kafka streaming + HDFS | Done (2026-11-11) — verified live incl. crash tests |
 | 5 TCN | Done (2026-11-11) — trained, evaluated (synthetic), deployed, verified live |
-| 6 Four-path escalation | Not started (library logic exists) |
+| 6 Four-path escalation | Done (2026-11-11) — evaluated (synthetic), deployed, each path verified live |
 | 7 TGN | Not started (library model exists; see audit D8, D9) |
 | 8 PDP + enforcement | Not started (library logic exists; see audit D3) |
 | 9 Feedback + dashboard | Not started |
@@ -260,7 +260,78 @@ Not done / known limits:
 - Collusion scenarios exist in the data but are evaluated in Phase 7 (their volumes are small for now).
 - Rechecks use the inactivity-refreshed window only (D3 Step 5); no new event context is synthesised.
 
+### 2026-11-11 — Phase 6 (four-path escalation)
+
+Added:
+- **Escalation engine** (`escalation_engine.py`): Paths A (S_ind >= 0.6), B (> kappa distinct users on a sensitive
+  resource within delta_res = 15 min, all participants), C (periodic sweep every T_sweep = 2 h over history),
+  D (each active Low-risk user with probability gamma). Union per user with every path's evidence; real-time
+  (A, B) unioned for 5 s and emitted to `escalations.realtime`, background (C, D) once per W = 60 s to
+  `escalations.background`; per-user cooldowns (300 s / 3600 s) so a user is analysed once per window;
+  workload caps - real-time overflow deferred (never dropped), background overflow shed and counted
+  (audit defect **D13 fixed**). All state in Redis; cooldowns and windows on an injected clock, so the same code
+  runs live (wall clock) and in the offline evaluation (event time).
+- **Path C rules** (`sweep_candidates`, [IMPL]): C1 rare_sensitive (>= 3 accesses in 24 h to sensitive resources
+  the user used <= 1 time in a 14-day baseline that ends 7 days before the lookback; users with >= 20 baseline
+  events), C2 threshold_evasion (>= 5 Medium scores, no High), C3 uncommon_coaccess (>= 4 users on a sensitive
+  resource that is rare for them, within T_sweep). Top B_sweep = 50 per sweep.
+- **Escalation service** (`streaming/escalation_service.py`): consumes `risk-scores` + `access-events-by-resource`,
+  sweeps HDFS history, re-stages candidates if a publish fails; `sweep-now --at <time> [--publish]` for operator
+  or experiment sweeps at any reference time. HDFS sink now archives both escalation topics.
+- **Offline evaluation** (`ml/escalation_eval.py`): event-time replay of the synthetic timeline with the promoted
+  TCN's scores through the same engine; per-path triggers vs escalations, per-member collusion coverage, benign
+  load, workload vs Eq. (11); kappa sensitivity study.
+- `scripts/smoke_escalation.py` (one live check per path), `tests/test_escalation.py` (15 tests).
+
+Results — **synthetic data only** (`experiments/results/escalation-*`; model tcn-20261110T194520Z-beeb9b):
+
+| kappa | benign escalations / day | unique escalations per W=60 s (mean / max) | individual test attacks escalated | collusion groups reached | colluders never scored High, escalated via B/C/D |
+|---|---|---|---|---|---|
+| 3 | 523.5 | 0.49 / 15 | 13/13 | 4/4 | 3/3 |
+| 6 | 251.2 | 0.24 / 17 | 13/13 | 4/4 | 3/3 |
+| 10 | 110.0 | 0.11 / 13 | 13/13 | 4/4 | 3/3 |
+| 15 | 78.0 | 0.09 / 9 | 13/13 | 4/4 | 3/3 |
+
+- Every path contributes (kappa 3, test attacks): A 13/13, B 7/13, C 7/13, D 1/13; all 4 collusion groups were
+  reached by B, C and D as well as A.
+- Core D3 claim, demonstrated (small sample): 3 of the 11 colluders never received a High TCN score; all 3 were
+  escalated through Paths B/C/D at every kappa.
+- kappa is a pure budget knob in this population (coverage unchanged from 3 to 15 while load falls ~6x). The code
+  default stays 3 (the live demo has only 10 users); the synthetic 260-user population suggests ~10.
+- Eq. (11) overestimates the measured load (e.g. 0.66 vs 0.11 per W at kappa 10) because it ignores union
+  overlap and cooldowns, as D3 notes for capacity planning.
+
+Verified live (each path triggered independently):
+- Path A: replayed unseen compromised account -> realtime escalation, S_ind 1.0, model version in evidence.
+- Path B: bob, judy, frank, grace read finance/audit-reports through the **gateway** -> realtime escalation,
+  evidence lists all 4 participants (distinct_users 4 > kappa 3).
+- Path C: `sweep-now` at the end of held-out low_and_slow-test-2 over **HDFS** (322 lookback / 10,433 baseline
+  events) selected syn-u089 by rule C1 and published it to `escalations.background`.
+- Path D: gamma = 1 (test setting) sampled a fresh low-risk user; gamma restored to 0.02 afterwards.
+- All consumer groups at lag 0; escalations archived in HDFS (realtime: high, resource; background: sweep, sample).
+
+Found while verifying:
+- **Cooldowns used Redis TTLs (wall clock)** while the offline replay runs on event time, so 28 simulated days
+  passed in ~95 s and cooldowns never expired: the first evaluation report was invalid and was discarded.
+  Cooldowns now store their end time on the injected clock; regression test added.
+- Path C/D triggers were not recorded by the first evaluation (only A/B were): fixed with a trigger hook.
+- **Low-and-slow laundering:** with the baseline ending at the lookback start, an attacker's own accesses entered
+  the baseline after one day and C1 stopped selecting them (live test failed at the end of the attack). Fixed
+  with a 7-day guard gap (`sweep_baseline_gap_days`); regression test added; live test then passed.
+- Operator sweeps at a past reference time were suppressed by cooldowns set on the live clock: `sweep-now` now
+  emits its sweep candidates directly (`drain_sweep`); regression test added.
+- Cap accounting counted cooling users as "shed"/"deferred"; fixed so these count only genuine budget overflow.
+- My Path D live stimulus included sensitive resources, so Path B fired first and (correctly) suppressed the
+  sample; the stimulus now uses non-sensitive activity only.
+
+Not done / known limits:
+- All four collusion groups in the synthetic data fall in the training split: the generator's per-role attacker
+  cap left too few users for validation/test groups (11 planned, 4 formed). To be fixed before TGN evaluation
+  (Phase 7).
+- Path B fires very often on popular sensitive resources at kappa 3 (synthetic: ~1.3 trigger users per minute).
+- Escalations are produced but not yet consumed: the TGN worker is Phase 7.
+
 ### Remaining
 
-Phases 6–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D8–D9 (TGN, Phase 7),
-D12's `FeedbackLoop.flush()` re-flush (Phase 9), D13 (escalation workload cap, Phase 6).
+Phases 7–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defects: D3 (sticky blocks, Phase 8), D8–D9 (TGN, Phase 7),
+D12's `FeedbackLoop.flush()` re-flush (Phase 9).

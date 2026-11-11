@@ -39,6 +39,20 @@ class EscalationConfig:
     sweep_min_users: int = 4                  # [IMPL] sweep selection rule is unspecified in D3
     sweep_batch: int = 50                     # [IMPL] B_sweep
     gamma: float = 0.02                       # [D3] calibrate vs TGN budget
+    # ---- deployed escalation service (Phase 6); all [IMPL] choices D3 leaves open
+    realtime_window: float = 5.0              # [IMPL] A/B candidates are unioned for this long before emission
+    realtime_cooldown: float = 300.0          # [IMPL] a user is escalated in real time at most once per cooldown
+    background_cooldown: float = 3600.0       # [IMPL] ... and in the background at most once per cooldown
+    max_realtime_per_window: int = 100        # [IMPL] TGN budget per realtime window; overflow is deferred
+    max_background_per_window: int = 50       # [IMPL] TGN budget per analysis window; overflow is shed
+    sweep_lookback: float = 24 * 3600.0       # [IMPL] history examined by each sweep for rules C1/C2
+    sweep_baseline_days: int = 14             # [IMPL] history that defines "usual" behaviour ...
+    sweep_baseline_gap_days: int = 7          # [IMPL] ... ending this long before the lookback, so a slow attack
+                                              #        cannot turn itself into "usual" within a week (Phase 6 finding)
+    sweep_rare_max: int = 1                   # [IMPL] a resource is rare for a user if used <= this in baseline
+    sweep_min_rare: int = 3                   # [IMPL] C1: rare sensitive accesses needed in the lookback
+    sweep_min_baseline_events: int = 20       # [IMPL] C1 ignores users without enough history (cold start)
+    sweep_min_medium: int = 5                 # [IMPL] C2: Medium-tier scores without any High in the lookback
 
 
 @dataclass
