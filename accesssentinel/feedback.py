@@ -7,6 +7,7 @@ class FeedbackLoop:
     def __init__(self, store: HistoricalStore):
         self.store = store
         self.records, self.verified = [], {}      # verified: u -> bool (malicious)
+        self._flushed = 0                          # records[:_flushed] are already in the store (audit D12)
 
     def record(self, u, t, s_ind, s_coll, decision):
         self.records.append({"u": u, "t": t, "s_ind": s_ind, "s_coll": s_coll, "decision": str(decision.value)})
@@ -27,5 +28,8 @@ class FeedbackLoop:
         return {k: sum(v) / len(v) for k, v in sorted(agg.items())}
 
     def flush(self):
-        self.store.write_feedback(self.records)
+        new = self.records[self._flushed:]
+        if new:
+            self.store.write_feedback(new)
+        self._flushed = len(self.records)
 

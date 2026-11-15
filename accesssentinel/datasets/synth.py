@@ -1,0 +1,545 @@
+"""Synthetic multi-application access logs with ground truth (generator v2, Phase 5).
+
+WHY SYNTHETIC: no public dataset contains post-authentication user -> application -> resource sequences with
+sensitivity labels, ACL outcomes and labelled collusion (network-intrusion sets such as CICIDS are flows, not
+access-control events). Every number obtained from this generator must be reported as synthetic.
+
+Shaped like the deployed system: the same 3 applications, 15 resources (sensitivity labels), 7 roles and
+role ACL as `db/demo_catalog.py`, and the same event schema v1 as the gateway emits.
+
+Population behaviour (label 0): role-based resource preferences, working hours, sessions, office /24 subnets
+shared by many users (so a network alone is not identifying), occasional ACL mistakes, and HARD NEGATIVES:
+month-end finance export bursts, travel via VPN, laptop replacement, overtime, flash crowds on a document.
+
+Individual attacks (individual label 1 on the attack events):
+  compromised_account   stolen credentials: external network, new device, night, broad enumeration, denials
+  insider_exfiltration  own device + office network + working hours: rapid sequential reads/exports of
+                        sensitive records the user IS permitted to access
+  bac_probe             own device/network: forced browsing of unpermitted and unmapped paths, delete attempts
+  low_and_slow          a few extra sensitive accesses per day over several days at normal rates (hard)
+Collusion (collusion label 1, group id; individually unremarkable members, for the TGN in Phase 7):
+  coordinated_collection  a cross-application group covers many sensitive resources in short windows
+  split_exfiltration      members export disjoint record ranges of the same sensitive resource together
+
+Splits are by TIME (train / validation / test days) and attacker users are DISJOINT between splits.
+Labels are returned separately from the events (never inside `meta`), so features cannot see them.
+"""
+import hashlib
+import math
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from typing import Dict, List, Tuple
+
+import numpy as np
+
+from ..db import demo_catalog as demo
+from ..events import AccessEvent
+from ..schema import EVENT_SCHEMA_VERSION, REQUIRED_PERMISSION
+
+DAY, HOUR, MIN = 86400.0, 3600.0, 60.0
+SPLITS = ("train", "val", "test")
+INDIVIDUAL = ("compromised_account", "insider_exfiltration", "bac_probe", "low_and_slow")
+COLLUSION = ("coordinated_collection", "split_exfiltration")
+UNMAPPED = ("admin", "backup", "export-all", "debug", "internal", "config")
+
+
+@dataclass
+class SynthConfig:
+    n_users: int = 260
+    days: int = 28
+    start: str = "2026-09-07"            # a Monday (UTC)
+    split_days: Tuple[int, int, int] = (18, 4, 6)
+    seed: int = 7
+    role_mix: Dict[str, float] = field(default_factory=lambda: {
+        "staff": 0.34, "hr_manager": 0.10, "finance_analyst": 0.13, "legal": 0.10,
+        "executive": 0.07, "auditor": 0.12, "it_admin": 0.14})
+    attacks: Dict[str, Tuple[int, int, int]] = field(default_factory=lambda: {   # instances per split
+        "compromised_account": (5, 2, 3), "insider_exfiltration": (5, 2, 4),
+        "bac_probe": (5, 2, 3), "low_and_slow": (4, 1, 3)})
+    collusion_groups: Dict[str, Tuple[int, int, int]] = field(default_factory=lambda: {
+        "coordinated_collection": (3, 1, 2), "split_exfiltration": (2, 1, 2)})
+    group_size: int = 3
+    max_attacker_share_per_role: float = 0.25      # guards against "role = attacker" shortcuts
+    # Phase 7 (off by default so the Phase 5 dataset stays byte-identical):
+    collusion_v2: bool = False      # shared cross-app target sets, "familiar" variants, staggered bursts
+    benign_teams: bool = False      # hard negatives: recurring team meetings co-accessing sensitive resources
+
+    @classmethod
+    def collusion_study(cls, seed: int = 11) -> "SynthConfig":
+        """Preset for the TGN (Phase 7): enough collusion groups in train / validation / test, benign team
+        co-access as hard negatives, fewer individual attacks (those are the TCN's job)."""
+        return cls(n_users=700, days=28, split_days=(16, 5, 7), seed=seed,
+                   attacks={"compromised_account": (2, 1, 1), "insider_exfiltration": (2, 1, 1),
+                            "bac_probe": (2, 1, 1), "low_and_slow": (2, 1, 1)},
+                   collusion_groups={"coordinated_collection": (6, 2, 4), "split_exfiltration": (5, 2, 4)},
+                   group_size=3, collusion_v2=True, benign_teams=True)
+    events_per_day_median: float = 22.0
+    office_subnets: int = 5
+
+
+@dataclass
+class Label:
+    individual: int = 0
+    collusion: int = 0
+    scenario: str = "normal"
+    instance: str = ""
+    group: str = ""
+
+
+@dataclass
+class SynthDataset:
+    events: List[AccessEvent]
+    labels: Dict[str, Label]                         # event_id -> label
+    users: Dict[str, dict]                           # user -> profile (role, subnet, ...)
+    split_bounds: Dict[str, Tuple[float, float]]     # split -> [t0, t1)
+    instances: Dict[str, dict]                       # attack/collusion instance -> details
+    config: SynthConfig
+
+    def split_of(self, t: float) -> str:
+        for s, (a, b) in self.split_bounds.items():
+            if a <= t < b:
+                return s
+        return "test"
+
+    def fingerprint(self) -> str:
+        h = hashlib.sha256()
+        for e in self.events:
+            h.update(e.event_id.encode())
+        return h.hexdigest()[:16]
+
+
+class _Gen:
+    def __init__(self, cfg: SynthConfig):
+        self.cfg = cfg
+        self.rng = np.random.default_rng(cfg.seed)
+        self.t0 = datetime.strptime(cfg.start, "%Y-%m-%d").replace(tzinfo=timezone.utc).timestamp()
+        self.events: List[Tuple[AccessEvent, Label]] = []
+        self.sens = {(a, r): s for a, rs in demo.RESOURCES.items() for r, s, _ in rs}
+        perms: Dict[str, Dict[Tuple[str, str], set]] = {}
+        for a, r, role, p in demo.acl_rows():
+            perms.setdefault(role, {}).setdefault((a, r), set()).add(p)
+        self.perms = perms
+        self.all_res = sorted(self.sens)
+        self.uuid_rng = np.random.default_rng(cfg.seed + 1)
+
+    # ------------------------------------------------------------------ helpers
+    def uid(self) -> str:
+        return uuid.UUID(bytes=self.uuid_rng.bytes(16), version=4).hex
+
+    def day_start(self, d: int) -> float:
+        return self.t0 + d * DAY
+
+    def emit(self, u: str, t: float, a: str, r: str, o: str, ip: str, dev: str, label: Label,
+             obj=None, new_session=False):
+        prof = self.users[u]
+        known = (a, r) in self.sens
+        perm_needed = REQUIRED_PERMISSION[o]
+        allowed = known and perm_needed in self.perms[prof["role"]].get((a, r), set())
+        s = self.sens.get((a, r), 1)
+        meta = {"method": {"view": "GET", "export": "GET", "edit": "PUT", "delete": "DELETE"}[o],
+                "reason": "allow" if allowed else ("unknown-resource" if not known else "acl-deny"),
+                "role": prof["role"], "source": "synthetic"}
+        if obj is not None:
+            meta["object_id"] = str(obj)
+        ev = AccessEvent(u=u, t=float(t), a=a, r=r if known else f"unmapped:{r}", s=int(s), p=perm_needed, o=o,
+                         c={"ip": ip, "device": dev, "session": "new" if new_session else "active",
+                            "session_ref": hashlib.sha256(f"{u}{int(t // 3600)}".encode()).hexdigest()[:16]},
+                         y=int(allowed), event_id=self.uid(), schema_version=EVENT_SCHEMA_VERSION,
+                         correlation_id=self.uid(), meta=meta)
+        self.events.append((ev, label))
+
+    def permitted(self, u: str, perm: str = "read", sensitive=None) -> List[Tuple[str, str]]:
+        p = self.perms[self.users[u]["role"]]
+        out = [k for k, ps in p.items() if perm in ps]
+        if sensitive is not None:
+            out = [k for k in out if self.sens[k] == sensitive]
+        return sorted(out)
+
+    def ip_in(self, subnet: str) -> str:
+        return f"{subnet}.{int(self.rng.integers(2, 250))}"
+
+    # ------------------------------------------------------------------ population
+    def make_users(self):
+        cfg, rng = self.cfg, self.rng
+        roles = list(cfg.role_mix)
+        probs = np.array([cfg.role_mix[r] for r in roles]); probs /= probs.sum()
+        subnets = [f"10.20.{i}" for i in range(1, cfg.office_subnets + 1)]
+        self.users = {}
+        for i in range(cfg.n_users):
+            u = f"syn-u{i:03d}"
+            role = roles[int(rng.choice(len(roles), p=probs))]
+            self.users[u] = {"role": role}
+            perm_res = self.permitted(u, "read")
+            w = rng.dirichlet(np.full(len(perm_res), 0.6))
+            self.users[u].update({
+                "subnet": subnets[int(rng.integers(len(subnets)))],
+                "device": f"dev-{hashlib.sha256(u.encode()).hexdigest()[:10]}",
+                "start_h": float(np.clip(rng.normal(8.5, 1.0), 6.0, 11.5)),
+                "len_h": float(np.clip(rng.normal(8.5, 0.8), 6.5, 10.5)),
+                "rate": float(np.exp(rng.normal(math.log(cfg.events_per_day_median), 0.45))),
+                "pref": dict(zip(perm_res, w)),
+                "obj_pool": int(rng.integers(40, 400)),
+            })
+
+    def normal_event(self, u: str, t: float, ip: str, dev: str, new_session: bool, label: Label = None):
+        rng, prof = self.rng, self.users[u]
+        label = label or Label()
+        if rng.random() < 0.012:                                   # honest mistake: unpermitted resource
+            a, r = self.all_res[int(rng.integers(len(self.all_res)))]
+            self.emit(u, t, a, r, "view", ip, dev, label, new_session=new_session)
+            return
+        keys = list(prof["pref"])
+        a, r = keys[int(rng.choice(len(keys), p=np.array([prof["pref"][k] for k in keys])))]
+        ps = self.perms[prof["role"]][(a, r)]
+        x = rng.random()
+        if "admin" in ps and x < 0.01:
+            o = "delete"
+        elif "export" in ps and x < 0.045:
+            o = "export"
+        elif "write" in ps and x < 0.14:
+            o = "edit"
+        else:
+            o = "view"
+        obj = None if (o == "export" or rng.random() < 0.4) else int(rng.zipf(1.6) % prof["obj_pool"]) + 1
+        self.emit(u, t, a, r, o, ip, dev, label, obj=obj, new_session=new_session)
+
+    def normal_day(self, u: str, d: int):
+        cfg, rng, prof = self.cfg, self.rng, self.users[u]
+        weekday = datetime.fromtimestamp(self.day_start(d), tz=timezone.utc).weekday()
+        if weekday >= 5 and rng.random() > 0.06:
+            return
+        if weekday < 5 and rng.random() < 0.05:                   # leave / absence
+            return
+        start = prof["start_h"] + rng.normal(0, 0.4)
+        length = prof["len_h"]
+        tag = Label()
+        ip_subnet, dev = prof["subnet"], prof["device"]
+        if rng.random() < 0.05:                                    # overtime (hard negative)
+            length += rng.uniform(2.5, 4.5); tag = Label(scenario="benign_overtime")
+        if rng.random() < 0.03:                                    # travel via VPN (hard negative)
+            ip_subnet = "10.99.0"; tag = Label(scenario="benign_travel")
+            if rng.random() < 0.3:
+                dev = f"{dev}-travel"
+        if rng.random() < 0.006:                                   # laptop replacement (persistent)
+            prof["device"] = dev = f"dev-{self.uid()[:10]}"; tag = Label(scenario="benign_new_device")
+        n = int(rng.poisson(prof["rate"] * (length / 8.5)))
+        k = max(1, int(rng.integers(2, 6)))
+        starts = np.sort(rng.uniform(start, start + length - 0.3, k))
+        per = np.maximum(1, rng.multinomial(n, np.full(k, 1 / k)))
+        for s_h, m in zip(starts, per):
+            t = self.day_start(d) + s_h * HOUR
+            ip = self.ip_in(ip_subnet)
+            for j in range(int(m)):
+                self.normal_event(u, t, ip, dev, j == 0, tag)
+                t += float(rng.exponential(rng.uniform(40, 200)))
+
+    def month_end(self, d: int):
+        """Hard negative: finance analysts export heavily on the last two business days of a month."""
+        dt = datetime.fromtimestamp(self.day_start(d), tz=timezone.utc)
+        nxt = datetime.fromtimestamp(self.day_start(d + 2), tz=timezone.utc)
+        if dt.weekday() >= 5 or nxt.month == dt.month:
+            return
+        for u, prof in self.users.items():
+            if prof["role"] != "finance_analyst" or u in self.attackers:
+                continue
+            t = self.day_start(d) + (prof["start_h"] + 2) * HOUR
+            for _ in range(int(self.rng.integers(10, 25))):
+                a, r = [("finance", "invoices"), ("finance", "payments")][int(self.rng.integers(2))]
+                o = "export" if (a, r) == ("finance", "invoices") else "view"
+                self.emit(u, t, a, r, o, self.ip_in(prof["subnet"]), prof["device"],
+                          Label(scenario="benign_month_end"))
+                t += float(self.rng.exponential(90))
+
+    def flash_crowds(self, d: int):
+        """Hard negative: many permitted users read the same sensitive document within ~30 min."""
+        if self.rng.random() > 0.25:
+            return
+        target = [("docs", "board-minutes"), ("finance", "audit-reports"), ("docs", "policies")][int(self.rng.integers(3))]
+        users = [u for u in self.users if target in self.permitted(u, "read") and u not in self.attackers]
+        if len(users) < 4:
+            return
+        t0 = self.day_start(d) + float(self.rng.uniform(9.5, 15)) * HOUR
+        for u in self.rng.choice(users, size=min(len(users), int(self.rng.integers(4, 9))), replace=False):
+            p = self.users[u]
+            self.emit(u, t0 + float(self.rng.uniform(0, 1800)), *target, "view", self.ip_in(p["subnet"]),
+                      p["device"], Label(scenario="benign_flash_crowd"))
+
+    # ------------------------------------------------------------------ attacks
+    def pick_day(self, split: str, span: int = 1) -> int:
+        a, b = self.split_day_ranges[split]
+        return int(self.rng.integers(a, max(a + 1, b - span + 1)))
+
+    def attack(self, kind: str, u: str, split: str, inst: str):
+        rng, prof = self.rng, self.users[u]
+        lab = Label(individual=1, scenario=kind, instance=inst)
+        info = {"kind": kind, "user": u, "split": split, "role": prof["role"]}
+        if kind == "compromised_account":
+            d = self.pick_day(split)
+            t = self.day_start(d) + float(rng.uniform(0.5, 4.5)) * HOUR            # night
+            ip, dev = f"203.0.113.{int(rng.integers(2, 250))}", f"dev-{self.uid()[:10]}"
+            n = int(rng.integers(60, 130))
+            for j in range(n):
+                a, r = self.all_res[int(rng.integers(len(self.all_res)))]
+                o = "export" if rng.random() < 0.3 else "view"
+                obj = None if o == "export" else j + 1
+                self.emit(u, t, a, r, o, ip, dev, lab, obj=obj, new_session=j == 0)
+                t += float(rng.exponential(25))
+        elif kind == "insider_exfiltration":
+            d = self.pick_day(split)
+            sens = self.permitted(u, "read", sensitive=1)
+            exp = [k for k in sens if "export" in self.perms[prof["role"]][k]]
+            t = self.day_start(d) + (prof["start_h"] + float(rng.uniform(1, 5))) * HOUR
+            ip, dev = self.ip_in(prof["subnet"]), prof["device"]
+            target = sens[int(rng.integers(len(sens)))]
+            n, obj = int(rng.integers(50, 110)), int(rng.integers(1, 50))
+            for j in range(n):
+                if exp and rng.random() < 0.25:
+                    self.emit(u, t, *exp[int(rng.integers(len(exp)))], "export", ip, dev, lab)
+                else:
+                    self.emit(u, t, *target, "view", ip, dev, lab, obj=obj); obj += 1
+                if rng.random() < 0.08:
+                    target = sens[int(rng.integers(len(sens)))]
+                t += float(rng.exponential(12))
+        elif kind == "bac_probe":
+            d = self.pick_day(split)
+            t = self.day_start(d) + (prof["start_h"] + float(rng.uniform(1, 6))) * HOUR
+            ip, dev = self.ip_in(prof["subnet"]), prof["device"]
+            denied = [k for k in self.all_res if k not in self.perms[prof["role"]]]
+            for j in range(int(rng.integers(30, 70))):
+                x = rng.random()
+                if x < 0.45 and denied:
+                    a, r = denied[int(rng.integers(len(denied)))]; o = "view"
+                elif x < 0.70:
+                    a, r = list(demo.APPS)[int(rng.integers(3))], UNMAPPED[int(rng.integers(len(UNMAPPED)))]; o = "view"
+                elif x < 0.85:
+                    a, r = self.all_res[int(rng.integers(len(self.all_res)))]; o = "delete"
+                else:
+                    a, r = self.permitted(u)[int(rng.integers(len(self.permitted(u))))]; o = "view"
+                self.emit(u, t, a, r, o, ip, dev, lab, obj=int(rng.integers(1, 500)) if o != "view" or x > 0.85 else None)
+                t += float(rng.exponential(35))
+        elif kind == "low_and_slow":
+            span = int(rng.integers(5, 8))
+            d0 = self.pick_day(split, span)
+            sens = [k for k in self.permitted(u, "read", sensitive=1)] or [("hr", "payroll")]
+            rare = sorted(sens, key=lambda k: prof["pref"].get(k, 0.0))[:2]
+            for d in range(d0, min(d0 + span, self.split_day_ranges[split][1])):
+                for _ in range(int(rng.integers(3, 7))):
+                    t = self.day_start(d) + (prof["start_h"] + float(rng.uniform(0.5, prof["len_h"] - 0.5))) * HOUR
+                    k = rare[int(rng.integers(len(rare)))]
+                    o = "export" if "export" in self.perms[prof["role"]].get(k, set()) and rng.random() < 0.4 else "view"
+                    self.emit(u, t, *k, o, self.ip_in(prof["subnet"]), prof["device"], lab,
+                              obj=None if o == "export" else int(rng.integers(1, 300)))
+        info["events"] = sum(1 for _, l in self.events if l.instance == inst)
+        self.instances[inst] = info
+
+    def collusion(self, kind: str, members: List[str], split: str, inst: str):
+        rng = self.rng
+        lab = Label(collusion=1, scenario=kind, instance=inst, group=inst)
+        info = {"kind": kind, "members": members, "split": split}
+        if kind == "coordinated_collection":
+            for _ in range(int(rng.integers(3, 5))):
+                d = self.pick_day(split)
+                t0 = self.day_start(d) + float(rng.uniform(10, 15)) * HOUR
+                for u in members:
+                    p = self.users[u]
+                    targets = self.permitted(u, "read", sensitive=1) or self.permitted(u, "read")
+                    for k in rng.permutation(len(targets))[: int(rng.integers(2, 4))]:
+                        self.emit(u, t0 + float(rng.uniform(0, 1200)), *targets[int(k)], "view",
+                                  self.ip_in(p["subnet"]), p["device"], lab, obj=int(rng.integers(1, 300)))
+        else:                                                          # split_exfiltration
+            target = info["target"] = self.split_target
+            for _ in range(int(rng.integers(2, 4))):
+                d = self.pick_day(split)
+                t0 = self.day_start(d) + float(rng.uniform(10, 15)) * HOUR
+                base = int(rng.integers(1, 100))
+                for i, u in enumerate(members):
+                    p = self.users[u]
+                    for j in range(int(rng.integers(3, 6))):
+                        self.emit(u, t0 + float(rng.uniform(0, 900)), *target, "view", self.ip_in(p["subnet"]),
+                                  p["device"], lab, obj=base + i * 20 + j)
+        self.instances[inst] = info
+
+    def collusion_v2(self, kind: str, members: List[str], split: str, inst: str):
+        """Group behaviour for the TGN study. Each member's accesses look ordinary in isolation (permitted
+        resources, own device and network, normal rates); the signal is the coordination: the same targets or
+        disjoint record ranges of one target, in synchronised short bursts that recur across days.
+        familiar=True: the group abuses resources its members USUALLY use (no novelty signal)."""
+        rng = self.rng
+        lab = Label(collusion=1, scenario=kind, instance=inst, group=inst)
+        familiar = bool(rng.random() < 0.4)
+        info = {"kind": kind, "members": members, "split": split, "familiar": familiar, "bursts": []}
+        base_h = float(rng.uniform(9.5, 16.0))
+        if kind == "coordinated_collection":
+            pool = sorted(set().union(*[set(self.permitted(m, "read", sensitive=1)) for m in members]))
+            score = {k: sum(self.users[m]["pref"].get(k, 0.0) for m in members) for k in pool}
+            ranked = sorted(pool, key=lambda k: (-score[k], k)) if familiar else sorted(pool, key=lambda k: (score[k], k))
+            targets = ranked[: int(rng.integers(3, 6))]
+            info["targets"] = [f"{a}:{r}" for a, r in targets]
+            for _ in range(int(rng.integers(3, 6))):
+                d = self.pick_day(split)
+                t0 = self.day_start(d) + (base_h + float(rng.normal(0, 0.4))) * HOUR
+                info["bursts"].append(t0)
+                for u in members:
+                    p = self.users[u]
+                    mine = [k for k in targets if k in self.perms[p["role"]]] or self.permitted(u, "read", sensitive=1)
+                    for k in mine:
+                        for _ in range(int(rng.integers(1, 4))):
+                            self.emit(u, t0 + float(rng.uniform(0, 900)), *k, "view", self.ip_in(p["subnet"]),
+                                      p["device"], lab, obj=int(rng.integers(1, 400)))
+        else:
+            common = [k for k in self.all_res
+                      if self.sens[k] == 1 and all(k in self.perms[self.users[m]["role"]] for m in members)]
+            score = {k: sum(self.users[m]["pref"].get(k, 0.0) for m in members) for k in common}
+            target = max(common, key=lambda k: (score[k], k)) if familiar else min(common, key=lambda k: (score[k], k))
+            info["target"] = f"{target[0]}:{target[1]}"
+            for _ in range(int(rng.integers(3, 5))):
+                d = self.pick_day(split)
+                night = rng.random() < 0.2
+                hour = float(rng.uniform(20, 23)) if night else base_h + float(rng.normal(0, 0.4))
+                t0 = self.day_start(d) + hour * HOUR
+                info["bursts"].append(t0)
+                base = int(rng.integers(1, 300))
+                for i, u in enumerate(members):
+                    p = self.users[u]
+                    t = t0 + i * float(rng.uniform(30, 120))
+                    for j in range(int(rng.integers(8, 16))):
+                        self.emit(u, t, *target, "view", self.ip_in(p["subnet"]), p["device"], lab, obj=base + i * 40 + j)
+                        t += float(rng.uniform(15, 45))
+        self.instances[inst] = info
+
+    def team_meetings(self):
+        """Hard negatives for collusion detection: recurring meetings where 3-5 colleagues of one role co-access
+        the sensitive resources their job revolves around (familiar, permitted, weekly at a fixed time)."""
+        rng = self.rng
+        for role in ("hr_manager", "finance_analyst", "legal", "auditor", "executive"):
+            people = [u for u, p in sorted(self.users.items()) if p["role"] == role and u not in self.attackers]
+            sens = sorted(k for k, ps in self.perms[role].items() if self.sens[k] == 1 and "read" in ps)
+            for _team in range(max(1, len(people) // 8)):
+                if len(people) < 3 or not sens:
+                    break
+                team = list(rng.choice(people, size=min(len(people), int(rng.integers(3, 6))), replace=False))
+                res = [sens[int(i)] for i in rng.choice(len(sens), size=min(len(sens), int(rng.integers(1, 3))), replace=False)]
+                for u in team:                                   # team resources become habitual for members
+                    pref = self.users[u]["pref"]
+                    for k in res:
+                        pref[k] = pref.get(k, 0.0) + 0.15
+                    tot = sum(pref.values())
+                    self.users[u]["pref"] = {k: v / tot for k, v in pref.items()}
+                weekday, hour = int(rng.integers(0, 5)), float(rng.uniform(9.5, 15.5))
+                self.meetings.append({"role": role, "team": team, "resources": [f"{a}:{r}" for a, r in res],
+                                      "weekday": weekday, "hour": round(hour, 2)})
+                for d in range(self.cfg.days):
+                    if datetime.fromtimestamp(self.day_start(d), tz=timezone.utc).weekday() != weekday:
+                        continue
+                    t0 = self.day_start(d) + (hour + float(rng.normal(0, 0.2))) * HOUR
+                    for u in team:
+                        p = self.users[u]
+                        for _ in range(int(rng.integers(2, 7))):
+                            k = res[int(rng.integers(len(res)))]
+                            o = "edit" if "write" in self.perms[role][k] and rng.random() < 0.2 else "view"
+                            self.emit(u, t0 + float(rng.uniform(0, 3000)), *k, o, self.ip_in(p["subnet"]), p["device"],
+                                      Label(scenario="benign_team_coaccess"), obj=int(rng.integers(1, 200)))
+
+    # ------------------------------------------------------------------ assembly
+    def run(self) -> SynthDataset:
+        cfg = self.cfg
+        assert sum(cfg.split_days) == cfg.days
+        a = 0
+        self.split_day_ranges = {}
+        for s, n in zip(SPLITS, cfg.split_days):
+            self.split_day_ranges[s] = (a, a + n); a += n
+        self.instances, self.attackers = {}, set()
+        self.make_users()
+        users = list(self.rng.permutation(sorted(self.users)))
+        role_n = {}
+        for p in self.users.values():
+            role_n[p["role"]] = role_n.get(p["role"], 0) + 1
+        role_att = {r: 0 for r in role_n}
+
+        def can_take(u):
+            r = self.users[u]["role"]
+            return (role_att[r] + 1) / role_n[r] <= cfg.max_attacker_share_per_role
+
+        def take(u):
+            self.attackers.add(u); role_att[self.users[u]["role"]] += 1
+        plan = []                       # (kind, users, split, instance)
+        for kind, counts in cfg.attacks.items():
+            for split, n in zip(SPLITS, counts):
+                for i in range(n):
+                    pool = [u for u in users if u not in self.attackers and can_take(u)]
+                    if kind == "insider_exfiltration":
+                        pool = [u for u in pool if self.permitted(u, "read", sensitive=1)]
+                    if not pool:
+                        raise ValueError(f"population too small for {kind} under the per-role attacker cap")
+                    u = pool[0]; take(u)
+                    plan.append((kind, [u], split, f"{kind}-{split}-{i}"))
+        for kind, counts in cfg.collusion_groups.items():
+            for split, n in zip(SPLITS, counts):
+                for i in range(n):
+                    pool = [u for u in users if u not in self.attackers and can_take(u)]
+                    if kind == "split_exfiltration" and cfg.collusion_v2:
+                        sens = [k for k in self.all_res if self.sens[k] == 1]
+                        members = []
+                        for j in range(len(sens)):                   # rotate, skip targets without enough readers
+                            k = sens[(i + j) % len(sens)]
+                            picked, extra = [], {}
+                            for u in pool:                           # cap counts the members chosen so far
+                                r = self.users[u]["role"]
+                                if k in self.permitted(u, "read") and (role_att[r] + extra.get(r, 0) + 1) / role_n[r] <= cfg.max_attacker_share_per_role:
+                                    picked.append(u); extra[r] = extra.get(r, 0) + 1
+                                if len(picked) == cfg.group_size:
+                                    break
+                            if len(picked) == cfg.group_size:
+                                members = picked; break
+                    elif kind == "split_exfiltration":
+                        self.split_target = [("hr", "payroll"), ("finance", "payments"), ("docs", "contracts")][i % 3]
+                        pool = [u for u in pool if self.split_target in self.permitted(u, "read")]
+                        members = pool[:cfg.group_size]
+                    else:
+                        roles_seen, members = set(), []
+                        for u in pool:
+                            if self.users[u]["role"] not in roles_seen and self.permitted(u, "read", sensitive=1):
+                                members.append(u); roles_seen.add(self.users[u]["role"])
+                            if len(members) == cfg.group_size:
+                                break
+                    if len(members) < 2:
+                        if cfg.collusion_v2:
+                            raise ValueError(f"population too small to form {kind} group {split}-{i} under the per-role cap")
+                        continue
+                    for m in members:
+                        take(m)
+                    plan.append((kind, members, split, f"{kind}-{split}-{i}"))
+        self.meetings = []
+        if cfg.benign_teams:
+            self.team_meetings()                       # also makes the team resources habitual for members
+        for d in range(cfg.days):
+            for u in self.users:
+                self.normal_day(u, d)
+            self.month_end(d)
+            self.flash_crowds(d)
+        for kind, members, split, inst in plan:
+            if kind in INDIVIDUAL:
+                self.attack(kind, members[0], split, inst)
+            elif cfg.collusion_v2:
+                self.collusion_v2(kind, members, split, inst)
+            else:
+                if kind == "split_exfiltration":
+                    self.split_target = next(t for t in [("hr", "payroll"), ("finance", "payments"), ("docs", "contracts")]
+                                             if all(t in self.permitted(m, "read") for m in members))
+                self.collusion(kind, members, split, inst)
+        self.events.sort(key=lambda x: (x[0].t, x[0].event_id))
+        evs, labels = [], {}
+        for i, (e, l) in enumerate(self.events):
+            e.eid = i
+            evs.append(e); labels[e.event_id] = l
+        bounds = {s: (self.day_start(a), self.day_start(b)) for s, (a, b) in self.split_day_ranges.items()}
+        for u in self.attackers:
+            self.users[u]["attacker"] = True
+        ds = SynthDataset(evs, labels, self.users, bounds, self.instances, cfg)
+        ds.meetings = self.meetings
+        return ds
+
+
+def generate(cfg: SynthConfig = None) -> SynthDataset:
+    return _Gen(cfg or SynthConfig()).run()

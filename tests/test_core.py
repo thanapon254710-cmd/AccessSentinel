@@ -48,7 +48,8 @@ def test_split_is_72_18_10():
 def test_risk_tiers_and_recheck():
     r = RiskMonitor(RiskConfig())
     assert r.update("a", 0.2, 0) == Tier.LOW and r.update("b", 0.5, 0) == Tier.MEDIUM and r.update("c", 0.7, 0) == Tier.HIGH
-    assert r.due_rechecks(5) == [] and r.due_rechecks(10) == ["b"]
+    assert RiskConfig().t_recheck == 600.0                       # D3 Step 5: 10 minutes
+    assert r.due_rechecks(599) == [] and r.due_rechecks(600) == ["b"]
     assert r.drain_high() == {"c"} and r.drain_high() == set()
 
 
@@ -93,7 +94,8 @@ def test_pdp_individual_collective_and_policy():
     assert p.decide("u", 0.7, 1, ctx)[0].reason == "individual"
     p.set_collective("v", 0.9, 5)
     r, ch = p.decide("v", 0.1, 6, ctx); assert r.decision == Decision.BLOCK and r.reason == "collective" and ch
-    assert p.decide("v", 0.1, 6 + 4000, ctx)[0].decision == Decision.ALLOW        # collective score expired
+    assert p.decide("v", 0.1, 6 + 4000, ctx)[0].decision == Decision.BLOCK        # sticky after the score expired
+    assert p.decide("v", 0.1, 6 + c.pdp.block_ttl + 1, ctx)[0].decision == Decision.ALLOW   # block expiry
     ctx.blocklist.add("w"); assert p.decide("w", 0.0, 0, ctx)[0].reason == "policy"
 
 

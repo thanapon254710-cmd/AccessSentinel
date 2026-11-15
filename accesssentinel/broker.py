@@ -6,6 +6,12 @@ from .config import StreamConfig
 from .events import AccessEvent
 
 
+def resource_key(ev: AccessEvent, time_bucket: float) -> str:
+    """D3 Step 2 composite key of the resource-keyed view: application:resource plus a time-bucket salt.
+    All accesses to one resource within one bucket share a key, hence a partition (co-access locality)."""
+    return f"{ev.rkey}#{int(ev.t // time_bucket)}"
+
+
 def partition_for(key: str, n: int) -> int:
     return zlib.crc32(key.encode()) % n       # Kafka uses murmur2; any stable hash preserves the property
 
@@ -47,7 +53,7 @@ class DualViewBroker:
         self.resource_topic = Topic("access-events-by-resource", cfg.n_partitions)
 
     def resource_key(self, ev: AccessEvent) -> str:
-        return f"{ev.rkey}#{int(ev.t // self.cfg.time_bucket)}"
+        return resource_key(ev, self.cfg.time_bucket)
 
     def publish_event(self, ev: AccessEvent):
         self.user_topic.publish(ev.u, ev)

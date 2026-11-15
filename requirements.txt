@@ -1,7 +1,2 @@
-numpy
-pandas
-torch            # CPU build is enough
-pytest
-confluent-kafka  # real Kafka
-pyarrow          # Parquet
-hdfs             # WebHDFS client (pure Python, no Hadoop install needed on the client)
+# Kept for backward compatibility with the README: installs everything needed for development.
+-r requirements/dev.txt

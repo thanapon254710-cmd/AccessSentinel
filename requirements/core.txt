@@ -1,0 +1,7 @@
+# Algorithmic core (accesssentinel/*.py). torch is installed separately in the Docker image
+# from the CPU wheel index; on a workstation `pip install torch` (CPU build) is enough.
+numpy>=2.0,<3
+pandas>=2.2,<3
+torch>=2.5
+pyarrow>=17
+scikit-learn>=1.5,<2     # metrics, grouped CV and the logistic-regression baseline (Phase 5)

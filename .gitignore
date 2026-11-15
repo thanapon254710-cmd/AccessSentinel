@@ -19,6 +19,7 @@ accesssentinel_data/
 # Secrets and local config
 .env
 .env.*
+!.env.example
 
 # Logs from your own runs
 *.log
@@ -29,3 +30,13 @@ accesssentinel_data/
 .idea/
 .DS_Store
 Thumbs.db
+# Trained models: the PROMOTED versions are tracked (about 2.5 MB) so a fresh clone runs without training.
+# Other versions (retraining candidates, experiments) stay local unless added on purpose.
+models/*/*
+!models/*/CURRENT
+!models/tcn/tcn-20261110T194520Z-beeb9b/
+!models/tgn/tgn-20261111T104626Z-ccc61d/
+!models/**/model.pt
+
+# Shareable archives made with git archive
+*.zip

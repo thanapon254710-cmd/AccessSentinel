@@ -1,0 +1,477 @@
+{
+  "data": {
+    "source": "SYNTHETIC (accesssentinel.datasets.synth v2, collusion_study preset)",
+    "fingerprint": "ccc61d9776e34709",
+    "events": 347914,
+    "users": 700,
+    "groups": {
+      "train": 11,
+      "val": 4,
+      "test": 8
+    },
+    "familiar_groups": 6,
+    "team_meetings": 34,
+    "sets": {
+      "benign_train": {
+        "graphs": 400,
+        "colluding_seed": 0
+      },
+      "train": {
+        "graphs": 838,
+        "colluding_seed": 155
+      },
+      "val": {
+        "graphs": 358,
+        "colluding_seed": 52
+      },
+      "test": {
+        "graphs": 690,
+        "colluding_seed": 64
+      }
+    }
+  },
+  "graph_params": {
+    "window": 3600.0,
+    "max_resources": 20,
+    "max_users_per_resource": 8,
+    "app_coaccess_weight": 0.25,
+    "T": 10
+  },
+  "tgn_config": {
+    "node_feat_dim": 17,
+    "emb_dim": 50,
+    "gcn_layers": 2,
+    "window_T": 10,
+    "lr": 0.001,
+    "epochs": 300,
+    "weight_decay": 1e-06,
+    "train_frac": 0.5,
+    "graphs_per_step": 8
+  },
+  "training": {
+    "stage1_epochs": 300,
+    "stage2_epochs_max": 60,
+    "stage2_lr": 0.0003,
+    "patience": 10,
+    "seed": 0
+  },
+  "latency_ms_per_graph": {
+    "median": 8.70214999304153,
+    "p95": 25.9277950055548,
+    "torch_threads": 20
+  },
+  "test": {
+    "tgn": {
+      "model": "tgn",
+      "threshold": 0.9,
+      "seed_level": {
+        "n": 690,
+        "positives": 64,
+        "roc_auc": 0.843325678913738,
+        "pr_auc": 0.5676661921708092,
+        "tp": 27,
+        "fp": 15,
+        "fn": 37,
+        "tn": 611,
+        "precision": 0.6428571428571429,
+        "recall": 0.421875,
+        "f1": 0.5094339622641509,
+        "fpr": 0.023961661341853034
+      },
+      "flag_rate_by_sample_kind": {
+        "collusion:coordinated_collection:familiar": {
+          "n": 6,
+          "flagged": 0.5
+        },
+        "collusion:coordinated_collection:unfamiliar": {
+          "n": 18,
+          "flagged": 0.2222222222222222
+        },
+        "collusion:split_exfiltration:familiar": {
+          "n": 14,
+          "flagged": 0.5714285714285714
+        },
+        "collusion:split_exfiltration:unfamiliar": {
+          "n": 16,
+          "flagged": 0.625
+        },
+        "hard:flash_crowd": {
+          "n": 2,
+          "flagged": 0.0
+        },
+        "hard:team_meeting": {
+          "n": 34,
+          "flagged": 0.11764705882352941
+        },
+        "pathB_like:sensitive_access": {
+          "n": 300,
+          "flagged": 0.03
+        },
+        "pathD_like:random": {
+          "n": 300,
+          "flagged": 0.013333333333333334
+        }
+      },
+      "edge_level": {
+        "edges": 85167,
+        "positives": 1408,
+        "roc_auc": 0.942969854019758,
+        "pr_auc": 0.569467990107311
+      },
+      "member_identification": {
+        "flagged_positive_samples": 27,
+        "precision": 0.5431878306878307,
+        "recall": 1.0
+      },
+      "groups_detected": {
+        "groups": 8,
+        "detected": 8,
+        "per_group": {
+          "coordinated_collection-test-0": true,
+          "coordinated_collection-test-1": true,
+          "coordinated_collection-test-2": true,
+          "coordinated_collection-test-3": true,
+          "split_exfiltration-test-0": true,
+          "split_exfiltration-test-1": true,
+          "split_exfiltration-test-2": true,
+          "split_exfiltration-test-3": true
+        }
+      },
+      "training": {
+        "name": "tgn",
+        "stage1_loss": 0.4234269570140168,
+        "stage2": {
+          "best_val_seed_pr_auc": 0.7318590507422302,
+          "pos_weight": 26.68356704711914
+        },
+        "calibration": {
+          "val_f1": 0.68,
+          "tau_edge": 0.3,
+          "theta_coll": 0.9
+        },
+        "train_seconds": 2337.2
+      }
+    },
+    "tgn_stage2_only": {
+      "model": "tgn_stage2_only",
+      "threshold": 0.3,
+      "seed_level": {
+        "n": 690,
+        "positives": 64,
+        "roc_auc": 0.7356978833865815,
+        "pr_auc": 0.4948036817310765,
+        "tp": 34,
+        "fp": 61,
+        "fn": 30,
+        "tn": 565,
+        "precision": 0.35789473684210527,
+        "recall": 0.53125,
+        "f1": 0.4276729559748428,
+        "fpr": 0.09744408945686901
+      },
+      "flag_rate_by_sample_kind": {
+        "collusion:coordinated_collection:familiar": {
+          "n": 6,
+          "flagged": 0.6666666666666666
+        },
+        "collusion:coordinated_collection:unfamiliar": {
+          "n": 18,
+          "flagged": 0.2777777777777778
+        },
+        "collusion:split_exfiltration:familiar": {
+          "n": 14,
+          "flagged": 0.7142857142857143
+        },
+        "collusion:split_exfiltration:unfamiliar": {
+          "n": 16,
+          "flagged": 0.8125
+        },
+        "hard:flash_crowd": {
+          "n": 2,
+          "flagged": 0.0
+        },
+        "hard:team_meeting": {
+          "n": 34,
+          "flagged": 0.4117647058823529
+        },
+        "pathB_like:sensitive_access": {
+          "n": 300,
+          "flagged": 0.11666666666666667
+        },
+        "pathD_like:random": {
+          "n": 300,
+          "flagged": 0.04666666666666667
+        }
+      },
+      "edge_level": {
+        "edges": 85167,
+        "positives": 1408,
+        "roc_auc": 0.9276292959766059,
+        "pr_auc": 0.5427231550097632
+      },
+      "member_identification": {
+        "flagged_positive_samples": 34,
+        "precision": 0.4638947245564892,
+        "recall": 1.0
+      },
+      "groups_detected": {
+        "groups": 8,
+        "detected": 7,
+        "per_group": {
+          "coordinated_collection-test-0": false,
+          "coordinated_collection-test-1": true,
+          "coordinated_collection-test-2": true,
+          "coordinated_collection-test-3": true,
+          "split_exfiltration-test-0": true,
+          "split_exfiltration-test-1": true,
+          "split_exfiltration-test-2": true,
+          "split_exfiltration-test-3": true
+        }
+      },
+      "training": {
+        "name": "tgn_stage2_only",
+        "stage2": {
+          "best_val_seed_pr_auc": 0.679065556101994,
+          "pos_weight": 26.68356704711914
+        },
+        "calibration": {
+          "val_f1": 0.5892857142857143,
+          "tau_edge": 0.9,
+          "theta_coll": 0.3
+        },
+        "train_seconds": 129.0
+      }
+    },
+    "static_gnn_T1": {
+      "model": "static_gnn_T1",
+      "threshold": 0.85,
+      "seed_level": {
+        "n": 690,
+        "positives": 64,
+        "roc_auc": 0.8724415934504792,
+        "pr_auc": 0.6432936406036284,
+        "tp": 40,
+        "fp": 40,
+        "fn": 24,
+        "tn": 586,
+        "precision": 0.5,
+        "recall": 0.625,
+        "f1": 0.5555555555555556,
+        "fpr": 0.06389776357827476
+      },
+      "flag_rate_by_sample_kind": {
+        "collusion:coordinated_collection:familiar": {
+          "n": 6,
+          "flagged": 0.5
+        },
+        "collusion:coordinated_collection:unfamiliar": {
+          "n": 18,
+          "flagged": 0.6111111111111112
+        },
+        "collusion:split_exfiltration:familiar": {
+          "n": 14,
+          "flagged": 0.6428571428571429
+        },
+        "collusion:split_exfiltration:unfamiliar": {
+          "n": 16,
+          "flagged": 0.8125
+        },
+        "hard:flash_crowd": {
+          "n": 2,
+          "flagged": 0.0
+        },
+        "hard:team_meeting": {
+          "n": 34,
+          "flagged": 0.5
+        },
+        "pathB_like:sensitive_access": {
+          "n": 300,
+          "flagged": 0.07
+        },
+        "pathD_like:random": {
+          "n": 300,
+          "flagged": 0.02
+        }
+      },
+      "edge_level": {
+        "edges": 85167,
+        "positives": 1408,
+        "roc_auc": 0.9518846142992503,
+        "pr_auc": 0.6102073558438706
+      },
+      "member_identification": {
+        "flagged_positive_samples": 40,
+        "precision": 0.4056381567778626,
+        "recall": 1.0
+      },
+      "groups_detected": {
+        "groups": 8,
+        "detected": 8,
+        "per_group": {
+          "coordinated_collection-test-0": true,
+          "coordinated_collection-test-1": true,
+          "coordinated_collection-test-2": true,
+          "coordinated_collection-test-3": true,
+          "split_exfiltration-test-0": true,
+          "split_exfiltration-test-1": true,
+          "split_exfiltration-test-2": true,
+          "split_exfiltration-test-3": true
+        }
+      },
+      "training": {
+        "name": "static_gnn_T1",
+        "stage1_loss": 0.45826092405011876,
+        "stage2": {
+          "best_val_seed_pr_auc": 0.7407143355807275,
+          "pos_weight": 26.68356704711914
+        },
+        "calibration": {
+          "val_f1": 0.6724137931034483,
+          "tau_edge": 0.3,
+          "theta_coll": 0.85
+        },
+        "train_seconds": 17564.9
+      }
+    },
+    "rule_shared_sensitive": {
+      "model": "rule_shared_sensitive",
+      "threshold": 0.5,
+      "seed_level": {
+        "n": 690,
+        "positives": 64,
+        "roc_auc": 0.5805835662939297,
+        "pr_auc": 0.1107198865918853,
+        "tp": 29,
+        "fp": 265,
+        "fn": 35,
+        "tn": 361,
+        "precision": 0.09863945578231292,
+        "recall": 0.453125,
+        "f1": 0.16201117318435754,
+        "fpr": 0.4233226837060703
+      },
+      "flag_rate_by_sample_kind": {
+        "collusion:coordinated_collection:familiar": {
+          "n": 6,
+          "flagged": 0.16666666666666666
+        },
+        "collusion:coordinated_collection:unfamiliar": {
+          "n": 18,
+          "flagged": 0.7777777777777778
+        },
+        "collusion:split_exfiltration:familiar": {
+          "n": 14,
+          "flagged": 0.2857142857142857
+        },
+        "collusion:split_exfiltration:unfamiliar": {
+          "n": 16,
+          "flagged": 0.1875
+        },
+        "hard:flash_crowd": {
+          "n": 2,
+          "flagged": 0.5
+        },
+        "hard:team_meeting": {
+          "n": 34,
+          "flagged": 0.4117647058823529
+        },
+        "pathB_like:sensitive_access": {
+          "n": 300,
+          "flagged": 0.63
+        },
+        "pathD_like:random": {
+          "n": 300,
+          "flagged": 0.22666666666666666
+        }
+      },
+      "groups_detected": {
+        "groups": 8,
+        "detected": 8,
+        "per_group": {
+          "coordinated_collection-test-0": true,
+          "coordinated_collection-test-1": true,
+          "coordinated_collection-test-2": true,
+          "coordinated_collection-test-3": true,
+          "split_exfiltration-test-0": true,
+          "split_exfiltration-test-1": true,
+          "split_exfiltration-test-2": true,
+          "split_exfiltration-test-3": true
+        }
+      }
+    },
+    "rule_uncommon_coaccess": {
+      "model": "rule_uncommon_coaccess",
+      "threshold": 0.5,
+      "seed_level": {
+        "n": 690,
+        "positives": 64,
+        "roc_auc": 0.510033945686901,
+        "pr_auc": 0.09679951690821256,
+        "tp": 2,
+        "fp": 7,
+        "fn": 62,
+        "tn": 619,
+        "precision": 0.2222222222222222,
+        "recall": 0.03125,
+        "f1": 0.0547945205479452,
+        "fpr": 0.011182108626198083
+      },
+      "flag_rate_by_sample_kind": {
+        "collusion:coordinated_collection:familiar": {
+          "n": 6,
+          "flagged": 0.0
+        },
+        "collusion:coordinated_collection:unfamiliar": {
+          "n": 18,
+          "flagged": 0.0
+        },
+        "collusion:split_exfiltration:familiar": {
+          "n": 14,
+          "flagged": 0.0
+        },
+        "collusion:split_exfiltration:unfamiliar": {
+          "n": 16,
+          "flagged": 0.0625
+        },
+        "hard:flash_crowd": {
+          "n": 2,
+          "flagged": 0.0
+        },
+        "hard:team_meeting": {
+          "n": 34,
+          "flagged": 0.0
+        },
+        "pathB_like:sensitive_access": {
+          "n": 300,
+          "flagged": 0.01
+        },
+        "pathD_like:random": {
+          "n": 300,
+          "flagged": 0.016666666666666666
+        }
+      },
+      "groups_detected": {
+        "groups": 8,
+        "detected": 1,
+        "per_group": {
+          "coordinated_collection-test-0": false,
+          "coordinated_collection-test-1": false,
+          "coordinated_collection-test-2": false,
+          "coordinated_collection-test-3": false,
+          "split_exfiltration-test-0": false,
+          "split_exfiltration-test-1": false,
+          "split_exfiltration-test-2": true,
+          "split_exfiltration-test-3": false
+        }
+      }
+    }
+  },
+  "version": "tgn-20261111T104626Z-ccc61d",
+  "environment": {
+    "python": "3.11.0",
+    "torch": "2.15.0+cpu",
+    "cpu_count": 20,
+    "git_commit": "5402278"
+  },
+  "wall_seconds": 20077.1
+}

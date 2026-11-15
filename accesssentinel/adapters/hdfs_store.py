@@ -7,6 +7,8 @@ from collections import defaultdict
 from typing import Iterable, List
 import pyarrow as pa
 import pyarrow.parquet as pq
+
+from .parquet_io import read_parquet_bytes
 from ..events import AccessEvent
 
 
@@ -33,23 +35,31 @@ class WebHdfsStore:
     def flush(self):
         for hour, evs in self._buf.items():
             if not evs: continue
-            rows = [{**e.__dict__, "c": json.dumps(e.c)} for e in evs]
+            rows = [{**e.__dict__, "c": json.dumps(e.c), "meta": json.dumps(e.meta)} for e in evs]
             sink = io.BytesIO(); pq.write_table(pa.Table.from_pylist(rows), sink, compression="snappy")
             self.client.makedirs(self._dir(hour))
             self.client.write(f"{self._dir(hour)}/part-{uuid.uuid4().hex[:8]}.parquet", data=sink.getvalue(), overwrite=True)
         self._buf.clear(); self._pending = 0
 
+    def _hours(self) -> List[int]:
+        """Existing hour partitions, from ONE directory listing (cost independent of the queried range)."""
+        root = f"{self.base}/events"
+        if self.client.status(root, strict=False) is None: return []
+        return sorted(int(n.split("=", 1)[1]) for n in self.client.list(root) if n.startswith("hour="))
+
     def read_range(self, t0: float, t1: float) -> List[AccessEvent]:
         self.flush()
         out = []
-        for hour in range(int(t0 // 3600), int(t1 // 3600) + 1):
+        lo, hi = int(t0 // 3600), int(t1 // 3600)
+        for hour in (h for h in self._hours() if lo <= h <= hi):
             d = self._dir(hour)
-            if self.client.status(d, strict=False) is None: continue
             for name in sorted(self.client.list(d)):
                 with self.client.read(f"{d}/{name}") as r:
-                    tbl = pq.read_table(io.BytesIO(r.read()))
+                    tbl = read_parquet_bytes(r.read())
                 for row in tbl.to_pylist():
-                    row["c"] = json.loads(row["c"]); e = AccessEvent(**row)
+                    row["c"] = json.loads(row["c"])
+                    if isinstance(row.get("meta"), str): row["meta"] = json.loads(row["meta"])
+                    e = AccessEvent(**row)
                     if t0 < e.t <= t1: out.append(e)
         out.sort(key=lambda e: e.t)
         return out
@@ -62,8 +72,8 @@ class WebHdfsStore:
         if len(names) <= 1: return len(names)
         tables = []
         for n in names:
-            with self.client.read(f"{d}/{n}") as r: tables.append(pq.read_table(io.BytesIO(r.read())))
-        sink = io.BytesIO(); pq.write_table(pa.concat_tables(tables), sink, compression="snappy")
+            with self.client.read(f"{d}/{n}") as r: tables.append(read_parquet_bytes(r.read()))
+        sink = io.BytesIO(); pq.write_table(pa.concat_tables(tables, promote_options="default"), sink, compression="snappy")
         merged = f"part-compact-{uuid.uuid4().hex[:8]}.parquet"
         self.client.write(f"{d}/{merged}", data=sink.getvalue(), overwrite=True)
         for n in names: self.client.delete(f"{d}/{n}")
