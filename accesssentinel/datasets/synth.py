@@ -35,7 +35,9 @@ import numpy as np
 
 from ..db import demo_catalog as demo
 from ..events import AccessEvent
-from ..schema import EVENT_SCHEMA_VERSION, REQUIRED_PERMISSION
+from ..schema import REQUIRED_PERMISSION
+
+EVENT_SCHEMA_VERSION = 1      # synthetic records stay schema v1 (no gateway stream / sequence number); keeps dataset fingerprints
 
 DAY, HOUR, MIN = 86400.0, 3600.0, 60.0
 SPLITS = ("train", "val", "test")

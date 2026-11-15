@@ -234,6 +234,30 @@ docker compose run --rm tools python scripts/reset_demo_state.py --all-demo
 Live enforcement checks: `docker compose run --rm -T tools python scripts/smoke_pdp.py individual` (also
 `expiry`, `policy`, `group`).
 
+### Revised v3 event pipeline (v3 Phase 2)
+
+Two more services run by default:
+
+| Service | What it does |
+|---|---|
+| `sequencer` | Puts each user's events in event-time order (watermark, `AS_DELTA_LATE`, default 2 s) and applies the late-event policies (`AS_LATE_POLICY_S0` / `_S1`: history_only, rescore, retro_alert, discard). Output: `access-events.ordered`, read by the TCN workers |
+| `resource-windows` | Two-stage shard-and-merge of distinct users per sensitive resource and event-time window (`AS_RES_WINDOW_SECONDS`, 900; `AS_RES_SHARDS`, 4). Output: `resource-windows` |
+
+The sequencer, the repartitioner and both resource-window stages are exactly-once (Kafka transactions with
+a changelog). Live checks: `docker compose run --rm -T tools python scripts/smoke_v3_stream.py order`
+(also `windows`; `burst` / `check` for a crash test).
+
+**Upgrading an existing installation** (one time, so the new consumer groups do not reprocess all history):
+
+```powershell
+docker compose up -d --no-deps --force-recreate kafka-init
+docker compose exec kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server kafka:29092 --group sequencer --topic access-events --reset-offsets --to-latest --execute
+docker compose exec kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server kafka:29092 --group resource-shard --topic access-events-by-resource --reset-offsets --to-latest --execute
+docker compose up -d
+```
+
+A fresh installation needs none of this.
+
 ### Security operations dashboard (Phase 9)
 
 Open **http://localhost:8080**. Only security staff can sign in; monitored users (alice, bob, …) are refused:

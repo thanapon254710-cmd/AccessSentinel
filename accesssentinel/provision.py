@@ -5,7 +5,7 @@ import sys
 import time
 
 from .settings import get_settings
-from .topics import all_topic_names
+from .topics import all_topic_names, topic_configs
 
 
 def wait_for_kafka(admin, timeout: float) -> None:
@@ -20,8 +20,11 @@ def wait_for_kafka(admin, timeout: float) -> None:
             time.sleep(2)
 
 
-def ensure_topics(bootstrap: str, names, partitions: int, replication: int, admin_factory=None) -> dict:
-    """Create missing topics. Returns {topic: 'created' | 'exists'}; raises on any other error."""
+def ensure_topics(bootstrap: str, names, partitions: int, replication: int, admin_factory=None,
+                  configs: dict = None) -> dict:
+    """Create missing topics (with their topic config) and enforce the config of existing ones.
+    Returns {topic: 'created' | 'exists' | 'exists+config'}; raises on any other error."""
+    configs = configs or {}
     if admin_factory is None:
         from confluent_kafka.admin import AdminClient
         admin_factory = AdminClient
@@ -32,7 +35,7 @@ def ensure_topics(bootstrap: str, names, partitions: int, replication: int, admi
     result = {n: "exists" for n in names if n in existing}
     missing = [n for n in names if n not in existing]
     if missing:
-        futs = admin.create_topics([NewTopic(n, partitions, replication) for n in missing])
+        futs = admin.create_topics([NewTopic(n, partitions, replication, config=configs.get(n, {})) for n in missing])
         for n, f in futs.items():
             try:
                 f.result()
@@ -42,6 +45,14 @@ def ensure_topics(bootstrap: str, names, partitions: int, replication: int, admi
                     result[n] = "exists"
                 else:
                     raise
+    todo = {n: c for n, c in configs.items() if result.get(n) == "exists" and c}
+    if todo:
+        from confluent_kafka.admin import AlterConfigOpType, ConfigEntry, ConfigResource
+        res = [ConfigResource("topic", n, incremental_configs=[ConfigEntry(k, v, incremental_operation=AlterConfigOpType.SET)
+                                                                for k, v in c.items()]) for n, c in todo.items()]
+        for r, f in admin.incremental_alter_configs(res).items():
+            f.result()
+            result[r.name] = "exists+config"
     return result
 
 
@@ -51,7 +62,8 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     s = get_settings()
     prefix = s.kafka_topic_prefix if args.prefix is None else args.prefix
-    res = ensure_topics(s.kafka_bootstrap, all_topic_names(prefix), s.kafka_partitions, s.kafka_replication)
+    res = ensure_topics(s.kafka_bootstrap, all_topic_names(prefix), s.kafka_partitions, s.kafka_replication,
+                        configs=topic_configs(prefix))
     for n in sorted(res):
         print(f"{res[n]:8s} {n}")
     return 0

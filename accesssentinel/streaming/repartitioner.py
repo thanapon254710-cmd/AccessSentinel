@@ -60,28 +60,10 @@ class RepartitionHandler:
 
 
 def main() -> int:
-    from confluent_kafka import Consumer, Producer
-
-    from ..config import StreamConfig
-    from ..settings import get_settings
-    from .consumer import DeadLetterQueue, StreamConsumer, consumer_config, producer_config
-    from .runtime import Heartbeat, install_stop, setup
-
-    s = get_settings()
-    setup(s.log_level)
-    group = "repartitioner"
-    src = topic_name(ACCESS_EVENTS, s.kafka_topic_prefix)
-    out = topic_name(ACCESS_EVENTS_BY_RESOURCE, s.kafka_topic_prefix)
-    handler = RepartitionHandler(Producer(producer_config(s.kafka_bootstrap, "repartitioner")), out,
-                                 StreamConfig().time_bucket)
-    consumer = Consumer(consumer_config(s.kafka_bootstrap, group, "repartitioner"))
-    dlq = DeadLetterQueue(Producer(producer_config(s.kafka_bootstrap, "repartitioner-dlq")), group)
-    sc = StreamConsumer(consumer, [src], handler, dlq, batch_size=s.consumer_batch, heartbeat=Heartbeat())
-    install_stop(sc.stop)
-    log.info("repartitioner %s -> %s (time bucket %.0fs)", src, out, StreamConfig().time_bucket)
-    sc.run()
-    log.info("repartitioner stopped: %s %s", sc.stats, handler.stats)
-    return 0
+    """Revised v3: the repartitioner is now the exactly-once stage in resource_windows.py (key r*|b|shard).
+    RepartitionHandler above is kept for the in-process D3 pipeline and its tests."""
+    from .resource_windows import main as rw_main
+    return rw_main(["repartition"])
 
 
 if __name__ == "__main__":

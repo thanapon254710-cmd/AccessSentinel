@@ -43,6 +43,16 @@ class Catalog:
         """Default deny: only an explicit grant allows."""
         return permission in self.permissions(app_id, resource, role)
 
+    @property
+    def version(self) -> str:
+        """v3 vpolicy: short stable hash of the sensitivity labels and ACL grants (Table III "policy version")."""
+        v = self.__dict__.get("_version")
+        if v is None:
+            import hashlib
+            body = repr((sorted(self.sensitivity.items()), sorted((k, sorted(p)) for k, p in self.acl.items())))
+            v = self.__dict__["_version"] = hashlib.sha256(body.encode()).hexdigest()[:12]
+        return v
+
 
 @dataclass(frozen=True)
 class Target:

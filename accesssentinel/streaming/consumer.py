@@ -23,6 +23,20 @@ log = logging.getLogger("accesssentinel.streaming")
 PARTITION_EOF = -191          # confluent_kafka.KafkaError._PARTITION_EOF
 
 
+def fetch(consumer, n: int, timeout: float) -> list:
+    """Low-latency batch fetch. librdkafka's batch consume(n, timeout) waits for the FULL timeout unless n
+    messages arrive, which added up to `timeout` to every stage at light load (measured in Phase 2: median
+    0.7 s between the sequencer and the TCN). Wait for the first message, then drain whatever else is already
+    fetched without blocking."""
+    poll = getattr(consumer, "poll", None)
+    if poll is None:
+        return consumer.consume(n, timeout)
+    first = poll(timeout)
+    if first is None:
+        return []
+    return [first] + (consumer.consume(n - 1, 0) if n > 1 else [])
+
+
 class DecodeError(ValueError):
     """Record payload is malformed or violates the schema -> dead-letter queue."""
 
@@ -94,6 +108,7 @@ class StreamConsumer:
         self.heartbeat = heartbeat or (lambda: None)
         self.sleep = sleep
         self.pending: Dict[Tuple[str, int], int] = {}          # (topic, partition) -> next offset to commit
+        self._idle_committed: Dict[Tuple[str, int], int] = {}   # highest offset committed per partition
         self.stats = {"consumed": 0, "handled": 0, "dead_lettered": 0, "commits": 0, "retries": 0}
         self._running = True
         consumer.subscribe(topics, on_assign=self._on_assign, on_revoke=self._on_revoke, on_lost=self._on_lost)
@@ -112,7 +127,7 @@ class StreamConsumer:
             self._shutdown()
 
     def poll_once(self) -> None:
-        msgs = self.c.consume(self.batch_size, self.poll_timeout)
+        msgs = fetch(self.c, self.batch_size, self.poll_timeout)
         self.heartbeat()
         batch: List[Record] = []
         advanced: Dict[Tuple[str, int], int] = {}      # applied to self.pending only after handle() succeeds
@@ -140,7 +155,28 @@ class StreamConsumer:
             self.stats["handled"] += len(batch)
         self.pending.update(advanced)
         self._commit_if_durable(force=False)
+        if not msgs and not self.pending:
+            self._commit_idle_positions()
         self._retry("tick", self.tick)
+
+    def _commit_idle_positions(self) -> None:
+        """When idle with nothing pending, commit the consumer's POSITION where it is past the last committed
+        offset. Positions only move past records already handed to handle() (and committed) or past Kafka
+        transaction control markers, which consumers of transactional topics (v3) never see as records;
+        without this, every committed transaction left a marker that looked like one message of lag."""
+        try:
+            parts = self.c.assignment()
+            if not parts:
+                return
+            pos = {(tp.topic, tp.partition): tp.offset for tp in self.c.position(parts) if tp.offset >= 0}
+            todo = {k: o for k, o in pos.items() if o > self._idle_committed.get(k, -1)}
+            if not todo:
+                return
+            from confluent_kafka import TopicPartition
+            self.c.commit(offsets=[TopicPartition(t, p, o) for (t, p), o in sorted(todo.items())], asynchronous=False)
+            self._idle_committed.update(todo)
+        except Exception as e:  # noqa: BLE001 - best effort; the next real commit covers it
+            log.debug("idle position commit skipped (%s)", type(e).__name__)
 
     # ------------------------------------------------------------------ internals
     def _dead_letter(self, rec: Record, reason: str) -> None:
@@ -182,6 +218,8 @@ class StreamConsumer:
         from confluent_kafka import TopicPartition
         offsets = [TopicPartition(t, p, o) for (t, p), o in sorted(self.pending.items())]
         self.c.commit(offsets=offsets, asynchronous=False)
+        for (t, p), o in self.pending.items():
+            self._idle_committed[(t, p)] = max(o, self._idle_committed.get((t, p), -1))
         self.pending.clear()
         self.stats["commits"] += 1
 

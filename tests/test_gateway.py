@@ -68,10 +68,20 @@ def test_demo_policy_is_default_deny_and_role_based():
     assert {role for _, _, role, _ in demo.USERS} <= set(demo.ROLES)       # every demo user has a defined role
 
 
-def test_event_schema_v1():
-    ev = make_event("alice", "hr", "payroll", 1, "export", True, {"ip": "10.0.0.1"}, "a" * 32, {"reason": "allow"})
-    assert ev.p == "export" and ev.y == 1 and ev.schema_version == 1 and len(ev.event_id) == 32
+def test_event_schema_v2_and_v1_compatibility():
+    ev = make_event("alice", "hr", "payroll", 1, "export", True, {"ip": "10.0.0.1"}, "a" * 32, {"reason": "allow"},
+                    seq=7, stream="gw1:abcd", tenant="acme", v_policy="0123456789ab")
+    assert ev.p == "export" and ev.y == 1 and ev.schema_version == 2 and len(ev.event_id) == 32
+    assert (ev.seq, ev.stream, ev.rstar, ev.v_policy) == (7, "gw1:abcd", "acme/hr:payroll", "0123456789ab")
     AccessEventV1(**ev.__dict__)
+    v1 = dict(ev.__dict__, schema_version=1)                  # D3 records (Kafka history, HDFS, synthetic) still load
+    for k in ("seq", "stream", "tenant", "ti", "v_policy"):
+        v1.pop(k)
+    assert AccessEventV1(**v1).to_event().rstar == "default/hr:payroll"
+    with pytest.raises(ValueError):
+        AccessEventV1(**dict(ev.__dict__, schema_version=3))
+    with pytest.raises(ValueError):
+        AccessEventV1(**dict(ev.__dict__, tenant="bad tenant!"))
     with pytest.raises(ValueError):
         make_event("alice", "hr", "payroll", 1, "steal", True, {}, "a" * 32)
     with pytest.raises(ValueError):

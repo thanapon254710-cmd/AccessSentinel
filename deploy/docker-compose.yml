@@ -210,6 +210,23 @@ services:
     depends_on:
       kafka-init: {condition: service_completed_successfully}
 
+  sequencer:                        # v3 Step 2: per-user event-time order (watermark Eq. 2, late-event policies),
+    <<: *app                        #   exactly-once (Kafka transactions + changelog) -> access-events.ordered
+    command: ["python", "-m", "accesssentinel.streaming.sequencer"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+
+  resource-windows:                 # v3 Step 2: two-stage shard-and-merge per (r*, window), exactly-once
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.resource_windows", "windows"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
   hdfs-sink:                        # storage path: independent consumer group -> HDFS Parquet history
     <<: *app
     command: ["python", "-m", "accesssentinel.streaming.hdfs_sink"]

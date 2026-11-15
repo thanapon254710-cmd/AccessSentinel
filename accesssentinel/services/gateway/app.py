@@ -66,6 +66,7 @@ async def _read_body(request: Request, limit: int) -> bytes:
 def create_app(settings: Settings, store, redis, publisher, upstream: httpx.AsyncClient,
                cleanup: Optional[List[Callable[[], Awaitable[None]]]] = None) -> FastAPI:
     sessions = SessionStore(redis, settings.session_idle_seconds, settings.session_max_seconds)
+    gateway_id = settings.gateway_id
     upstream_token = settings.secret("upstream_token")
     internal_token = settings.secret("internal_token")
     state = {"catalog": None, "catalog_loaded_at": None,
@@ -261,6 +262,7 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
     @app.api_route("/apps/{app_id}/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
     async def proxy(app_id: str, path: str, request: Request):
         t0 = time.perf_counter()
+        t_in = time.time()
         cid = request.state.cid
         counts = state["counts"]
         counts["requests"] += 1
@@ -305,7 +307,11 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
         meta = {"method": request.method, "reason": reason, "role": role}
         if target.object_id:
             meta["object_id"] = target.object_id
-        event = make_event(u, app_id, target.resource, s, target.operation, allowed, ctx, cid, meta)
+        meta["ts_gw_in"] = t_in                                    # trace stamps for the latency study (Exp. C)
+        meta["ts_gw_pub"] = time.time()
+        event = make_event(u, app_id, target.resource, s, target.operation, allowed, ctx, cid, meta,
+                           seq=n, stream=f"{gateway_id}:{sess['ref'][:16]}", tenant=settings.tenant,
+                           v_policy=catalog.version)
         publisher.publish(event)                                   # never blocks on Kafka
         counts["allowed" if allowed else "denied"] += 1
 

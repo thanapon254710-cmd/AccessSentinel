@@ -11,6 +11,11 @@ from .consumer import DecodeError, Record
 
 
 def decode_access_event(value: bytes) -> AccessEvent:
+    return AccessEventV1(**decode_access_dict(value)).to_event()
+
+
+def decode_access_dict(value: bytes) -> dict:
+    """Validate an access event (schema v1 or v2) and return it as a plain dict (used by the v3 stages)."""
     try:
         obj = json.loads(value)
     except (ValueError, TypeError):
@@ -18,12 +23,13 @@ def decode_access_event(value: bytes) -> AccessEvent:
     if not isinstance(obj, dict):
         raise DecodeError("payload is not a JSON object")
     try:
-        return AccessEventV1(**obj).to_event()
+        AccessEventV1(**obj)
+        return obj
     except ValidationError as e:
         fields = sorted({".".join(str(x) for x in err["loc"]) for err in e.errors()})[:5]
-        raise DecodeError(f"schema v1 violation in fields {fields}") from None
+        raise DecodeError(f"schema violation in fields {fields}") from None
     except TypeError:
-        raise DecodeError("schema v1 violation") from None
+        raise DecodeError("schema violation") from None
 
 
 def decode_json_object(value: bytes) -> dict:

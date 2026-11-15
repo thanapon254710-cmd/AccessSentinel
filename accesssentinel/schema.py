@@ -1,4 +1,4 @@
-"""Validated access-event schema (v1) used at service boundaries: the gateway validates before publishing,
+"""Validated access-event schema (v1 and v2) used at service boundaries: the gateway validates before publishing,
 consumers validate before processing (invalid records go to the topic's DLQ, Phase 4).
 
 Vocabulary (also used by features.py):
@@ -14,7 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .events import AccessEvent
 
-EVENT_SCHEMA_VERSION = 1
+EVENT_SCHEMA_VERSION = 2          # v2 = Revised v3 Eq. (1): adds seq (nu), stream, tenant, ti, v_policy
+SUPPORTED_SCHEMA_VERSIONS = (1, 2)
 
 OPERATIONS = ("view", "edit", "delete", "export")
 PERMISSIONS = ("read", "write", "admin", "export")
@@ -25,6 +26,7 @@ _HEX = re.compile(r"^[0-9a-f]{32}$")
 
 
 class AccessEventV1(BaseModel):
+    """Validates schema v1 records (D3) and v2 records (Revised v3). Name kept for compatibility."""
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     u: str
@@ -41,8 +43,13 @@ class AccessEventV1(BaseModel):
     schema_version: int = EVENT_SCHEMA_VERSION
     correlation_id: str
     meta: Dict[str, Any] = Field(default_factory=dict)
+    seq: int = Field(default=-1, ge=-1)
+    stream: str = Field(default="", max_length=64)
+    tenant: str = "default"
+    ti: float = Field(default=0.0, ge=0)
+    v_policy: str = Field(default="", max_length=32)
 
-    @field_validator("u", "a", "r")
+    @field_validator("u", "a", "r", "tenant")
     @classmethod
     def _ident(cls, v: str) -> str:
         if not _ID.match(v):
@@ -73,7 +80,7 @@ class AccessEventV1(BaseModel):
     @field_validator("schema_version")
     @classmethod
     def _ver(cls, v: int) -> int:
-        if v != EVENT_SCHEMA_VERSION:
+        if v not in SUPPORTED_SCHEMA_VERSIONS:
             raise ValueError(f"unsupported schema_version {v}")
         return v
 
@@ -99,11 +106,12 @@ def validate(ev: AccessEvent) -> AccessEvent:
 
 
 def make_event(u: str, a: str, r: str, s: int, o: str, allowed: bool, context: Dict[str, str],
-               correlation_id: str, meta: Dict[str, Any] = None, t: float = None) -> AccessEvent:
-    """Build and validate a v1 event. The permission is the one REQUIRED for the operation."""
+               correlation_id: str, meta: Dict[str, Any] = None, t: float = None, *, seq: int = -1,
+               stream: str = "", tenant: str = "default", v_policy: str = "") -> AccessEvent:
+    """Build and validate a schema-v2 event. The permission is the one REQUIRED for the operation."""
     if o not in REQUIRED_PERMISSION:
         raise ValueError(f"operation must be one of {OPERATIONS}")
     m = AccessEventV1(u=u, t=time.time() if t is None else t, a=a, r=r, s=s, p=REQUIRED_PERMISSION[o], o=o,
                       c=dict(context), y=int(allowed), event_id=new_id(), correlation_id=correlation_id,
-                      meta=dict(meta or {}))
+                      meta=dict(meta or {}), seq=seq, stream=stream, tenant=tenant, v_policy=v_policy)
     return m.to_event()

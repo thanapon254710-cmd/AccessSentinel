@@ -29,7 +29,7 @@ from typing import Callable, Dict, List, Optional
 
 from ..config import RiskConfig
 from ..ml.features import UserProfile, observe, window_for_recheck
-from ..topics import ACCESS_EVENTS, RISK_SCORES, topic_name
+from ..topics import ACCESS_EVENTS_ORDERED, RISK_SCORES, topic_name
 from .codec import decode_access_event
 from .consumer import Record
 
@@ -44,6 +44,14 @@ SCORE_SCHEMA_VERSION = 1
 def tier_of(s: float, rc: RiskConfig) -> str:
     return "high" if s >= rc.theta_high else ("medium" if s >= rc.theta_low else "low")
 
+
+
+def _trace(ev, t_deq: float, t_scored: float) -> dict:
+    """Per-stage timestamps (wall clock, one host) for the latency decomposition Lat_ind (Eq. 31, Exp. C)."""
+    m = ev.meta if isinstance(ev.meta, dict) else {}
+    return {"te": ev.t, "ts_gw_in": m.get("ts_gw_in"), "ts_gw_pub": m.get("ts_gw_pub"), "ti": ev.ti or None,
+            "ts_seq_in": m.get("ts_seq_in"), "ts_seq_out": m.get("ts_seq_out"), "reorder_wait": m.get("reorder_wait"),
+            "order": m.get("order"), "ts_tcn_dequeue": t_deq, "ts_tcn_scored": t_scored}
 
 class ModelProvider:
     """Serves the CURRENT registry model and hot-swaps when a new version is promoted."""
@@ -89,6 +97,7 @@ class TcnWorkerHandler:
         pass
 
     def handle(self, records: List[Record]):
+        t_deq = self.clock()                                      # trace: TCN dequeue time (Exp. C)
         scorer = self.models.get()
         users = sorted({r.data.u for r in records})
         raw = self.r.mget([PROFILE.format(u) for u in users])
@@ -102,6 +111,13 @@ class TcnWorkerHandler:
                 self.stats["skipped_redelivered"] += 1
                 continue
             observe(p, ev, self.L)
+            late = ev.meta.get("late_policy") if isinstance(ev.meta, dict) else None
+            if late == "history_only":                                # v3 late-event policy 1: history only
+                self.stats["late_history_only"] = self.stats.get("late_history_only", 0) + 1
+                continue
+            # policies "rescore" / "retro_alert": the event is added to the history and the window re-scored.
+            # The D3 incremental profile cannot re-order already-observed events; exact window correction comes
+            # with the v3 TCN state (Phase 3).
             todo.append((ev, list(p.window)))
         if not todo:
             return []
@@ -116,7 +132,9 @@ class TcnWorkerHandler:
                         "event_id": ev.event_id, "a": ev.a, "r": ev.r, "s_ind": float(s), "tier": tier,
                         "trigger": "event", "model_version": scorer.version, "model_kind": "tcn",
                         "scored_at": now, "batch_inference_ms": round(ms, 3), "batch_size": len(todo),
-                        "window_len": len(w), "source": ev.meta.get("source", "live") if isinstance(ev.meta, dict) else "live"})
+                        "window_len": len(w), "source": ev.meta.get("source", "live") if isinstance(ev.meta, dict) else "live",
+                        "late_policy": ev.meta.get("late_policy") if isinstance(ev.meta, dict) else None,
+                        "trace": _trace(ev, t_deq, now)})
         self._publish(out)                                    # raises on failure -> batch retried, nothing saved
         pipe = self.r.pipeline(transaction=False)
         for u in users:
@@ -237,7 +255,7 @@ def main() -> int:
         models._checked = -1e18
     if stop["flag"]:
         return 0
-    group = "tcn"
+    group = "tcn-v3"                                     # new group: input is the event-time ordered stream
     r = redis_lib.Redis(**s.redis_kwargs())
     handler = TcnWorkerHandler(models, r, Producer(producer_config(s.kafka_bootstrap, worker_id)),
                                topic_name(RISK_SCORES, s.kafka_topic_prefix), RiskConfig(), s.tcn_recheck_seconds,
@@ -246,7 +264,7 @@ def main() -> int:
     handler.settings = Watcher(r)
     consumer = Consumer(consumer_config(s.kafka_bootstrap, group, worker_id))
     dlq = DeadLetterQueue(Producer(producer_config(s.kafka_bootstrap, f"{worker_id}-dlq")), group)
-    sc = StreamConsumer(consumer, [topic_name(ACCESS_EVENTS, s.kafka_topic_prefix)], handler, dlq,
+    sc = StreamConsumer(consumer, [topic_name(ACCESS_EVENTS_ORDERED, s.kafka_topic_prefix)], handler, dlq,
                         batch_size=s.consumer_batch, heartbeat=hb, tick=handler.tick)
     install_stop(sc.stop)
     log.info("%s scoring with %s (recheck every %.0fs)", worker_id, models.scorer.version, handler.recheck_s)
