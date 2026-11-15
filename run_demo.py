@@ -73,6 +73,21 @@ for g in sim.test_groups:
     for m in sim.groups[g]:
         fb = sys_.first_block.get(m)
         print(f" {g}/{m}: " + (f"blocked ({fb[1]})" if fb else "NOT blocked"))
+# --- diagnostic: collective scores per test group vs theta_coll ---
+th = cfg.pdp.theta_coll
+print(f"\n-- Collective-score diagnostic (theta_coll={th}) --")
+def _diag(label, users):
+    rows = [(t, s) for t, u, s, mem in sys_.coll_log if u in users and t >= sim.split_t]
+    if not rows: print(f" {label}: no TGN group score ever computed"); return
+    sc = np.array([s for _, s in rows])
+    print(f" {label}: n={len(sc)} max={sc.max():.3f} mean={sc.mean():.3f} p90={np.percentile(sc, 90):.3f} "
+          f">=theta={int((sc >= th).sum())} ({(sc >= th).mean():.0%})")
+for g in sim.test_groups:
+    mem = set(sim.groups[g]); _diag(g, mem)
+    full = [s for t, u, s, m in sys_.coll_log if u in mem and mem <= set(m) and t >= sim.split_t]
+    print(f"   scored with the whole group in g(u): {len(full)}" + (f", max={max(full):.3f}" if full else ""))
+for u in sorted(({u for u in sys_.first_block if sys_.first_block[u][0] >= sim.split_t} - truth_mal) | {"u056"}):
+    _diag(f"{u} (non-attacker)", {u})
 pred = [int(u in blocked) for u in sim.users]; true = [int(u in truth_mal) for u in sim.users]
 print("\nuser-level (test period):", prf(true, pred))
 fps = sorted(blocked - truth_mal); print("false-positive users:", fps)
