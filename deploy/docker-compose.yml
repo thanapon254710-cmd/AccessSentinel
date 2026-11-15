@@ -9,11 +9,16 @@
 # Services reach each other by service name on the `accesssentinel` network; the host reaches
 # Kafka on localhost:9092, Postgres on localhost:5432, Redis on localhost:6379, the HDFS UI on :9870.
 
+# The Python image is BUILT BY ONE SERVICE ONLY (db-init, which every other service waits for); all other services
+# reuse it and never pull it. A build section on every service made Compose build the same 2.3 GB image once per
+# service, in parallel, which exhausted Docker's memory on a fresh machine.
+x-build: &build
+  context: ..
+  dockerfile: deploy/Dockerfile
+
 x-app: &app
-  build:
-    context: ..
-    dockerfile: deploy/Dockerfile
   image: accesssentinel/app:dev
+  pull_policy: never              # local image, built by db-init
   env_file: [../.env]
   environment: &app-env           # in-network endpoints override the host values from .env
     AS_KAFKA_BOOTSTRAP: kafka:29092
@@ -140,6 +145,7 @@ services:
   # ---------------------------------------------------------------- schema + demo catalog (Phase 3)
   db-init:                          # idempotent: creates tables, upserts the demo catalog and users
     <<: *app
+    build: *build                   # the only service that builds accesssentinel/app:dev
     command: ["python", "-m", "accesssentinel.db.init_db", "--seed-demo"]
     restart: "no"
     depends_on:

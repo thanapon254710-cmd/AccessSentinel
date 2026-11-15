@@ -558,6 +558,12 @@ Sharing / running on other computers (2026-11-15):
 - `start.bat` / `start.ps1` (Windows) and `start.sh`: create `.env` with random secrets on first run, start the
   stack, wait until healthy, print where the passwords are. `stop.bat`. `.gitattributes` pins their line
   endings. Clean ZIPs are made with `git archive` (never contains `.env`).
+- Fresh-install test (clean ZIP unzipped elsewhere, separate Compose project, image deleted first): the first
+  attempt crashed Docker Desktop. Every service inherited the `build:` section, so Compose built the same 2.3 GB
+  image about 15 times in parallel and ran Docker out of memory; it never showed on the development PC because
+  the image already existed. Now only `db-init` builds the image and the other services reuse it
+  (`pull_policy: never`). Re-test from a cold cache: image built once, all services healthy,
+  `demo_new_user.py` 8/8 (new account blocked after 8 attack requests, 1.6 s), dashboard and gateway answer.
 - Reason: a ZIP of the folder could not be started on another PC. Without `.env` (and its `COMPOSE_FILE`),
   `docker compose` finds no configuration, and every `change-me` secret had to be replaced by hand.
 
