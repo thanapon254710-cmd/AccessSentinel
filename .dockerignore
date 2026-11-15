@@ -15,3 +15,4 @@ accesssentinel_data
 docs
 tests
 dashboard/node_modules
+dashboard/dist

@@ -13,10 +13,12 @@ from typing import Optional
 
 from ...security import new_session_token, one_way_ref
 
+UNKNOWN_USER = "unknown-user"     # audit actor for login attempts with an unrecognised user ID
+
 
 class SessionStore:
-    def __init__(self, redis, idle_seconds: int, max_seconds: int):
-        self.r, self.idle, self.max = redis, idle_seconds, max_seconds
+    def __init__(self, redis, idle_seconds: int, max_seconds: int, prefix: str = "sess"):
+        self.r, self.idle, self.max, self.p = redis, idle_seconds, max_seconds, prefix
 
     @staticmethod
     def ref(token: str) -> str:
@@ -25,13 +27,13 @@ class SessionStore:
     async def create(self, user: str, role: str, ip: str, device: str) -> str:
         token = new_session_token()
         ref, now = self.ref(token), time.time()
-        key = f"sess:{ref}"
+        key = f"{self.p}:{ref}"
         pipe = self.r.pipeline()
         pipe.hset(key, mapping={"u": user, "role": role, "created": now, "last_seen": now, "ip": ip,
                                 "device": device, "requests": 0})
         pipe.expire(key, self.idle)
-        pipe.sadd(f"usess:{user}", ref)
-        pipe.expire(f"usess:{user}", self.max)
+        pipe.sadd(f"u{self.p}:{user}", ref)
+        pipe.expire(f"u{self.p}:{user}", self.max)
         await pipe.execute()
         return token
 
@@ -39,7 +41,7 @@ class SessionStore:
         if not token or len(token) > 200:
             return None
         ref = self.ref(token)
-        data = await self.r.hgetall(f"sess:{ref}")
+        data = await self.r.hgetall(f"{self.p}:{ref}")
         if not data:
             return None
         if time.time() - float(data["created"]) > self.max:          # absolute lifetime
@@ -50,7 +52,7 @@ class SessionStore:
 
     async def touch(self, ref: str) -> int:
         """Count a request on the session and extend the idle timeout. Returns the request number (1 = first)."""
-        key = f"sess:{ref}"
+        key = f"{self.p}:{ref}"
         pipe = self.r.pipeline()
         pipe.hincrby(key, "requests", 1)
         pipe.hset(key, "last_seen", time.time())
@@ -59,25 +61,29 @@ class SessionStore:
         return int(n)
 
     async def revoke(self, ref: str, user: Optional[str] = None) -> None:
-        await self.r.delete(f"sess:{ref}")
+        await self.r.delete(f"{self.p}:{ref}")
         if user:
-            await self.r.srem(f"usess:{user}", ref)
+            await self.r.srem(f"u{self.p}:{user}", ref)
 
     async def revoke_user(self, user: str) -> int:
-        refs = await self.r.smembers(f"usess:{user}")
+        refs = await self.r.smembers(f"u{self.p}:{user}")
         n = 0
         for ref in refs:
-            n += await self.r.delete(f"sess:{ref}")
-        await self.r.delete(f"usess:{user}")
+            n += await self.r.delete(f"{self.p}:{ref}")
+        await self.r.delete(f"u{self.p}:{user}")
         return n
 
     # -------------------------------------------------- login throttling
+    def _fail_key(self, user: str) -> str:
+        # keyed by a one-way ref: the submitted user ID may be a mistyped password and must not be stored as typed
+        return f"{self.p}:loginfail:{one_way_ref('login:' + user, 32)}"
+
     async def login_locked(self, user: str, max_failures: int) -> bool:
-        v = await self.r.get(f"loginfail:{user}")
+        v = await self.r.get(self._fail_key(user))
         return v is not None and int(v) >= max_failures
 
     async def login_failed(self, user: str, lock_seconds: int) -> int:
-        key = f"loginfail:{user}"
+        key = self._fail_key(user)
         pipe = self.r.pipeline()
         pipe.incr(key)
         pipe.expire(key, lock_seconds)
@@ -85,4 +91,4 @@ class SessionStore:
         return int(n)
 
     async def login_succeeded(self, user: str) -> None:
-        await self.r.delete(f"loginfail:{user}")
+        await self.r.delete(self._fail_key(user))

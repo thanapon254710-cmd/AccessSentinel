@@ -18,6 +18,7 @@ GROUP_TOPICS = {
     "tgn-rt": ["escalations.realtime"],
     "tgn-bg": ["escalations.background"],
     "pdp": ["risk-scores", "group-scores"],
+    "incidents": ["pdp-decisions", "group-scores"],
 }
 
 

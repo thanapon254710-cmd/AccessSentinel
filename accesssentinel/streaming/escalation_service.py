@@ -44,6 +44,7 @@ class EscalationHandler:
         self.rt_topic, self.bg_topic = realtime_topic, background_topic
         self.scores_topic, self.resource_topic = scores_topic, resource_topic
         self.sweep_loader = sweep_loader
+        self.settings = None                      # runtime_settings.Watcher
         self._errors: List[str] = []
         self.stats = {"scores": 0, "resource_events": 0, "realtime": 0, "background": 0, "sweeps": 0}
 
@@ -72,6 +73,12 @@ class EscalationHandler:
         pass
 
     def tick(self) -> None:
+        from .. import runtime_settings as rs
+        eff = self.settings.poll() if self.settings is not None else None
+        if eff:
+            self.esc.cfg = rs.apply_escalation(self.esc.cfg, eff)
+            self.esc.rc = rs.apply_risk(self.esc.rc, eff)
+            log.info("runtime settings applied: %s", self.esc.config_snapshot())
         self._emit(self.esc.flush_realtime(), self.rt_topic, "realtime")
         if self.sweep_loader is not None and self.esc.sweep_due():
             info = self.esc.run_sweep(self.sweep_loader)
@@ -152,6 +159,8 @@ def main(argv=None) -> int:
     esc = Escalator(r, cfg, RiskConfig(), rng=random.Random())
     handler = EscalationHandler(esc, producer, topics["rt"], topics["bg"], topics["scores"], topics["res"],
                                 sweep_loader=lake_loader(lake, cfg))
+    from ..runtime_settings import Watcher
+    handler.settings = Watcher(r)
     group = "escalation"
     consumer = Consumer(consumer_config(s.kafka_bootstrap, group, client))
     dlq = DeadLetterQueue(Producer(producer_config(s.kafka_bootstrap, f"{client}-dlq")), group)

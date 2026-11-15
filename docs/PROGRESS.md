@@ -14,7 +14,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 6 Four-path escalation | Done (2026-11-11) — evaluated (synthetic), deployed, each path verified live |
 | 7 TGN | Done (2026-11-11) — two-stage TGN trained and evaluated (synthetic), deployed, live parity verified |
 | 8 PDP + enforcement | Done (2026-11-11) — sticky lifecycle, outbox audit, enforcement verified live |
-| 9 Feedback + dashboard | Not started |
+| 9 Feedback + dashboard | In progress — built and verified live; analyst confirmation in the UI pending (needs a sign-in) |
 | 10 Integration + experiments | Not started |
 
 ## Log
@@ -464,6 +464,115 @@ Not done / known limits:
 - Thresholds are the initial D3 values (theta_high) and the TGN's validation calibration (theta_coll), not
   calibrated to a target alert rate.
 
+### 2026-11-11 — Phase 9 (feedback and monitoring dashboard)
+
+Added:
+- **Incidents** (`incidents.py`, `streaming/incident_service.py`, consumer group `incidents`): opened from PDP
+  Block decisions (individual; collective incl. `evidence` transitions) and TGN groups above theta_coll;
+  release / expiry / policy-lifted update the per-user enforcement status. Idempotent by evidence id. One open
+  case per user (a repeat Block merges into the unreviewed incident) and per colluding group (re-scoring the same
+  group yields a new `group_id`, so records merge by seen `group_id` or member overlap within 24 h). Incidents
+  with `syn-*` users are `source = synthetic-replay`. PostgreSQL schema v3: `incidents`, `feedback`,
+  `settings_changes`.
+- **Dashboard API** (`services/api/`, FastAPI, port 8080): separate login for security staff only (roles
+  `security_analyst`, `security_admin`; accounts `analyst1`, `secadmin` seeded from `AS_ANALYST_PASSWORD`),
+  Argon2id, Redis sessions in their own namespace, cookie HttpOnly + SameSite=Strict, CSRF header required on
+  every mutation, login lockout, audit log, admin-only settings / catalog / model promotion, security headers +
+  CSP. Endpoints for every page; WebSocket `/ws/live` fed by a non-committing Kafka consumer (reads from
+  `latest`, never affects other groups); topic rates measured from Kafka end offsets.
+- **Dashboard UI** (`dashboard/`, React 18 + TypeScript + Vite, recharts, cytoscape): Overview, Access Activity,
+  Individual Risk, Collusion Detection (interactive user–resource graph from the live edge index, edges coloured
+  by the TGN's edge score vs tau_edge), Security Incidents (review, verdicts, release, missed-detection reports,
+  retraining-set view), System Monitoring, Settings (thresholds, escalation parameters incl. sampling rate gamma,
+  sensitivity catalog, app registration, model versions). Every number comes from backend state; synthetic
+  records are labelled. Built in a Node stage of `deploy/Dockerfile` and served by the `api` service.
+- **Analyst feedback**: a verdict writes a `feedback` row, closes / triages the incident and is published to Kafka
+  `analyst-feedback` (acknowledged before the API answers) -> HDFS. Window = incident activity window
+  (-15 min / +5 min).
+- **Retraining** (`ml/feedback_data.py`, `ml/retrain.py`): reads ONLY the HDFS `analyst-feedback` dataset; labels
+  from analyst verdicts (confirmed_malicious -> 1, false_positive / benign_explained -> 0; needs_more_info and
+  model outputs excluded). TCN / TGN fine-tune a copy of the live model on base synthetic data + feedback
+  (oversampled), re-calibrate, compare with the live model on the base test set and on held-out feedback; the
+  gate (base PR-AUC not more than 0.01 lower, feedback recall not lower, false-positive rate not higher) decides
+  `--promote-if-better`; otherwise the candidate waits for an admin. Refuses to train when the feedback labels
+  no data. Audit defect **D12 fixed** (`FeedbackLoop.flush()` no longer re-writes flushed records).
+- **Runtime settings** (`runtime_settings.py`): thresholds, PDP and escalation parameters in Redis with a
+  version counter; TCN workers, escalation and PDP services re-read them within ~5 s (validated, theta_low <
+  theta_high, history in PostgreSQL).
+- Compose services `incidents`, `api`; `scripts/smoke_dashboard.py`; `tests/test_dashboard.py` (20 tests).
+
+Verified live:
+- `smoke_dashboard.py` 30/30: alice (monitored user, correct password) refused; analyst signs in, cookie flags;
+  mutation without CSRF header -> 403; all 12 page endpoints answer; health redis/postgres/kafka/gateway ok, HDFS
+  reachable; feedback on a synthetic incident -> incident closed -> record in HDFS `analyst-feedback` -> in the
+  retraining dataset; analyst cannot change settings (403); invalid change rejected; admin changed Path B kappa
+  3 -> 4 -> 3, and the escalation service logged both values, TCN workers and PDP re-read the version.
+- Attack scenario (`smoke_pdp.py individual`, enforce mode) 9/9; the incident service opened / merged ivan's
+  case; its feedback window covers 46 of ivan's accesses in HDFS.
+- Regression (PDP in shadow mode, demo state reset): infra 4/4, gateway 29/29, streaming 10/10 + poison 3/3,
+  escalation A 1/1, C 3/3. Enforce mode restored.
+- `pytest -q tests` -> 148 passed, 4 skipped; `tsc --noEmit` clean; production build 973 kB JS (291 kB gzip).
+
+Found while verifying:
+- First backfill produced 28 incidents with duplicates (4 incidents for one synthetic group; 2 open incidents
+  for ivan). Fixed by the merge rules above; rebuilt from Kafka: 18 incidents.
+- **Incident windows used the PDP decision time.** Replayed synthetic events keep their original timestamps
+  (39 days earlier), so the first two smoke-test confirmations labelled zero accesses, and `retrain tcn` still
+  produced a candidate (fine-tuned on base data only). Fixed: PDP decision records carry the evidence's event
+  time (`basis.event_t`, `basis.event_window`), incidents use event time, release/expiry no longer stretch the
+  window, and retraining stops when feedback labels no data. That candidate was deleted. Incidents rebuilt from
+  decisions recorded before this fix still use decision time (equal to event time for live traffic).
+- The tools container did not mount `experiments/results`, so retraining reports were lost with the container;
+  mounted now.
+- `.env.example` was never in git: the `.env.*` ignore rule matched it, so a fresh clone could not follow the
+  setup guide. Un-ignored (it holds only `change-me` placeholders); `.env` stays ignored.
+
+Added later the same day (presentation scenario "a new user attacks"):
+- **User Accounts** page + API (`/api/accounts`, secadmin only for changes): create monitored accounts with a
+  role from the access catalog (no self-registration; security roles refused), deactivate / activate, reset
+  password; deactivate and reset end the user's gateway sessions through the internal revoke API; passwords
+  never logged (audit records only "generated" / "set by admin"). 3 tests.
+- `scripts/demo_new_user.py`: the full scenario on the live stack with a brand-new account;
+  `PRESENTATION_DEMO.md`: the demo script for the presentation.
+- Login audit fix: a failed login with an unrecognised user ID is audited as `unknown-user` and the lockout
+  counter is keyed by a hash. Before, the typed ID was logged, so a password typed into the User ID field was
+  stored in plain text. Found live: 3 such audit rows were redacted and the analyst password rotated. 1 test.
+
+Verified live with brand-new accounts (cold start, enforce mode):
+- Probing at 5 requests/s: normal work (8 requests at human pace) stayed Low; blocked after 8 and 11 attack
+  requests (1.7 s, 2.3 s; S_ind 0.63 >= 0.6, reason individual); session ended; re-login refused; incident
+  opened. 8/8.
+- Enumeration of allowed records at 20 requests/s: blocked after 429 requests (25.2 s).
+- Probing by hand (1 every 2.5 s): blocked after 3 attempts (7.5 s), but by the TGN (collective): earlier test
+  accounts had probed the same resources within the TGN's 1-hour window, and the TCN alone was at 0.53 (Medium)
+  at that point. Repeated an hour later in isolation (no other recent test activity): blocked after 4 attempts
+  (10.0 s) by the TCN alone, S_ind 0.94, reason individual. 8/8.
+- The first dry run reported a miss: the block arrived as session termination (401), not the 403 "suspended"
+  page my script waited for. The script now accepts either and confirms with the PDP decision.
+
+Sharing / running on other computers (2026-11-15):
+- The promoted TCN and TGN versions are now tracked in Git (`models/`, 2.5 MB; other versions stay local), so a
+  fresh copy runs without training.
+- Kafka, HDFS, PostgreSQL and Redis host ports are bound to 127.0.0.1 (Kafka and HDFS have no authentication);
+  only the gateway (8000) and the dashboard (8080) are reachable from the network.
+- `start.bat` / `start.ps1` (Windows) and `start.sh`: create `.env` with random secrets on first run, start the
+  stack, wait until healthy, print where the passwords are. `stop.bat`. `.gitattributes` pins their line
+  endings. Clean ZIPs are made with `git archive` (never contains `.env`).
+- Reason: a ZIP of the folder could not be started on another PC. Without `.env` (and its `COMPOSE_FILE`),
+  `docker compose` finds no configuration, and every `change-me` secret had to be replaced by hand.
+
+Pending:
+- Analyst confirmation of ivan's incident in the UI, followed by `retrain tcn` on it and a promote / roll-back
+  check through the Settings page. Not yet done: signing in needs the analyst password, which stays with the
+  user.
+
+Not done / known limits:
+- Live lists (activity, escalations, group scores, recent decisions) cover what the API has seen since it
+  started (ring buffers); history is in HDFS (per-user view on Individual Risk).
+- No multi-factor authentication or SSO for the dashboard; one shared seed password for the two demo security
+  accounts (development only).
+- Retraining is triggered manually (CLI), not scheduled.
+
 ### Remaining
 
-Phases 9–10 of `docs/PHASE1_AUDIT.md` §7. Open audit defect: D12's `FeedbackLoop.flush()` re-flush (Phase 9).
+Phase 9: analyst confirmation in the UI (see Pending above). Phase 10 of `docs/PHASE1_AUDIT.md` §7.

@@ -29,7 +29,7 @@ from ...settings import Settings
 from .access import BadRequest, Catalog, MethodNotAllowed, resolve
 from .decisions import active_block
 from .pages import home_page, login_page, message_page
-from .sessions import SessionStore
+from .sessions import UNKNOWN_USER, SessionStore
 
 COOKIE = "as_session"
 USER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.@-]{0,127}$")
@@ -187,14 +187,15 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
         if not (isinstance(username, str) and USER_RE.match(username) and isinstance(password, str)
                 and 1 <= len(password) <= 256):
             return fail(400, "Enter a valid user ID and password.")
-        if await sessions.login_locked(username, settings.login_max_failures):
-            await audit(username, "login_locked", ip=ip)
-            return fail(429, "Too many failed attempts. Try again later.")
         user = await run_in_threadpool(store.get_user, username)
+        actor = user.id if user else UNKNOWN_USER       # an unrecognised user ID may be a password typed in the wrong field
+        if await sessions.login_locked(username, settings.login_max_failures):
+            await audit(actor, "login_locked", ip=ip)
+            return fail(429, "Too many failed attempts. Try again later.")
         ok = await run_in_threadpool(verify_password, user.password_hash if user else None, password)
         if not ok or not user.is_active:
             n = await sessions.login_failed(username, settings.login_lock_seconds)
-            await audit(username, "login_failed", ip=ip, detail={"consecutive_failures": n})
+            await audit(actor, "login_failed", ip=ip, detail={"consecutive_failures": n})
             return fail(401, "Invalid user ID or password.")
         if await active_block(redis, user.id):
             await audit(user.id, "login_refused_blocked", ip=ip)

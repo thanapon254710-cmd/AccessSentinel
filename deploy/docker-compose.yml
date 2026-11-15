@@ -31,7 +31,7 @@ services:
   kafka:
     image: apache/kafka:3.9.0
     hostname: kafka
-    ports: ["9092:9092"]
+    ports: ["127.0.0.1:9092:9092"]   # local-only: Kafka has no authentication
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -71,7 +71,7 @@ services:
     image: apache/hadoop:3.4.1
     hostname: namenode
     command: ["hdfs", "namenode"]
-    ports: ["9870:9870"]            # NameNode UI + WebHDFS
+    ports: ["127.0.0.1:9870:9870"]  # NameNode UI + WebHDFS; local-only (no authentication)
     env_file: [./hadoop.env]
     environment:
       ENSURE_NAMENODE_DIR: /data/name   # formats the NameNode on first start only
@@ -89,7 +89,7 @@ services:
     image: apache/hadoop:3.4.1
     hostname: datanode
     command: ["hdfs", "datanode"]
-    ports: ["9864:9864"]            # WebHDFS data transfer (redirect target)
+    ports: ["127.0.0.1:9864:9864"]  # WebHDFS data transfer (redirect target); local-only
     env_file: [./hadoop.env]
     volumes: [hdfs-data:/data]
     mem_limit: 768m
@@ -106,7 +106,7 @@ services:
   # ---------------------------------------------------------------- PostgreSQL (operational state)
   postgres:
     image: postgres:16.4-alpine
-    ports: ["5432:5432"]
+    ports: ["127.0.0.1:5432:5432"]   # local-only
     environment:
       POSTGRES_DB: ${AS_POSTGRES_DB:-accesssentinel}
       POSTGRES_USER: ${AS_POSTGRES_USER:-accesssentinel}
@@ -123,7 +123,7 @@ services:
   # ---------------------------------------------------------------- Redis (shared state, decision cache)
   redis:
     image: redis:7.4.1-alpine
-    ports: ["6379:6379"]
+    ports: ["127.0.0.1:6379:6379"]   # local-only
     environment:
       REDISCLI_AUTH: ${AS_REDIS_PASSWORD:?Set AS_REDIS_PASSWORD in .env}
     # noeviction: monitoring state must never be dropped silently when memory is full.
@@ -178,7 +178,7 @@ services:
     <<: *app
     command: ["uvicorn", "--factory", "accesssentinel.services.gateway.main:build", "--host", "0.0.0.0",
               "--port", "8000", "--no-access-log"]
-    ports: ["8000:8000"]
+    ports: ["8000:8000"]             # gateway: reachable from other computers on the network
     volumes: [gateway-spool:/app/accesssentinel_data/spool]
     mem_limit: 384m
     healthcheck: *py-health
@@ -293,11 +293,39 @@ services:
       redis: {condition: service_healthy}
       gateway: {condition: service_healthy}
 
+  # ---------------------------------------------------------------- feedback and monitoring (Phase 9)
+  incidents:                        # pdp-decisions + group-scores -> incidents table for analyst review
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.incident_service"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      db-init: {condition: service_completed_successfully}
+
+  api:                              # dashboard API + built React dashboard on http://localhost:8080
+    <<: *app
+    command: ["uvicorn", "--factory", "accesssentinel.services.api.main:build", "--host", "0.0.0.0",
+              "--port", "8080", "--no-access-log"]
+    ports: ["8080:8080"]             # dashboard: reachable from other computers on the network
+    volumes: [../models:/app/models]                        # rw: admins promote model versions from the UI
+    mem_limit: 768m
+    healthcheck:
+      <<: *py-health
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/healthz', timeout=3)"]
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      db-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+      namenode: {condition: service_healthy}
+
   # ---------------------------------------------------------------- one-off tooling container
   tools:
     <<: *app
     profiles: [tools]               # not started by `up`; use `docker compose run --rm tools ...`
-    volumes: [../models:/app/models:ro]
+    volumes:                                                # rw: retraining writes candidates + reports
+      - ../models:/app/models
+      - ../experiments/results:/app/experiments/results
     command: ["python", "scripts/check_infra.py"]
     depends_on:
       kafka: {condition: service_healthy}

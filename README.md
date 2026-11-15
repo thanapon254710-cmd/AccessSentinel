@@ -1,7 +1,10 @@
 # AccessSentinel — Deliverable 3 reference implementation
 
+> New here? Start with the plain-language overview: **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**.
+
 Implements the D3 architecture (Steps 1–10) as a runnable, tested Python package.
-Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts (see "Not real yet").
+The deployed Docker stack uses real Kafka, HDFS, PostgreSQL and Redis; the in-process reference pipeline
+(`pipeline.py`, `run_demo.py`) uses stand-ins that keep the same contracts (see "Not real yet").
 
 | D3 step / component | Module |
 |---|---|
@@ -13,7 +16,7 @@ Kafka and HDFS are replaced by in-process stand-ins that keep the same contracts
 | Step 6 four-path escalation (Eq. 4) | `escalation.py` (in-process); deployed: `escalation_engine.py`, `streaming/escalation_service.py`; evaluation: `ml/escalation_eval.py` |
 | Step 7 graph (users/resources/apps; access, membership, co-access) + TGN | `tgn.py` (model); in-process: `graph.py`; deployed: `ml/tgn_graph.py`, `ml/tgn_train.py`, `ml/train_tgn.py`, `ml/tgn_registry.py`, `streaming/graph_index.py`, `streaming/tgn_worker.py` |
 | Step 8 PDP Allow/Block, request- and session-time enforcement | `pdp.py`, `gateway.py` (in-process); deployed: `pdp_engine.py`, `streaming/pdp_service.py`, `pdp_admin.py`, gateway decision cache |
-| Step 9 feedback loop (analyst-verified only) | `feedback.py` |
+| Step 9 feedback loop (analyst-verified only), dashboard | `feedback.py` (in-process); deployed: `incidents.py` + `streaming/incident_service.py`, `services/api/` (dashboard API), `dashboard/` (React + TypeScript UI), `ml/feedback_data.py`, `ml/retrain.py`, `runtime_settings.py` |
 | Step 10 capacity equations (8)–(12) | `scaling.py` |
 | Orchestration | `pipeline.py` |
 | Synthetic data with ground truth | `simulator.py` (v1, in-process demo), `datasets/synth.py` (v2, training/evaluation) |
@@ -28,6 +31,46 @@ All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the p
       docker compose up -d --build
       docker compose run --rm tools # live check: Kafka, HDFS, PostgreSQL, Redis
       # gateway + 3 protected demo apps: http://localhost:8000 (users/password: docs/SETUP_WINDOWS.md §5)
+      # security operations dashboard:   http://localhost:8080 (analyst1 / secadmin, AS_ANALYST_PASSWORD)
+
+## Run on another computer
+
+Everything runs in Docker, so another computer needs only **Docker Desktop** (Windows, macOS or Linux; about
+8 GB of memory for Docker, about 10 GB of free disk). The trained, promoted models are included (`models/`,
+about 2.5 MB), so no training is needed.
+
+**Easiest (Windows):** unzip the folder, start Docker Desktop, double-click **`start.bat`**. On first run it
+creates `.env` with random passwords, builds and starts everything (10-20 minutes the first time), waits until
+all services are healthy and opens the dashboard. `stop.bat` stops it. macOS/Linux: `sh start.sh`.
+
+**Sharing as a ZIP:** make the ZIP from Git, not by zipping the folder, so your own `.env` (your passwords),
+`.venv`, `node_modules` and local data are never included:
+
+```powershell
+git archive --format=zip -o AccessSentinel.zip HEAD
+```
+
+**Manually, from GitHub:**
+
+```powershell
+git clone https://github.com/thanapon254710-cmd/AccessSentinel.git
+cd AccessSentinel
+copy .env.example .env          # macOS/Linux: cp .env.example .env
+# edit .env: replace every change-me with your own random value
+docker compose up -d --build    # first time 10-20 min (downloads images, builds the app and dashboard)
+docker compose ps               # wait until every service is healthy
+```
+
+Then open http://localhost:8080 (dashboard: `analyst1` / `secadmin`, password `AS_ANALYST_PASSWORD`) and
+http://localhost:8000 (protected apps: demo users such as `alice`, password `AS_DEMO_USER_PASSWORD`). The new
+installation starts empty (no history, incidents or extra accounts); the demo in `PRESENTATION_DEMO.md` works
+the same way. Check it with `docker compose run --rm -T tools python scripts/smoke_dashboard.py`.
+
+**Using one running installation from other computers on the same network:** open `http://<that PC's IPv4
+address>:8080` and `:8000` (find the address with `ipconfig`; allow Docker through the firewall on private
+networks only). Only the gateway (8000) and the dashboard (8080) are reachable from the network. Kafka, HDFS,
+PostgreSQL and Redis listen on `127.0.0.1` only, because Kafka and HDFS have no authentication. Do not expose
+8000/8080 to the internet: this is a research prototype served over plain HTTP.
 
 ## Run
     pip install -r requirements.txt   # python>=3.10; torch CPU build is enough
@@ -67,11 +110,8 @@ They plug into the same pipeline (`AccessSentinel(..., store=..., broker=...)`).
 
    `--kafka` and `--hdfs` are independent; omit either to keep the in-process stand-in for that part.
 
-**Sta**Status (2026-11-11):** both adapters have now been run against the live Docker stack by `scripts/check_infra.py`
-(Kafka: per-user partitioning/order and resource-view co-location; HDFS: Parquet write/read, compaction, feedback write).
-The full `run_demo.py --kafka/--hdfs` pipeline has not yet been run live; that is part of Phase 4.
-
-: user-keyed partitioning relies on Kafka's default key partitioner; offsets auto-commit, which can commit before
-processing finishes (a crash may skip events; fixed in Phase 4, audit D4). The keyed TCN window state is still in-process; with several consumer processes, each owns the
-partitions (users) Kafka assigns it, but state is lost on restart until you move it to Flink/Kafka Streams/Redis.
-Without a state backend, the first events after a restart are scored on short windows.
+**Status:** both adapters were run against the live Docker stack by `scripts/check_infra.py` (Kafka: per-user
+partitioning/order and resource-view co-location; HDFS: Parquet write/read, compaction, feedback write). The
+deployed system (Phases 4-9) uses its own consumer framework with manual offset commits (audit D4 fixed) and keeps
+TCN window state in Redis, so restarts do not lose it; see `docs/PROGRESS.md`. In `run_demo.py --kafka/--hdfs`
+the TCN window state is still in-process.

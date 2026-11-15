@@ -1,0 +1,57 @@
+{
+  "version": "tgn-20261111T104626Z-ccc61d",
+  "created_at": 1794393988.3638854,
+  "tau_edge": 0.3,
+  "theta_coll": 0.9,
+  "data": {
+    "source": "SYNTHETIC (accesssentinel.datasets.synth v2, collusion_study preset)",
+    "fingerprint": "ccc61d9776e34709",
+    "events": 347914,
+    "users": 700,
+    "groups": {
+      "train": 11,
+      "val": 4,
+      "test": 8
+    },
+    "familiar_groups": 6,
+    "team_meetings": 34,
+    "sets": {
+      "benign_train": {
+        "graphs": 400,
+        "colluding_seed": 0
+      },
+      "train": {
+        "graphs": 838,
+        "colluding_seed": 155
+      },
+      "val": {
+        "graphs": 358,
+        "colluding_seed": 52
+      },
+      "test": {
+        "graphs": 690,
+        "colluding_seed": 64
+      }
+    }
+  },
+  "calibration": {
+    "val_f1": 0.68,
+    "tau_edge": 0.3,
+    "theta_coll": 0.9
+  },
+  "test_summary": {
+    "n": 690,
+    "positives": 64,
+    "roc_auc": 0.843325678913738,
+    "pr_auc": 0.5676661921708092,
+    "tp": 27,
+    "fp": 15,
+    "fn": 37,
+    "tn": 611,
+    "precision": 0.6428571428571429,
+    "recall": 0.421875,
+    "f1": 0.5094339622641509,
+    "fpr": 0.023961661341853034
+  },
+  "git_commit": "5402278"
+}

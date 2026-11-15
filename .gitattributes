@@ -1,0 +1,4 @@
+# Line endings that must survive any checkout or ZIP
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.sh  text eol=lf

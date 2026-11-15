@@ -11,7 +11,8 @@ from sqlalchemy import (JSON, BigInteger, Boolean, CheckConstraint, DateTime, Fl
                         Integer, String, Text, UniqueConstraint, func)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_VERSION = 2              # v2 (Phase 8): policy_blocks, pdp_decisions
+SCHEMA_VERSION = 3              # v2 (Phase 8): policy_blocks, pdp_decisions; v3 (Phase 9): incidents, feedback,
+                                #   settings_changes
 
 
 class Base(DeclarativeBase):
@@ -106,6 +107,59 @@ class PdpDecision(Base):
     expires_at: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     record: Mapped[dict] = mapped_column(JSON, nullable=False)
+
+
+class Incident(Base):
+    """A detection that needs analyst review: one per individual Block episode, one per TGN group."""
+    __tablename__ = "incidents"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    dedup_key: Mapped[str] = mapped_column(String(200), nullable=False, unique=True)
+    kind: Mapped[str] = mapped_column(String(16), nullable=False, index=True)        # individual | collective
+    severity: Mapped[str] = mapped_column(String(12), nullable=False)                 # medium | high | critical
+    status: Mapped[str] = mapped_column(String(24), nullable=False, index=True)       # open | triaged | closed
+    verdict: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)         # analyst verdict
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    users: Mapped[list] = mapped_column(JSON, nullable=False)
+    group_id: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    first_seen: Mapped[float] = mapped_column(Float, nullable=False)
+    last_seen: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[float] = mapped_column(Float, nullable=False, index=True)
+    updated_at: Mapped[float] = mapped_column(Float, nullable=False)
+    evidence: Mapped[list] = mapped_column(JSON, nullable=False)                      # decisions / scores / paths
+    enforcement: Mapped[dict] = mapped_column(JSON, nullable=False)                   # per user: blocked/shadow/...
+    max_s_ind: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    s_coll: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    source: Mapped[str] = mapped_column(String(24), nullable=False)                  # live | synthetic-replay
+    assigned_to: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+
+
+class Feedback(Base):
+    """Analyst feedback. The ONLY source of supervised labels for retraining (D3 Step 9)."""
+    __tablename__ = "feedback"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    incident_id: Mapped[Optional[str]] = mapped_column(String(32), nullable=True, index=True)
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)          # incident_review | missed_detection
+    scope: Mapped[str] = mapped_column(String(16), nullable=False)         # individual | collective
+    verdict: Mapped[str] = mapped_column(String(32), nullable=False)       # confirmed_malicious | false_positive | ...
+    users: Mapped[list] = mapped_column(JSON, nullable=False)
+    window_t0: Mapped[float] = mapped_column(Float, nullable=False)
+    window_t1: Mapped[float] = mapped_column(Float, nullable=False)
+    note: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    analyst: Mapped[str] = mapped_column(String(128), nullable=False)
+    created_at: Mapped[float] = mapped_column(Float, nullable=False, index=True)
+    group_id: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    source: Mapped[str] = mapped_column(String(24), nullable=False, default="live")
+
+
+class SettingsChange(Base):
+    """History of runtime setting changes made through the dashboard."""
+    __tablename__ = "settings_changes"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    key: Mapped[str] = mapped_column(String(64), nullable=False)
+    old_value: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    new_value: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    changed_by: Mapped[str] = mapped_column(String(128), nullable=False)
+    changed_at: Mapped[float] = mapped_column(Float, nullable=False)
 
 
 class AuditLog(Base):

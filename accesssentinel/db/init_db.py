@@ -33,6 +33,20 @@ def create_schema(engine: Engine) -> None:
             info.version = SCHEMA_VERSION
 
 
+def seed_security_users(engine: Engine, password: str, reset_passwords: bool = False) -> int:
+    """Dashboard accounts (security_analyst / security_admin); created once, password from AS_ANALYST_PASSWORD."""
+    n = 0
+    with Session(engine) as db, db.begin():
+        for uid, name, role, dept in demo.SECURITY_USERS:
+            user = db.get(User, uid)
+            if user is None:
+                db.add(User(id=uid, display_name=name, role=role, department=dept, password_hash=hash_password(password)))
+                n += 1
+            elif reset_passwords:
+                user.password_hash = hash_password(password)
+    return n
+
+
 def seed_demo(engine: Engine, password: str, reset_passwords: bool = False) -> dict:
     """Upsert demo apps/resources, replace demo-role ACL rows, create demo users. Returns counts."""
     counts = dict(apps=0, resources=0, acl=0, users_created=0, users_reset=0)
@@ -98,6 +112,8 @@ def main(argv=None) -> int:
             return 2
         counts = seed_demo(engine, s.secret("demo_user_password"), args.reset_demo_passwords)
         print("demo catalog:", ", ".join(f"{k}={v}" for k, v in counts.items()))
+        if s.analyst_password is not None:
+            print("security users created:", seed_security_users(engine, s.secret("analyst_password"), args.reset_demo_passwords))
     return 0
 
 

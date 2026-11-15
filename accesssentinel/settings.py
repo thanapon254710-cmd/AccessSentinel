@@ -58,6 +58,7 @@ class Settings(BaseSettings):
     catalog_refresh_seconds: float = 30.0
     spool_dir: str = "accesssentinel_data/spool"    # local fallback when Kafka cannot accept an event
     demo_user_password: Optional[SecretStr] = None  # seed only; refused when environment=prod
+    analyst_password: Optional[SecretStr] = None    # seed of the dashboard accounts analyst1 / secadmin
 
     # --- Stream processing and history (Phase 4) ---------------------------------------------------
     history_backend: str = "hdfs"                   # hdfs | local (local = development-only fallback)
@@ -137,7 +138,8 @@ class Settings(BaseSettings):
     def redacted(self) -> dict:
         """Settings safe to print/log (secrets masked)."""
         out = self.model_dump()
-        for k in ("postgres_password", "redis_password", "upstream_token", "internal_token", "demo_user_password"):
+        for k in ("postgres_password", "redis_password", "upstream_token", "internal_token", "demo_user_password",
+                  "analyst_password"):
             out[k] = "***" if out.get(k) else None
         return out
 

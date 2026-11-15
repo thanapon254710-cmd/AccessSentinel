@@ -76,6 +76,7 @@ class PdpHandler:
         self.pdp, self.p, self.out_topic, self.policy, self.revoker = pdp, producer, out_topic, policy, revoker
         self.scores_topic, self.group_topic, self.poll, self.clock = scores_topic, group_topic, poll_seconds, clock
         self._next_policy = 0.0
+        self.settings = None                      # runtime_settings.Watcher (dashboard Settings page)
         self._errors: List[str] = []
         self.stats = {"risk_scores": 0, "group_scores": 0, "decisions_published": 0, "sessions_revoked": 0,
                       "revoke_failures": 0, "policy_errors": 0}
@@ -102,7 +103,18 @@ class PdpHandler:
     def reset(self) -> None:
         pass
 
+    def apply_settings(self) -> None:
+        from .. import runtime_settings as rs
+        eff = self.settings.poll() if self.settings is not None else None
+        if eff:
+            self.pdp.rc = rs.apply_risk(self.pdp.rc, eff)
+            self.pdp.cfg = rs.apply_pdp(self.pdp.cfg, eff)
+            self.pdp.theta_override = eff["pdp.theta_coll"]
+            log.info("runtime settings applied: theta_high=%s theta_coll=%s block_ttl=%s", self.pdp.rc.theta_high,
+                     self.pdp.theta_override or "model-calibrated", self.pdp.cfg.block_ttl)
+
     def tick(self) -> None:
+        self.apply_settings()
         now = self.clock()
         if self.policy is not None and now >= self._next_policy:
             self._next_policy = now + self.poll
@@ -176,6 +188,8 @@ def main() -> int:
     h = PdpHandler(pdp, Producer(producer_config(s.kafka_bootstrap, client)), topic_name(PDP_DECISIONS, s.kafka_topic_prefix),
                    SqlPolicySource(make_engine(s)), revoker, topic_name(RISK_SCORES, s.kafka_topic_prefix),
                    topic_name(GROUP_SCORES, s.kafka_topic_prefix), pdp.cfg.policy_poll_seconds)
+    from ..runtime_settings import Watcher
+    h.settings = Watcher(r)
     group = "pdp"
     sc = StreamConsumer(Consumer(consumer_config(s.kafka_bootstrap, group, client)),
                         [topic_name(RISK_SCORES, s.kafka_topic_prefix), topic_name(GROUP_SCORES, s.kafka_topic_prefix)], h,

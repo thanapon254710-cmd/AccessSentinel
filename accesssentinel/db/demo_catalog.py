@@ -69,6 +69,14 @@ USERS: List[Tuple[str, str, str, str]] = [
 ]
 
 
+# Security staff for the analyst dashboard (Phase 9). Their roles have no application grants (default deny).
+SECURITY_USERS: List[Tuple[str, str, str, str]] = [
+    ("analyst1", "Analyst One", "security_analyst", "Security Operations"),
+    ("secadmin", "Security Admin", "security_admin", "Security Operations"),
+]
+SECURITY_ROLES = ("security_analyst", "security_admin")
+
+
 def acl_rows() -> List[Tuple[str, str, str, str]]:
     """[(app, resource, role, permission)], deduplicated and sorted."""
     known = {(a, r) for a, rs in RESOURCES.items() for r, _, _ in rs}

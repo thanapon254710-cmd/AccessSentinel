@@ -63,7 +63,8 @@ class PolicyDecisionPoint:
             self._stat("override_suppressed")
             return []
         basis = {"source": "tcn", "score_id": rec.get("score_id"), "s_ind": s, "trigger": rec.get("trigger"),
-                 "model_version": rec.get("model_version"), "theta_high": self.rc.theta_high}
+                 "model_version": rec.get("model_version"), "theta_high": self.rc.theta_high,
+                 "event_t": rec.get("t")}                  # event time of the scored access (incident window)
         return self._block(rec["u"], "individual", basis, ttl=self.cfg.block_ttl, s_ind=s)
 
     def on_group_score(self, rec: dict) -> List[dict]:
@@ -76,7 +77,8 @@ class PolicyDecisionPoint:
             return []
         basis = {"source": "tgn", "score_id": rec.get("score_id"), "s_coll": float(rec["s_coll"]),
                  "group_id": rec.get("group_id"), "members": rec.get("members"), "seed": rec["u"],
-                 "theta_coll": theta, "model_version": rec.get("model_version")}
+                 "theta_coll": theta, "model_version": rec.get("model_version"),
+                 "event_window": rec.get("window")}       # TGN neighbourhood window, event time
         out = []
         for m in rec.get("members") or [rec["u"]]:          # D3: the decision applies to every member of g(u)
             if self._overridden(m, now):

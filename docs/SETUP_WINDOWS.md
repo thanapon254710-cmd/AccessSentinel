@@ -32,7 +32,7 @@ copy .env.example .env
 ```
 
 Open `.env` and replace every `change-me` value (`AS_POSTGRES_PASSWORD`, `AS_REDIS_PASSWORD`, `AS_UPSTREAM_TOKEN`,
-`AS_INTERNAL_TOKEN`, `AS_DEMO_USER_PASSWORD`) with random strings, for example:
+`AS_INTERNAL_TOKEN`, `AS_DEMO_USER_PASSWORD`, `AS_ANALYST_PASSWORD`) with random strings, for example:
 
 ```powershell
 python -c "import secrets; print(secrets.token_urlsafe(24))"
@@ -76,6 +76,11 @@ Check status:
 ```powershell
 docker compose ps
 ```
+
+**Network exposure.** Only the gateway (8000) and the dashboard (8080) accept connections from other computers.
+Kafka, HDFS, PostgreSQL and Redis are bound to `127.0.0.1` (Kafka and HDFS have no authentication). Other
+computers on your network can use `http://<your IPv4 address>:8080` and `:8000`; allow Docker through Windows
+Firewall for private networks only.
 
 ## 4. Verify the infrastructure
 
@@ -228,6 +233,49 @@ docker compose run --rm tools python scripts/reset_demo_state.py --all-demo
 
 Live enforcement checks: `docker compose run --rm -T tools python scripts/smoke_pdp.py individual` (also
 `expiry`, `policy`, `group`).
+
+### Security operations dashboard (Phase 9)
+
+Open **http://localhost:8080**. Only security staff can sign in; monitored users (alice, bob, …) are refused:
+
+| User | Role | Can |
+|---|---|---|
+| `analyst1` | security_analyst | review incidents, give feedback, release / block users, view everything |
+| `secadmin` | security_admin | the above, plus change settings, edit the sensitivity catalog, register apps, promote models |
+
+Both passwords are `AS_ANALYST_PASSWORD` from `.env` (set it before the first `docker compose up`; `db-init`
+creates the accounts). To change it later: edit `.env`, then
+`docker compose run --rm tools python -m accesssentinel.db.init_db --seed-demo --reset-demo-passwords`.
+
+Pages: Overview, Access Activity (live), Individual Risk, Collusion Detection (interactive user–resource graph),
+Security Incidents (review + feedback), System Monitoring, User Accounts, Settings.
+
+**User Accounts** (secadmin): create monitored employee accounts (role from the access catalog; password set by
+the admin or generated and shown once), deactivate them or reset their password. Deactivation and reset end the
+user's open sessions at the gateway. There is deliberately no self-registration, and security accounts cannot be
+created there. A new account can sign in at the gateway immediately; its monitoring starts with no history.
+
+Presentation scenario (new user -> normal work -> attack -> blocked): `PRESENTATION_DEMO.md`, or automated:
+`docker compose run --rm -T tools python scripts/demo_new_user.py`. Records of synthetic replay users (`syn-*`)
+are labelled "synthetic". Live lists (activity, escalations, group scores, recent decisions) start empty when
+the `api` service starts: they show what Kafka delivers from then on.
+
+Feedback and retraining (only analyst verdicts are labels; model outputs never are):
+
+```powershell
+docker compose run --rm tools python -m accesssentinel.ml.retrain dataset    # what the next retraining would use
+docker compose run --rm tools python -m accesssentinel.ml.retrain tcn        # candidate + gate report, not promoted
+docker compose run --rm tools python -m accesssentinel.ml.retrain tcn --promote-if-better
+```
+
+Reports go to `experiments/results/retrain-*.md`. Promote or roll back a version on the Settings page (admin);
+workers hot-reload within ~30 s. Live checks: `docker compose run --rm -T tools python scripts/smoke_dashboard.py`.
+
+Dashboard development with hot reload (needs Node.js 20+ and the `api` service running):
+
+```powershell
+cd dashboard; npm ci; npm run dev     # http://localhost:5173, proxies /api and /ws to :8080
+```
 
 ## 6. Host-side Python environment (tests, training)
 

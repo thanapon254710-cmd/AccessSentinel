@@ -24,6 +24,7 @@ import logging
 import os
 import socket
 import time
+from dataclasses import replace
 from typing import Callable, Dict, List, Optional
 
 from ..config import RiskConfig
@@ -73,6 +74,7 @@ class TcnWorkerHandler:
         self.recheck_s = recheck_seconds if recheck_seconds is not None else self.rc.t_recheck
         self.live_window, self.L, self.worker_id, self.clock = live_window, L, worker_id, clock
         self._errors: List[str] = []
+        self.settings = None                      # runtime_settings.Watcher
         self.stats = {"scored": 0, "skipped_redelivered": 0, "rechecks": 0, "high": 0, "medium": 0, "low": 0,
                       "last_batch_ms": 0.0}
 
@@ -132,8 +134,19 @@ class TcnWorkerHandler:
         return []
 
     # ------------------------------------------------------------------ medium-tier re-scoring
+    def apply_settings(self) -> None:
+        from .. import runtime_settings as rs
+        eff = self.settings.poll() if self.settings is not None else None
+        if eff:
+            self.rc = replace(self.rc, theta_low=eff["risk.theta_low"], theta_high=eff["risk.theta_high"])
+            if "risk.t_recheck" in rs.explicit(self.r):          # env overrides stay unless an operator set one
+                self.recheck_s = eff["risk.t_recheck"]
+            log.info("runtime settings applied: theta_low=%s theta_high=%s recheck=%ss", self.rc.theta_low,
+                     self.rc.theta_high, self.recheck_s)
+
     def tick(self, max_users: int = 200) -> int:
         """Re-score Medium users whose T_recheck elapsed (claimed atomically: ZPOPMIN, not-due pushed back)."""
+        self.apply_settings()
         now = self.clock()
         popped = self.r.zpopmin(RECHECK, max_users)
         due = [m for m, sc in popped if sc <= now]
@@ -229,6 +242,8 @@ def main() -> int:
     handler = TcnWorkerHandler(models, r, Producer(producer_config(s.kafka_bootstrap, worker_id)),
                                topic_name(RISK_SCORES, s.kafka_topic_prefix), RiskConfig(), s.tcn_recheck_seconds,
                                s.tcn_live_window_seconds, worker_id=worker_id)
+    from ..runtime_settings import Watcher
+    handler.settings = Watcher(r)
     consumer = Consumer(consumer_config(s.kafka_bootstrap, group, worker_id))
     dlq = DeadLetterQueue(Producer(producer_config(s.kafka_bootstrap, f"{worker_id}-dlq")), group)
     sc = StreamConsumer(consumer, [topic_name(ACCESS_EVENTS, s.kafka_topic_prefix)], handler, dlq,

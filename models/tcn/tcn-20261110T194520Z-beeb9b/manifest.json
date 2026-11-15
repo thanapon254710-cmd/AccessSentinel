@@ -1,0 +1,181 @@
+{
+  "version": "tcn-20261110T194520Z-beeb9b",
+  "created_at": 1794339931.1414356,
+  "data": {
+    "source": "SYNTHETIC (accesssentinel.datasets.synth v2)",
+    "fingerprint": "beeb9bffdb1d7160",
+    "events": 132881,
+    "users": 260,
+    "synth_config": {
+      "n_users": 260,
+      "days": 28,
+      "start": "2026-09-07",
+      "split_days": [
+        18,
+        4,
+        6
+      ],
+      "seed": 7,
+      "role_mix": {
+        "staff": 0.34,
+        "hr_manager": 0.1,
+        "finance_analyst": 0.13,
+        "legal": 0.1,
+        "executive": 0.07,
+        "auditor": 0.12,
+        "it_admin": 0.14
+      },
+      "attacks": {
+        "compromised_account": [
+          5,
+          2,
+          3
+        ],
+        "insider_exfiltration": [
+          5,
+          2,
+          4
+        ],
+        "bac_probe": [
+          5,
+          2,
+          3
+        ],
+        "low_and_slow": [
+          4,
+          1,
+          3
+        ]
+      },
+      "collusion_groups": {
+        "coordinated_collection": [
+          3,
+          1,
+          2
+        ],
+        "split_exfiltration": [
+          2,
+          1,
+          2
+        ]
+      },
+      "group_size": 3,
+      "max_attacker_share_per_role": 0.25,
+      "events_per_day_median": 22.0,
+      "office_subnets": 5
+    },
+    "splits": {
+      "train": {
+        "windows": 91908,
+        "positives": 1233,
+        "from": "2026-09-07",
+        "to_exclusive": "2026-09-25"
+      },
+      "val": {
+        "windows": 13768,
+        "positives": 465,
+        "from": "2026-09-25",
+        "to_exclusive": "2026-09-29"
+      },
+      "test": {
+        "windows": 27205,
+        "positives": 854,
+        "from": "2026-09-29",
+        "to_exclusive": "2026-10-05"
+      }
+    }
+  },
+  "training": {
+    "best_epoch": 3,
+    "best_val_pr_auc": 0.9928851391924779,
+    "epochs_max": 25,
+    "patience": 5,
+    "seed": 0,
+    "platt": [
+      1.0723940134048462,
+      1.840501070022583
+    ],
+    "early_stopping_metric": "val PR-AUC"
+  },
+  "test_summary": {
+    "tcn": {
+      "n": 27205,
+      "positives": 854,
+      "roc_auc": 0.9895550093553279,
+      "pr_auc": 0.9165620470965491,
+      "at_0.4": {
+        "tp": 791,
+        "fp": 533,
+        "tn": 25818,
+        "fn": 63,
+        "precision": 0.5974320241691843,
+        "recall": 0.9262295081967213,
+        "f1": 0.7263544536271808,
+        "fpr": 0.020226936359151456
+      },
+      "at_0.6": {
+        "tp": 787,
+        "fp": 450,
+        "tn": 25901,
+        "fn": 67,
+        "precision": 0.6362166531932094,
+        "recall": 0.9215456674473068,
+        "f1": 0.7527498804399809,
+        "fpr": 0.017077150772266708
+      }
+    },
+    "baseline_rule": {
+      "n": 27205,
+      "positives": 854,
+      "roc_auc": 0.9444186067800067,
+      "pr_auc": 0.6336764516193011,
+      "at_0.4": {
+        "tp": 109,
+        "fp": 5,
+        "tn": 26346,
+        "fn": 745,
+        "precision": 0.956140350877193,
+        "recall": 0.12763466042154567,
+        "f1": 0.22520661157024796,
+        "fpr": 0.0001897461196918523
+      },
+      "at_0.6": {
+        "tp": 109,
+        "fp": 3,
+        "tn": 26348,
+        "fn": 745,
+        "precision": 0.9732142857142857,
+        "recall": 0.12763466042154567,
+        "f1": 0.2256728778467909,
+        "fpr": 0.00011384767181511138
+      }
+    },
+    "baseline_logreg_last_event": {
+      "n": 27205,
+      "positives": 854,
+      "roc_auc": 0.9898161880013441,
+      "pr_auc": 0.8862601963320612,
+      "at_0.4": {
+        "tp": 727,
+        "fp": 448,
+        "tn": 25903,
+        "fn": 127,
+        "precision": 0.6187234042553191,
+        "recall": 0.8512880562060889,
+        "f1": 0.716609167077378,
+        "fpr": 0.017001252324389968
+      },
+      "at_0.6": {
+        "tp": 713,
+        "fp": 331,
+        "tn": 26020,
+        "fn": 141,
+        "precision": 0.6829501915708812,
+        "recall": 0.8348946135831382,
+        "f1": 0.7513171759747103,
+        "fpr": 0.012561193123600623
+      }
+    }
+  },
+  "git_commit": "a862392"
+}
