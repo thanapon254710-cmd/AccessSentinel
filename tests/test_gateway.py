@@ -116,7 +116,8 @@ class HostRouter(httpx.AsyncBaseTransport):
 @pytest.fixture
 def gw():
     settings = Settings(_env_file=None, upstream_token="u" * 32, internal_token="i" * 32,
-                        login_max_failures=3, catalog_refresh_seconds=3600)
+                        login_max_failures=3, catalog_refresh_seconds=3600, pdp_decision_ttl=0,
+                        throttle_per_minute=3)
     users = {u: UserRecord(u, name, role, dept, hash_password(PASSWORD), True) for u, name, role, dept in demo.USERS}
     store = MemoryGatewayStore(CAT, users)
     redis = fakeredis.aioredis.FakeRedis(decode_responses=True)
@@ -303,3 +304,85 @@ def test_publisher_never_raises_and_spools_failures(tmp_path, mode, delivered, s
         assert row["event"]["event_id"] == ev.event_id and row["reason"]
     else:
         assert files == [] and prod.sent == [("access-events", b"alice")]
+
+
+
+# ------------------------------------------------------------------------------------------ Revised v3 actions (Phase 7)
+def _decide(gw, user, action, psi, **kw):
+    gw.client.portal.call(partial(gw.redis.hset, f"decision:{user}",
+                                  mapping={"decision": action, "reason": kw.pop("reason", "individual"),
+                                           "decided_at": kw.pop("decided_at", time.time()), "psi": psi, **kw}))
+
+
+def test_v3_restrict_denies_only_sensitive_resources(gw):
+    c = gw.client
+    login(c, "alice")
+    _decide(gw, "alice", "Restrict", 10, reason="collective")
+    r = c.get("/apps/hr/payroll")                                           # s = 1
+    assert r.status_code == 403 and gw.pub.events[-1].meta["reason"] == "pdp-restrict:collective"
+    assert gw.pub.events[-1].meta["pdp_action"] == "Restrict"
+    assert c.get("/apps/hr/directory").status_code == 200                   # s = 0 still allowed
+    c.cookies.clear()
+    assert login(c, "alice").status_code == 200                             # Restrict does not refuse logins
+
+
+def test_v3_stepup_requires_signing_in_again(gw):
+    c = gw.client
+    login(c, "alice")
+    _decide(gw, "alice", "StepUp", 11, reason="collective")
+    r = c.get("/apps/hr/directory")
+    assert r.status_code == 401 and r.json()["step_up"] is True
+    assert c.get("/apps/hr/directory").status_code == 401                   # that session was ended
+    assert login(c, "alice").status_code == 200                             # re-authentication after the decision ...
+    assert c.get("/apps/hr/payroll").status_code == 200                     # ... satisfies the StepUp
+
+
+def test_v3_throttle_limits_the_request_rate(gw):
+    c = gw.client
+    login(c, "alice")
+    _decide(gw, "alice", "Throttle", 12)
+    codes = [c.get("/apps/hr/directory").status_code for _ in range(5)]
+    assert codes[:3] == [200, 200, 200] and codes[3:] == [429, 429]         # throttle_per_minute = 3
+    assert gw.pub.events[-1].meta["reason"] == "pdp-throttle:individual"
+
+
+def test_v3_terminate_ends_the_session_and_refuses_logins(gw):
+    c = gw.client
+    login(c, "alice")
+    _decide(gw, "alice", "Terminate", 13)
+    assert c.get("/apps/hr/directory").status_code == 403
+    assert c.get("/apps/hr/directory").status_code == 401                   # session revoked by the gateway itself
+    assert login(c, "alice").status_code == 403
+
+
+def test_v3_stale_decision_with_lower_psi_is_rejected(gw):
+    c = gw.client
+    login(c, "alice")
+    _decide(gw, "alice", "Restrict", 20, reason="collective")
+    assert c.get("/apps/hr/payroll").status_code == 403                     # psi_cur = 20 applied
+    _decide(gw, "alice", "Allow", 5, reason="expired")                      # an older decision written later
+    assert c.get("/apps/hr/payroll").status_code == 403                     # rejected: psi 5 <= psi_cur 20
+    assert c.app.state.decisions.stats["stale_rejected"] >= 1
+    _decide(gw, "alice", "Allow", 21, reason="expired")
+    assert c.get("/apps/hr/payroll").status_code == 200
+
+
+def test_v3_pdp_unavailable_sensitivity_fallback_and_per_app_override(gw):
+    c = gw.client
+    view = c.app.state.decisions
+    view.ttl = 30.0                                                         # no pdp:alive heartbeat at all
+    login(c, "alice")
+    r = c.get("/apps/hr/payroll")
+    assert r.status_code == 403 and gw.pub.events[-1].meta["reason"] == "pdp-fallback:restrict"   # s = 1 fail-closed
+    assert c.get("/apps/hr/directory").status_code == 200                                        # s = 0 fail-open
+    view.fallback = {"hr": "open"}
+    assert c.get("/apps/hr/payroll").status_code == 200
+    view.fallback = {"hr": "closed"}
+    assert c.get("/apps/hr/directory").status_code == 403
+    view.fallback = {}
+    c.portal.call(gw.redis.set, "pdp:alive", time.time())
+    view._alive = (-1e18, None)
+    assert c.get("/apps/hr/payroll").status_code == 200                     # fresh heartbeat: normal path
+    c.portal.call(gw.redis.set, "pdp:alive", time.time() - 31)
+    view._alive = (-1e18, None)
+    assert c.get("/apps/hr/payroll").status_code == 403                     # heartbeat older than the TTL

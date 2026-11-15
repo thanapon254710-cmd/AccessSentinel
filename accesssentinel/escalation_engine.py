@@ -7,10 +7,16 @@
   Path D  sample    each active Low-risk user independently with probability gamma    -> background
 
 Union: candidates are merged per user (all paths + evidence kept) and a user is escalated at most once per
-cooldown, so each escalated user is analysed once per window (D3 Step 10). Real-time candidates (A, B) are
-unioned for `realtime_window` seconds, ordered by urgency and capped at `max_realtime_per_window` (overflow
-is DEFERRED to the next window, never dropped). Background candidates (C, D) are emitted once per analysis
-window W and capped at `max_background_per_window` (overflow is SHED and counted) - audit D13.
+cooldown, so each escalated user is analysed once per window (D3 Step 10).
+
+Revised v3 compute admission (Phase 5, Algorithm 1, Eqs. 26-30): every candidate gets a cost
+C_u = c0 + c1 |E(N_h(u))| + c2 |V(N_h(u))| (estimated from the live edge index) and the TGN work per analysis
+window W never exceeds B_W = floor(rho' N mu_graph W). `priority_admit` admits in the order resource >
+high > sweep > sample while used + C_u <= B_W. Overflow: sample -> dropped, sweep -> deferred to the next
+window, resource -> queued until `res_deadline`, high -> not analysed by the TGN (the PDP acts on S_ind alone;
+it already consumes every risk score). Real-time candidates (A, B) are admitted as they flush; background
+candidates (C, D) at the end of the window from what is left. Path B comes from the finalised event-time
+resource windows (`resource-windows`, Phase 2) when `use_resource_windows` is set (Algorithm 1, line 2).
 
 All state is in Redis (works across replicas and restarts; candidates are staged before Kafka offsets are
 committed). Path B windows use event time; cooldowns, activity and windows use the injected clock (wall
@@ -40,6 +46,33 @@ K_COOL_BG = "esc:cool:bg:{}"
 K_SWEEP_LAST = "esc:sweep:last"
 K_SWEEP_LOCK = "esc:sweep:lock"
 K_BG_NEXT = "esc:bg:next"
+K_BUDGET = "esc:budget:{}"                # used work units in analysis window <id>
+
+PRIORITY = ("resource", "high", "sweep", "sample")         # Algorithm 1, line 6
+
+
+def top_path(paths) -> str:
+    return next(p for p in PRIORITY if p in paths)
+
+
+def priority_admit(cands: Dict[str, Iterable[str]], costs: Dict[str, float], budget: float, used: float = 0.0):
+    """Algorithm 1 (lines 6-13). cands: user -> its escalation paths (the union U_W, each user once).
+    Returns (admitted users in order, used, overflow by action). Invariant: used <= budget (Table IV)."""
+    order = sorted(cands, key=lambda u: PRIORITY.index(top_path(cands[u])))     # stable within a class
+    admitted, over = [], {"sample_dropped": [], "sweep_deferred": [], "resource_queued": [], "high_pdp_alone": []}
+    for u in order:
+        c = float(costs[u])
+        if used + c <= budget:
+            admitted.append(u); used += c
+        else:
+            over[{"sample": "sample_dropped", "sweep": "sweep_deferred", "resource": "resource_queued",
+                  "high": "high_pdp_alone"}[top_path(cands[u])]].append(u)
+    return admitted, used, over
+
+
+def graph_budget(cfg) -> float:
+    """Eq. 29: B_W = floor(rho' N mu_graph W)."""
+    return float(int(cfg.rho_graph * cfg.tgn_workers * cfg.mu_graph * cfg.analysis_window))
 
 
 def _s(x):
@@ -55,6 +88,8 @@ class Escalator:
         self.r = redis
         self.cfg = cfg or EscalationConfig()
         self.rc = risk_cfg or RiskConfig()
+        self.cost_fn: Callable[[str, float], tuple] = lambda u, now: (0, 1)      # (|E|, |V|) of N_h(u); set by the service
+        self.theta_high_override = None           # None: the TCN model's calibrated theta_high carried in the score
         self.rng = rng or random.Random()
         self.clock = clock or time.time
 
@@ -71,7 +106,8 @@ class Escalator:
         pipe.zadd(K_ACTIVE, {u: now}, gt=True)
         pipe.hset(K_TIER, u, rec.get("tier", "low"))
         pipe.execute()
-        if float(rec["s_ind"]) >= self.rc.theta_high:
+        from .pdp_engine import theta_high_for
+        if float(rec["s_ind"]) >= theta_high_for(rec, self.rc, self.theta_high_override):
             self._pend(u, "high", {"s_ind": round(float(rec["s_ind"]), 4), "score_id": rec.get("score_id"),
                                    "trigger": rec.get("trigger"), "t": rec.get("t"),
                                    "model_version": rec.get("model_version")}, urgency=1.0 + float(rec["s_ind"]))
@@ -96,6 +132,37 @@ class Escalator:
             for m in users:
                 self._pend(m, "resource", ev_info, urgency=1.0 + n / 100.0)
         return n
+
+    def on_resource_window(self, rec: dict) -> int:
+        """Path B from a FINALISED resource window (resource-windows, kind final): more than kappa distinct users
+        on a sensitive resource in event-time window b -> every participant (exactly once per (r*, b))."""
+        if rec.get("kind") != "final" or int(rec.get("s", 1)) != 1:
+            return 0
+        users = rec.get("users") or []
+        if len(users) <= self.cfg.kappa:
+            return 0
+        info = {"resource": rec.get("rstar"), "window": rec.get("window"), "distinct_users": len(users),
+                "kappa": self.cfg.kappa, "window_start": rec.get("window_start"), "window_end": rec.get("window_end"),
+                "participants": users[:50], "t": rec.get("window_end")}
+        for m in users:
+            self._pend(m, "resource", info, urgency=1.0 + len(users) / 100.0)
+        return len(users)
+
+    # ------------------------------------------------------------------ compute admission (Algorithm 1)
+    def cost(self, u: str, now: float) -> float:
+        e, v = self.cost_fn(u, now)
+        return self.cfg.cost_c0 + self.cfg.cost_c1 * e + self.cfg.cost_c2 * v           # Eq. 26
+
+    def _window_id(self, now: float) -> int:
+        return int(now // self.cfg.analysis_window)
+
+    def _budget_left(self, now: float):
+        wid = self._window_id(now)
+        used = float(self.r.get(K_BUDGET.format(wid)) or 0.0)
+        return wid, used, graph_budget(self.cfg)
+
+    def _spend(self, wid: int, used: float) -> None:
+        self.r.set(K_BUDGET.format(wid), used, ex=int(4 * self.cfg.analysis_window) + 60)
 
     def _pend(self, u: str, path: str, evidence: dict, urgency: float) -> None:
         raw = self.r.hget(K_PENDING, u)
@@ -135,18 +202,35 @@ class Escalator:
         cooling = [u for u in order if self._cooling(K_COOL_RT.format(u), now)]     # analysed recently: drop
         eligible = [u for u in order if u not in set(cooling)]
         out, done = [], list(cooling)
-        for u in eligible[: self.cfg.max_realtime_per_window]:                    # the rest is deferred
+        wid, used, budget = self._budget_left(now)
+        costs = {u: self.cost(u, now) for u in eligible}
+        admitted, used2, over = priority_admit({u: pend[u]["paths"] for u in eligible}, costs, budget, used)
+        for u in admitted:
             done.append(u)
             if not self._claim(K_COOL_RT.format(u), self.cfg.realtime_cooldown, now):
                 cooling.append(u)                                                 # lost a race to a replica
+                used2 -= costs[u]
                 continue
             self.r.set(K_COOL_BG.format(u), now + self.cfg.background_cooldown, ex=int(self.cfg.background_cooldown) + 3600)
-            out.append(self._record(u, "realtime", pend[u]["paths"], now))
+            rec = self._record(u, "realtime", pend[u]["paths"], now)
+            rec["cost"] = round(costs[u], 3)
+            out.append(rec)
+        self._spend(wid, used2)
+        done += over["high_pdp_alone"]                     # high-risk overflow: the PDP acts on S_ind alone
+        expired = []
+        for u in over["resource_queued"]:                  # resource overflow: wait for budget until the deadline
+            first = float(pend[u].get("queued_at", now))
+            if now - first > self.cfg.res_deadline:
+                expired.append(u); done.append(u)
+            else:
+                pend[u]["queued_at"] = first
+                self.r.hset(K_PENDING, u, json.dumps(pend[u]))
         suppressed = len(cooling)
-        deferred = max(0, len(eligible) - self.cfg.max_realtime_per_window)
         if done:
             self.r.hdel(K_PENDING, *done)
-        self._account("realtime", out, now, suppressed=suppressed, deferred=deferred)
+        self._account("realtime", out, now, suppressed=suppressed, deferred=len(over["resource_queued"]) - len(expired),
+                      high_pdp_alone=len(over["high_pdp_alone"]), resource_expired=len(expired),
+                      demand=round(sum(costs.values()), 3), budget=budget, used=round(used2, 3))
         return out
 
     # ------------------------------------------------------------------ background emission (C, D)
@@ -179,13 +263,22 @@ class Escalator:
                     and not self._cooling(K_COOL_BG.format(u), now)]
         suppressed = len(order) - len(eligible)
         out = []
-        for u in eligible[: self.cfg.max_background_per_window]:
+        wid, used, budget = self._budget_left(now)
+        costs = {u: self.cost(u, now) for u in eligible}
+        admitted, used2, over = priority_admit({u: list(cands[u]) for u in eligible}, costs, budget, used)
+        for u in admitted:
             if self._claim(K_COOL_BG.format(u), self.cfg.background_cooldown, now):
-                out.append(self._record(u, "background", cands[u], now))
+                rec = self._record(u, "background", cands[u], now)
+                rec["cost"] = round(costs[u], 3)
+                out.append(rec)
             else:
-                suppressed += 1
-        shed = max(0, len(eligible) - self.cfg.max_background_per_window)          # genuine budget overflow only
-        self._account("background", out, now, suppressed=suppressed, shed=shed, low_risk_active=len(low))
+                suppressed += 1; used2 -= costs[u]
+        self._spend(wid, used2)
+        if over["sweep_deferred"]:                         # sweep overflow: deferred to the next window
+            self.r.hset(K_SWEEP, mapping={u: json.dumps(cands[u]["sweep"]) for u in over["sweep_deferred"]})
+        self._account("background", out, now, suppressed=suppressed, sample_dropped=len(over["sample_dropped"]),
+                      sweep_deferred=len(over["sweep_deferred"]), low_risk_active=len(low),
+                      demand=round(sum(costs.values()), 3), budget=budget, used=round(used2, 3))
         return out
 
     # ------------------------------------------------------------------ Path C

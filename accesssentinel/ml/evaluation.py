@@ -81,6 +81,30 @@ def report(name: str, idx, mask, scores, attackers) -> dict:
             "normal_user_days_flagged_at_0.6": user_day_false_alarms(users, t, scores, attackers, 0.6)}
 
 
+def report_at(name: str, idx, mask, scores, attackers, thresholds: Dict[str, float]) -> dict:
+    """Like report(), at CALIBRATED thresholds (Revised v3 Eq. 8) instead of the fixed D3 0.4 / 0.6."""
+    y, sc, inst, t, users = idx.y[mask], idx.scenario[mask], idx.instance[mask], idx.t[mask], idx.users[mask]
+    individual_inst = np.where(np.isin(sc, ["compromised_account", "insider_exfiltration", "bac_probe", "low_and_slow"]), inst, "")
+    out = {"model": name, "thresholds": thresholds,
+           "event_level": {"n": int(len(y)), "positives": int(y.sum()),
+                           "roc_auc": float(roc_auc_score(y, scores)) if 0 < y.sum() < len(y) else None,
+                           "pr_auc": float(average_precision_score(y, scores)) if y.sum() > 0 else None}}
+    for k, th in thresholds.items():
+        p = (np.asarray(scores) >= th).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y, p, labels=[0, 1]).ravel()
+        prec = tp / (tp + fp) if tp + fp else 0.0
+        rec = tp / (tp + fn) if tp + fn else 0.0
+        out["event_level"][f"at_{k}"] = {"threshold": th, "tp": int(tp), "fp": int(fp), "tn": int(tn), "fn": int(fn),
+                                         "precision": prec, "recall": rec,
+                                         "f1": 2 * prec * rec / (prec + rec) if prec + rec else 0.0,
+                                         "fpr": fp / (fp + tn) if fp + tn else 0.0}
+    th = thresholds["theta_high"]
+    out["by_scenario_at_theta_high"] = scenario_breakdown(sc, y, scores, th)
+    out["attack_instances_at_theta_high"] = instance_detection(individual_inst, t, scores, th)
+    out["normal_user_days_flagged_at_theta_high"] = user_day_false_alarms(users, t, scores, attackers, th)
+    return out
+
+
 # ------------------------------------------------------------------------------------------ baselines
 def rule_score(rec: dict) -> float:
     """Hand-written, untrained heuristic over the newest event (no learning, no sequence)."""

@@ -98,7 +98,7 @@ function UserDetail({ u, me, nav, thLow, thHigh }: { u: string; me: Me; nav: Nav
       {d && (
         <dl className="kv">
           <dt>Gateway decision</dt>
-          <dd>{d.blocked ? <Badge tone="bad">Blocked</Badge> : <Badge tone="ok">Allowed</Badge>} {d.mode !== "enforce" && <Badge tone="warn">{d.mode}</Badge>}</dd>
+          <dd><Badge tone={d.blocked ? "bad" : (d.action ?? "Allow") === "Allow" ? "ok" : "warn"}>{d.action ?? (d.blocked ? "Blocked" : "Allow")}</Badge> {d.mode !== "enforce" && <Badge tone="warn">{d.mode}</Badge>}</dd>
           <dt>Reason</dt><dd>{d.reason ?? "—"} {d.actor ? `(by ${d.actor})` : ""}</dd>
           <dt>Expires</dt><dd>{fmtTime(d.expires_at)}</dd>
           {d.override_until && (<><dt>Release grace until</dt><dd>{fmtTime(d.override_until)}</dd></>)}

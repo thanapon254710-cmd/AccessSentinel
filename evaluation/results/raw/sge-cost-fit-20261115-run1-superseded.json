@@ -1,0 +1,317 @@
+{
+ "model": "tgn3-20261115T094228Z-ccc61d",
+ "reps": 5,
+ "nbrs_per_resource": 10,
+ "rows": [
+  {
+   "u": "syn-cost-2d2ce-1-2",
+   "E_hat": 12,
+   "V_hat": 12,
+   "edges": 22,
+   "nodes": 12,
+   "ms_median": 31.752,
+   "ms_all": [
+    27.306,
+    29.893,
+    38.251,
+    31.752,
+    37.173
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-1-5",
+   "E_hat": 15,
+   "V_hat": 12,
+   "edges": 55,
+   "nodes": 12,
+   "ms_median": 37.193,
+   "ms_all": [
+    39.366,
+    34.133,
+    37.193,
+    32.531,
+    71.079
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-1-10",
+   "E_hat": 20,
+   "V_hat": 12,
+   "edges": 110,
+   "nodes": 12,
+   "ms_median": 56.728,
+   "ms_all": [
+    59.664,
+    36.83,
+    44.004,
+    56.728,
+    61.217
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-1-20",
+   "E_hat": 30,
+   "V_hat": 12,
+   "edges": 220,
+   "nodes": 12,
+   "ms_median": 47.105,
+   "ms_all": [
+    43.3,
+    45.906,
+    47.105,
+    96.836,
+    89.706
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-2-2",
+   "E_hat": 24,
+   "V_hat": 23,
+   "edges": 44,
+   "nodes": 23,
+   "ms_median": 81.998,
+   "ms_all": [
+    74.575,
+    81.998,
+    57.878,
+    114.342,
+    140.003
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-2-5",
+   "E_hat": 30,
+   "V_hat": 23,
+   "edges": 110,
+   "nodes": 23,
+   "ms_median": 66.2,
+   "ms_all": [
+    42.904,
+    69.096,
+    66.083,
+    93.862,
+    66.2
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-2-10",
+   "E_hat": 40,
+   "V_hat": 23,
+   "edges": 220,
+   "nodes": 23,
+   "ms_median": 141.459,
+   "ms_all": [
+    101.945,
+    100.26,
+    141.459,
+    259.855,
+    238.733
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-2-20",
+   "E_hat": 60,
+   "V_hat": 23,
+   "edges": 440,
+   "nodes": 23,
+   "ms_median": 96.287,
+   "ms_all": [
+    208.922,
+    119.269,
+    96.287,
+    82.306,
+    79.543
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-4-2",
+   "E_hat": 48,
+   "V_hat": 45,
+   "edges": 88,
+   "nodes": 45,
+   "ms_median": 161.682,
+   "ms_all": [
+    93.552,
+    109.889,
+    373.509,
+    194.139,
+    161.682
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-4-5",
+   "E_hat": 60,
+   "V_hat": 45,
+   "edges": 220,
+   "nodes": 45,
+   "ms_median": 209.289,
+   "ms_all": [
+    209.289,
+    296.022,
+    224.935,
+    181.761,
+    124.17
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-4-10",
+   "E_hat": 80,
+   "V_hat": 45,
+   "edges": 440,
+   "nodes": 45,
+   "ms_median": 213.036,
+   "ms_all": [
+    229.385,
+    135.118,
+    135.636,
+    213.036,
+    222.616
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-4-20",
+   "E_hat": 120,
+   "V_hat": 45,
+   "edges": 880,
+   "nodes": 45,
+   "ms_median": 280.845,
+   "ms_all": [
+    280.845,
+    165.623,
+    170.316,
+    299.875,
+    494.547
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-8-2",
+   "E_hat": 96,
+   "V_hat": 89,
+   "edges": 168,
+   "nodes": 85,
+   "ms_median": 193.025,
+   "ms_all": [
+    262.873,
+    246.749,
+    193.025,
+    163.695,
+    156.545
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-8-5",
+   "E_hat": 120,
+   "V_hat": 89,
+   "edges": 440,
+   "nodes": 89,
+   "ms_median": 268.045,
+   "ms_all": [
+    170.86,
+    357.844,
+    294.174,
+    268.045,
+    207.03
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-8-10",
+   "E_hat": 160,
+   "V_hat": 89,
+   "edges": 880,
+   "nodes": 89,
+   "ms_median": 188.617,
+   "ms_all": [
+    188.617,
+    216.342,
+    208.8,
+    182.904,
+    154.807
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-8-20",
+   "E_hat": 240,
+   "V_hat": 89,
+   "edges": 1760,
+   "nodes": 89,
+   "ms_median": 379.363,
+   "ms_all": [
+    256.975,
+    421.234,
+    379.363,
+    358.978,
+    464.423
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-16-2",
+   "E_hat": 192,
+   "V_hat": 177,
+   "edges": 330,
+   "nodes": 166,
+   "ms_median": 276.735,
+   "ms_all": [
+    439.55,
+    309.205,
+    276.735,
+    273.639,
+    245.911
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-16-5",
+   "E_hat": 240,
+   "V_hat": 177,
+   "edges": 880,
+   "nodes": 177,
+   "ms_median": 247.881,
+   "ms_all": [
+    277.748,
+    280.035,
+    247.881,
+    234.864,
+    228.045
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-16-10",
+   "E_hat": 320,
+   "V_hat": 177,
+   "edges": 1760,
+   "nodes": 177,
+   "ms_median": 415.582,
+   "ms_all": [
+    415.582,
+    380.401,
+    368.007,
+    439.795,
+    610.604
+   ]
+  },
+  {
+   "u": "syn-cost-2d2ce-16-20",
+   "E_hat": 480,
+   "V_hat": 177,
+   "edges": 3520,
+   "nodes": 177,
+   "ms_median": 496.655,
+   "ms_all": [
+    608.74,
+    748.323,
+    406.961,
+    496.655,
+    279.332
+   ]
+  }
+ ],
+ "fit": {
+  "c0": 74.4561,
+  "c1": 0.9432,
+  "c2": 0.1077,
+  "r2": 0.8412,
+  "mape": 0.4409,
+  "units": "ms of SGE wall time"
+ },
+ "note": "SUPERSEDED: admission-time estimate counted one edge per neighbour user (under-estimated |E| up to 7x); kept for the record",
+ "where": "tgn-worker-rt container (768 MB limit), live Redis, CPU torch"
+}

@@ -44,6 +44,19 @@ def _activity(rec: dict) -> Optional[Tuple[float, float]]:
     return None
 
 
+ACTION_LABEL = {"Block": "blocked", "Terminate": "terminated (sessions ended, access suspended)",
+                "Restrict": "restricted (sensitive resources denied)", "StepUp": "step-up re-authentication required",
+                "Throttle": "throttled (request rate limited)"}
+
+
+def _label(rec: dict) -> str:
+    """Enforcement status of one user from a decision record (v3 action set, Eq. 20)."""
+    if not rec.get("enforced"):
+        return "shadow (not enforced)"
+    act = rec.get("decision") or "Block"                    # D3 records: every block transition was a Block
+    return ACTION_LABEL.get(act, str(act))
+
+
 def _ev(kind: str, rec: dict, **extra) -> dict:
     rid = rec.get("decision_id") or rec.get("score_id") or rec.get("escalation_id") or uuid.uuid4().hex
     return {"id": rid, "kind": kind, "t": rec.get("t"), **extra}
@@ -73,19 +86,20 @@ class IncidentStore:
                     inc = self._new(db, key, "individual", "high" if (s or 0) >= 0.9 else "medium",
                                     f"High individual risk: {u}" + (f" (S_ind {s:.2f})" if s is not None else ""), [u], rec)
                     inc.max_s_ind = s
-                self._merge(inc, _ev("pdp_block", rec, user=u, reason=reason, s_ind=rec.get("s_ind"),
-                                     basis=rec.get("basis"), enforced=rec.get("enforced")),
-                            {u: "blocked" if rec.get("enforced") else "shadow (not enforced)"}, rec)
+                self._merge(inc, _ev("pdp_block", rec, user=u, reason=reason, action=rec.get("decision"),
+                                     s_ind=rec.get("s_ind"), basis=rec.get("basis"), enforced=rec.get("enforced")),
+                            {u: _label(rec)}, rec)
                 return inc.id
             if reason == "collective" and tr in ("block", "evidence") and rec.get("group_id"):
                 inc = self._collective(db, rec["group_id"], rec, [u])
-                status = ("blocked" if rec.get("enforced") else "shadow (not enforced)") if tr == "block" \
-                    else f"already blocked ({rec.get('block_reason')})"
-                self._merge(inc, _ev("pdp_" + tr, rec, user=u, reason=reason, s_coll=rec.get("s_coll"),
-                                     group_id=rec["group_id"], enforced=rec.get("enforced")), {u: status}, rec)
+                status = _label(rec) if tr == "block" \
+                    else f"already {ACTION_LABEL.get(rec.get('decision'), rec.get('decision'))} ({rec.get('block_reason')})"
+                self._merge(inc, _ev("pdp_" + tr, rec, user=u, reason=reason, action=rec.get("decision"),
+                                     s_coll=rec.get("s_coll"), group_id=rec["group_id"], enforced=rec.get("enforced")),
+                            {u: status}, rec)
                 return inc.id
             if tr in ("release", "expire", "policy_lifted"):
-                label = {"release": f"released by {rec.get('actor')}", "expire": "block expired",
+                label = {"release": f"released by {rec.get('actor')}", "expire": "action expired",
                          "policy_lifted": "policy lifted"}[tr]
                 hit = None
                 for inc in db.scalars(select(Incident).where(Incident.status.in_(OPEN_STATES))):

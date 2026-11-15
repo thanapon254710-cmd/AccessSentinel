@@ -59,6 +59,11 @@ class TgnScorer:
         version = version or current_version(model_dir)
         if version is None:
             raise FileNotFoundError(f"no trained TGN in {tgn_dir(model_dir)} (run accesssentinel.ml.train_tgn)")
+        d = os.path.join(tgn_dir(model_dir), version)
+        mpath = os.path.join(d, "manifest.json")
+        manifest = json.load(open(mpath, encoding="utf-8")) if os.path.exists(mpath) else {}
+        if manifest.get("arch") == ARCH_V3:                      # Revised v3 TGN (CMU + SGE)
+            return TgnScorerV3.load_dir(d, version, manifest)
         ck = torch.load(os.path.join(tgn_dir(model_dir), version, "model.pt"), map_location="cpu", weights_only=True)
         cfg = TGNConfig(**ck["tgn_config"])
         model = TGN(cfg)
@@ -77,3 +82,62 @@ class TgnScorer:
     def analyse(self, s: GraphSample) -> Dict[str, dict]:
         """Per seed: g(u), S_coll (None if no coupled group) and evidence."""
         return groups_for(s, self.edge_scores(s), self.tau_edge)
+
+
+# ============================================================================================================
+# Revised v3 TGN (CMU + SGE). manifest["arch"] = "tgn-v3"; TgnScorer.load() returns TgnScorerV3 for it.
+# ============================================================================================================
+ARCH_V3 = "tgn-v3"
+
+
+def save_v3(model_dir: str, version: str, model, cfg, cal: dict, thresholds: dict, manifest: dict) -> str:
+    d = os.path.join(tgn_dir(model_dir), version)
+    if os.path.exists(d):
+        raise FileExistsError(f"model version {version} already exists (versions are immutable)")
+    os.makedirs(d)
+    torch.save({"arch": ARCH_V3, "state_dict": {k: v.cpu() for k, v in model.state_dict().items()},
+                "tgn_config": asdict(cfg)}, os.path.join(d, "model.pt"))
+    with open(os.path.join(d, "manifest.json"), "w", encoding="utf-8") as f:
+        json.dump({"version": version, "created_at": time.time(), "arch": ARCH_V3, "calibration": cal,
+                   "thresholds": thresholds, **manifest}, f, indent=2, default=str)
+    return d
+
+
+class TgnScorerV3:
+    """Trained v3 TGN: CMU step (every event), SGE + decoder (admitted users), calibrated collective score."""
+    arch = ARCH_V3
+
+    def __init__(self, model, cfg, cal: dict, thresholds: dict, version: str):
+        self.model, self.cfg, self.cal, self.th, self.version = model.eval(), cfg, cal, thresholds, version
+        self.theta_coll, self.theta_attr = thresholds.get("theta_C"), thresholds.get("theta_A")
+
+    @classmethod
+    def load_dir(cls, d: str, version: str, manifest: dict) -> "TgnScorerV3":
+        from ..config import TGNv3Config
+        from ..tgn import TGNv3
+        ck = torch.load(os.path.join(d, "model.pt"), map_location="cpu", weights_only=True)
+        cfg = TGNv3Config(**ck["tgn_config"])
+        model = TGNv3(cfg)
+        model.load_state_dict(ck["state_dict"])
+        return cls(model, cfg, manifest["calibration"], manifest["thresholds"], version)
+
+    @torch.no_grad()
+    def cmu_step(self, m_self: np.ndarray, m_other: np.ndarray, dt: np.ndarray, f: np.ndarray) -> np.ndarray:
+        t = lambda a: torch.from_numpy(np.ascontiguousarray(a, dtype=np.float32))
+        return self.model.cmu(t(m_self), t(m_other), t(dt), t(f)).numpy()
+
+    @torch.no_grad()
+    def embed(self, m_v, vtype, nbr_m, nbr_type, nbr_f, nbr_dt, nbr_mask) -> np.ndarray:
+        t = lambda a: torch.from_numpy(np.ascontiguousarray(a, dtype=np.float32))
+        return self.model.sge(t(m_v), t(vtype), t(nbr_m), t(nbr_type), t(nbr_f), t(nbr_dt),
+                              torch.from_numpy(np.asarray(nbr_mask, dtype=bool))).numpy()
+
+    @torch.no_grad()
+    def edge_eps(self, h_u: np.ndarray, h_r: np.ndarray, f: np.ndarray) -> np.ndarray:
+        t = lambda a: torch.from_numpy(np.ascontiguousarray(a, dtype=np.float32))
+        return torch.sigmoid(self.model.dec(t(h_u), t(h_r), t(f))).numpy()
+
+    def s_coll(self, feats) -> float:
+        """Eq. 19: Cal(w1 TM + w2 A + w3 Nov) (logistic calibration fitted with the weights)."""
+        z = float(np.dot(self.cal["coef"], feats) + self.cal["intercept"])
+        return 1.0 / (1.0 + np.exp(-z))

@@ -140,3 +140,93 @@ class TGNScorer:
             val = float(sc[:k].mean())
             for m in members: out[m] = (val, members)
         return out
+
+
+# ============================================================================================================
+# Revised v3 TGN (Phases 4 and 6): Continuous Node Memory Updater (CMU) + Selective Graph Encoder (SGE).
+# The D3 dense-GCN TGN above is kept as the "no continuous memory" baseline.
+# ============================================================================================================
+"""
+CMU (Eqs. 11-12), run for EVERY access event e = (u, r*, t):
+    msg_u = phi_msg(m_u(t-), m_r(t-), Phi(t - t_u_last), f(e));   m_u(t) = GRU(m_u(t-), msg_u)
+and symmetrically for r*. Memory 100, message 100, time encoder 100 (cosine basis, [23]).
+SGE (Eq. 13), only for admitted users: h_v(t) = ATT(m_v(t), {(m_w(t_k), f(e_k), Phi(t - t_k)) : w in N(v, t)})
+over the 10 most recent neighbours (1 hop), multi-head attention.
+Decoder (Eq. 14): eps_e = Dec(h_u(t), h_r(t), f(e)) in [0, 1], trained with an edge-reconstruction objective
+(observed edges -> 0, corrupted edges -> 1) plus supervised collusion labels (stand-ins for analyst-verified
+incidents; synthetic in this prototype).
+"""
+from .config import TGNv3Config  # noqa: E402
+
+NODE_TYPES = 3                     # user, resource, application
+
+
+class TimeEncode(nn.Module):
+    """Phi(dt) = cos(w * dt + b) with log-spaced initial frequencies (Rossi et al. [23])."""
+
+    def __init__(self, dim: int):
+        super().__init__()
+        self.w = nn.Linear(1, dim)
+        with torch.no_grad():
+            self.w.weight.copy_(torch.from_numpy(1.0 / 10 ** np.linspace(0, 9, dim, dtype=np.float32)).reshape(dim, 1))
+            self.w.bias.zero_()
+
+    def forward(self, dt):
+        return torch.cos(self.w(dt.unsqueeze(-1)))
+
+
+class CMU(nn.Module):
+    def __init__(self, cfg: "TGNv3Config"):
+        super().__init__()
+        self.time = TimeEncode(cfg.time_dim)
+        self.msg = nn.Sequential(nn.Linear(2 * cfg.mem_dim + cfg.time_dim + cfg.edge_feat_dim, cfg.msg_dim), nn.ReLU(),
+                                 nn.Linear(cfg.msg_dim, cfg.msg_dim))
+        self.gru = nn.GRUCell(cfg.msg_dim, cfg.mem_dim)
+
+    def forward(self, m_self, m_other, dt, efeat):
+        """One memory step for a batch of nodes: returns m_self(t)."""
+        msg = self.msg(torch.cat([m_self, m_other, self.time(dt), efeat], dim=-1))
+        return self.gru(msg, m_self)
+
+
+class SGE(nn.Module):
+    def __init__(self, cfg: "TGNv3Config"):
+        super().__init__()
+        self.time = TimeEncode(cfg.time_dim)
+        q_in = cfg.mem_dim + NODE_TYPES + cfg.time_dim
+        kv_in = cfg.mem_dim + NODE_TYPES + cfg.edge_feat_dim + cfg.time_dim
+        self.q = nn.Linear(q_in, cfg.emb_dim)
+        self.kv = nn.Linear(kv_in, 2 * cfg.emb_dim)
+        self.att = nn.MultiheadAttention(cfg.emb_dim, cfg.n_heads, batch_first=True)
+        self.out = nn.Sequential(nn.Linear(cfg.emb_dim + cfg.mem_dim, cfg.emb_dim), nn.ReLU(), nn.Linear(cfg.emb_dim, cfg.emb_dim))
+        self.emb_dim = cfg.emb_dim
+
+    def forward(self, m_v, vtype, nbr_m, nbr_type, nbr_e, nbr_dt, nbr_mask):
+        """m_v (B, M); vtype (B, 3); nbr_m (B, K, M); nbr_type (B, K, 3); nbr_e (B, K, E); nbr_dt (B, K);
+        nbr_mask (B, K) True = real neighbour. Returns h_v (B, D)."""
+        B = m_v.shape[0]
+        q = self.q(torch.cat([m_v, vtype, self.time(torch.zeros(B, device=m_v.device))], -1)).unsqueeze(1)
+        k, v = self.kv(torch.cat([nbr_m, nbr_type, nbr_e, self.time(nbr_dt)], -1)).chunk(2, dim=-1)
+        none = ~nbr_mask.any(1)                                       # nodes without neighbours: attend to nothing
+        mask = ~nbr_mask.clone()
+        mask[none, 0] = False
+        h, _ = self.att(q, k, v, key_padding_mask=mask)
+        h = h.squeeze(1) * (~none).float().unsqueeze(-1)
+        return self.out(torch.cat([h, m_v], -1))
+
+
+class EdgeDecoder(nn.Module):
+    def __init__(self, cfg: "TGNv3Config"):
+        super().__init__()
+        self.mlp = nn.Sequential(nn.Linear(2 * cfg.emb_dim + cfg.edge_feat_dim, cfg.emb_dim), nn.ReLU(),
+                                 nn.Linear(cfg.emb_dim, 1))
+
+    def forward(self, h_u, h_r, efeat):
+        return self.mlp(torch.cat([h_u, h_r, efeat], -1)).squeeze(-1)      # logit of eps_e
+
+
+class TGNv3(nn.Module):
+    def __init__(self, cfg: "TGNv3Config"):
+        super().__init__()
+        self.cfg = cfg
+        self.cmu, self.sge, self.dec = CMU(cfg), SGE(cfg), EdgeDecoder(cfg)

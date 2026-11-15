@@ -26,6 +26,7 @@ ACCESS_EVENTS_ORDERED = "access-events.ordered"
 LATE_EVENTS = "late-events"
 SEQUENCER_CHANGELOG = "sequencer.changelog"
 RESOURCE_PARTIALS = "resource-partials"
+ACCESS_EVENTS_BY_RSTAR = "access-events-by-rstar"
 RESOURCE_WINDOWS = "resource-windows"
 RES_SHARD_CHANGELOG = "resource-shards.changelog"
 RES_MERGE_CHANGELOG = "resource-merge.changelog"
@@ -40,6 +41,7 @@ TOPICS: List[TopicSpec] = [
     TopicSpec(LATE_EVENTS, "user id u", "v3 Step 2: late-event alerts and discard audit records", dlq=False),
     TopicSpec(SEQUENCER_CHANGELOG, "user id u", "checkpointed ordering state (compacted)", dlq=False, config=_COMPACT),
     TopicSpec(RESOURCE_PARTIALS, "r*|b", "v3 Step 2 Stage 1: partial distinct-user sets per shard"),
+    TopicSpec(ACCESS_EVENTS_BY_RSTAR, "r* (namespaced resource)", "v3 Step 7a: resource-keyed view for the CMU (one writer per resource memory)"),
     TopicSpec(RESOURCE_WINDOWS, "r*|b", "v3 Step 2 Stage 2: merged, finalised resource windows (exactly once)"),
     TopicSpec(RES_SHARD_CHANGELOG, "r*|b|shard", "checkpointed Stage-1 state (compacted)", dlq=False, config=_COMPACT),
     TopicSpec(RES_MERGE_CHANGELOG, "r*|b", "checkpointed Stage-2 state (compacted)", dlq=False, config=_COMPACT),

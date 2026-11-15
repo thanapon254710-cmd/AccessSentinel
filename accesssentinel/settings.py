@@ -99,6 +99,10 @@ class Settings(BaseSettings):
     txn_batch: int = 500                            # max records per Kafka transaction
     pdp_mode: str = "enforce"                       # enforce | shadow (decide + audit, do not enforce)
     gateway_internal_url: str = "http://localhost:8000"   # containers: http://gateway:8000 (session revocation)
+    # Gateway enforcement of the v3 action set (Step 8). [IMPL] values: v3 gives no TTL or rate.
+    pdp_decision_ttl: float = 30.0                  # PDP heartbeat older than this -> sensitivity fallback (0 = off)
+    pdp_fallback_apps: str = ""                     # per-application override, e.g. "finance=closed,docs=open"
+    throttle_per_minute: int = 20                   # Throttle: requests per user per minute before HTTP 429
 
     @field_validator("pdp_mode")
     @classmethod

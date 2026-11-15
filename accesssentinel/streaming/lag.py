@@ -16,6 +16,8 @@ GROUP_TOPICS = {
     "tcn-v3": ["access-events.ordered"],
     "resource-shard": ["access-events-by-resource"],
     "resource-merge": ["resource-partials"],
+    "cmu-user": ["access-events.ordered"],
+    "cmu-resource": ["access-events-by-rstar"],
     "escalation": ["risk-scores", "access-events-by-resource"],
     "graph-index": ["access-events-by-resource"],
     "tgn-rt": ["escalations.realtime"],

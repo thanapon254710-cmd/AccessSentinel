@@ -25,7 +25,7 @@ export default function Overview({ nav }: { nav: Nav }) {
         <Stat label="Protected applications" value={data?.applications ?? "—"} />
         <Stat label="Access events / s" value={data ? fmtNum(data.events_per_second, 2) : "—"} sub="Kafka access-events, last 5 s" />
         <Stat label="Open incidents" value={openInc.live ?? 0} sub={`+ ${openInc["synthetic-replay"] ?? 0} synthetic`} tone={(openInc.live ?? 0) > 0 ? "warn" : undefined} />
-        <Stat label="Blocked users" value={data?.blocked_users?.live ?? "—"} sub={`+ ${data?.blocked_users?.["synthetic-replay"] ?? 0} synthetic`} tone={(data?.blocked_users?.live ?? 0) > 0 ? "bad" : undefined} />
+        <Stat label="Users under a PDP action" value={data?.blocked_users?.live ?? "—"} sub={`+ ${data?.blocked_users?.["synthetic-replay"] ?? 0} synthetic`} tone={(data?.blocked_users?.live ?? 0) > 0 ? "bad" : undefined} />
         <Stat label="Sessions revoked (24 h)" value={data?.sessions_revoked_24h ?? "—"} />
         <Stat label="PDP mode" value={data?.pdp_mode ?? "—"} tone={data?.pdp_mode === "enforce" ? "ok" : "warn"} />
       </div>
@@ -71,7 +71,7 @@ export default function Overview({ nav }: { nav: Nav }) {
                   <tr key={d.decision_id}>
                     <td>{fmtClock(d.t)}</td>
                     <td><User u={d.u} onClick={(u) => nav("risk", u)} /></td>
-                    <td><Badge tone={d.decision === "Block" ? "bad" : "ok"}>{d.decision}</Badge></td>
+                    <td><Badge tone={d.decision === "Block" || d.decision === "Terminate" ? "bad" : d.decision === "Allow" ? "ok" : "warn"}>{d.decision}</Badge></td>
                     <td>{d.transition}</td>
                     <td>{d.reason}</td>
                     <td>{d.mode}{d.enforced ? "" : " (not enforced)"}</td>

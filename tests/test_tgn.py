@@ -245,3 +245,108 @@ def test_tgn_worker_saves_nothing_when_publishing_fails(trained):
         h.handle([esc_rec("a", T0 + 60)])
     assert not r.exists(COLL.format("a"))
     assert anchor_time({"t": 5.0, "evidence": {}}) == 5.0
+
+
+# ============================================================================================================
+# Revised v3 Phase 4: Continuous Node Memory Updater (CMU) service
+# ============================================================================================================
+import json as _json  # noqa: E402
+
+import fakeredis as _fakeredis  # noqa: E402
+import numpy as _np  # noqa: E402
+
+from accesssentinel.config import TGNv3Config  # noqa: E402
+from accesssentinel.schema import make_event as _make_event  # noqa: E402
+from accesssentinel.streaming.consumer import Record as _Record  # noqa: E402
+from accesssentinel.streaming.tgn_worker import CMU_KEY, CMU_NBR, CMU_STATS, CmuHandler, cmu_read  # noqa: E402
+
+
+class _CmuStub:
+    """Deterministic stand-in for the trained CMU: m(t) = m(t-) + 1 + 0.001 * m_other[0] (records its calls)."""
+    arch, version = "tgn-v3", "tgn3-stub"
+
+    def __init__(self):
+        self.cfg = TGNv3Config(n_neighbors=3)
+        self.calls = 0
+
+    def cmu_step(self, m_self, m_other, dt, f):
+        self.calls += 1
+        return m_self + 1.0 + 0.001 * m_other[:, :1]
+
+
+class _Prov:
+    def __init__(self, s): self.scorer = s
+    def get(self): return self.scorer
+
+
+def _cev(u, r, t):
+    return _make_event(u, "hr", r, 1, "view", True, {"ip": "10.0.0.1", "device": "d"}, "c" * 32, t=t)
+
+
+def _recs(evs):
+    return [_Record("t", 0, i, e.u.encode(), b"", 0, data=e) for i, e in enumerate(evs)]
+
+
+def test_cmu_updates_every_event_single_writer_per_side():
+    r, sc = _fakeredis.FakeRedis(), _CmuStub()
+    hu, hr = CmuHandler(_Prov(sc), r, "u"), CmuHandler(_Prov(sc), r, "r")
+    evs = [_cev("alice", "payroll", 100.0), _cev("alice", "directory", 110.0), _cev("bob", "payroll", 120.0)]
+    hu.handle(_recs(evs)); hr.handle(_recs(evs))
+    mu = cmu_read(r, "u", ["alice", "bob"], 100)
+    mr = cmu_read(r, "r", ["default/hr:payroll", "default/hr:directory"], 100)
+    assert round(float(mu["alice"]["m"][1]), 3) == 2.0 and round(float(mu["bob"]["m"][1]), 3) == 1.0   # 2 and 1 updates
+    pay = float(mr["default/hr:payroll"]["m"][1])
+    assert 2.0 < pay < 2.01 and mu["alice"]["t"] == 110.0   # 2 updates + the user memories' snapshot (counterpart read)
+    nb = [_json.loads(x) for x in r.lrange(CMU_NBR["u"].format("alice"), 0, -1)]
+    assert [x["n"] for x in nb] == ["default/hr:payroll", "default/hr:directory"]
+    assert hu.stats["updates"] == 3 and hr.stats["updates"] == 3
+
+
+def test_cmu_is_idempotent_under_redelivery_and_caps_neighbours():
+    r, sc = _fakeredis.FakeRedis(), _CmuStub()
+    h = CmuHandler(_Prov(sc), r, "u")
+    evs = [_cev("alice", f"res{i}", 100.0 + i) for i in range(5)]
+    h.handle(_recs(evs))
+    m1 = cmu_read(r, "u", ["alice"], 100)["alice"]["m"].copy()
+    h2 = CmuHandler(_Prov(sc), r, "u")                       # a restarted worker re-reads the same batch
+    h2.handle(_recs(evs))
+    assert _np.allclose(cmu_read(r, "u", ["alice"], 100)["alice"]["m"], m1) and h2.stats["skipped_applied"] == 5
+    assert r.llen(CMU_NBR["u"].format("alice")) == 3          # K most recent neighbours only
+
+
+def test_cmu_measures_counterpart_staleness_and_needs_a_trained_v3_model():
+    r, sc = _fakeredis.FakeRedis(), _CmuStub()
+    CmuHandler(_Prov(sc), r, "r").handle(_recs([_cev("x", "payroll", 100.0)]))      # resource snapshot at t=100
+    hu = CmuHandler(_Prov(sc), r, "u")
+    hu.handle(_recs([_cev("alice", "payroll", 160.0)]))
+    assert hu.stats["staleness_max"] == 60.0 and float(r.hget(CMU_STATS, "u_staleness_max_s")) == 60.0
+    import pytest as _pytest
+    with _pytest.raises(RuntimeError):
+        CmuHandler(_Prov(None), r, "u").handle(_recs([_cev("alice", "payroll", 200.0)]))
+
+
+def test_cmu_offset_idempotency_survives_a_redelivered_batch_larger_than_the_id_ring():
+    r, sc = _fakeredis.FakeRedis(), _CmuStub()
+    evs = [_cev("alice", "payroll", 100.0 + i) for i in range(200)]               # one node, 200 events, one partition
+    recs = [_Record("t", 3, 1000 + i, b"alice", b"", 0, data=e) for i, e in enumerate(evs)]
+    CmuHandler(_Prov(sc), r, "u").handle(recs)
+    m1 = cmu_read(r, "u", ["alice"], 100)["alice"]["m"].copy()
+    h2 = CmuHandler(_Prov(sc), r, "u")
+    h2.handle(recs)                                                                  # crash before the offset commit
+    assert _np.allclose(cmu_read(r, "u", ["alice"], 100)["alice"]["m"], m1) and h2.stats["skipped_applied"] == 200
+
+
+def test_cost_size_estimate_matches_the_neighbourhood_the_sge_embeds():
+    """Eq. 26 inputs: |E| counts the seed's edges and ALL window edges of up to K recent users per touched
+    resource (what analyse_v3 gathers), |V| those users + the seed's resources."""
+    from accesssentinel.streaming.escalation_service import neighbourhood_size_fn
+    r = _fakeredis.FakeRedis()
+    evs = [_cev("seed", "payroll", 1000.0 + i) for i in range(3)]
+    evs += [_cev(f"n{j}", "payroll", 1100.0 + j) for j in range(4)]
+    evs += [_cev("n0", "other", 1200.0 + i) for i in range(5)]                      # n0's edges on another resource
+    evs += [_cev("far", "other", 1300.0)]                                            # 2 hops: not in N_1(seed)
+    GraphIndexHandler(r, retention=86400).handle(_recs(evs))
+    e, v = neighbourhood_size_fn(r, window=3600.0, k=10)("seed", 2000.0)
+    assert (e, v) == (3 + 4 + 5, 1 + 4 + 1)
+    e2, v2 = neighbourhood_size_fn(r, window=3600.0, k=2)("seed", 2000.0)          # K most recent: n3, n2
+    assert (e2, v2) == (3 + 2, 1 + 2 + 1)

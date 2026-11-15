@@ -1,13 +1,14 @@
-"""PDP service (D3 Step 8): turns risk-scores (TCN) and group-scores (TGN) plus organisational policy C into
-Allow/Block decisions for the gateway, and enforces them at session time.
+"""PDP service (Revised v3 Step 8): turns risk-scores (TCN) and group-scores (TGN) plus organisational policy C into
+the six-action decisions of Eq. 21 for the gateway, and enforces Terminate / Block at session time.
 
     python -m accesssentinel.streaming.pdp_service
 
 Each tick: (1) re-read policy C from PostgreSQL (policy_blocks, deactivated users) - if PostgreSQL is
 unreachable, existing decisions simply stay in force; (2) end expired blocks; (3) drain the decision outbox:
 publish to `pdp-decisions` (-> HDFS), insert into the `pdp_decisions` audit table, and terminate the sessions of
-newly blocked users through the gateway's internal API (failed revocations are retried; the cached Block already
-denies every request meanwhile). Request-time enforcement needs no call: the gateway reads decision:<u>.
+users newly under Terminate / Block through the gateway's internal API (failed revocations are retried; the cached
+decision already denies every request meanwhile); (4) write the heartbeat pdp:alive (the gateway's decision TTL).
+Request-time enforcement needs no call: the gateway reads decision:<u> (psi-ordered).
 """
 import json
 import logging
@@ -16,7 +17,7 @@ import time
 from datetime import datetime, timezone
 from typing import Dict, List
 
-from ..pdp_engine import PolicyDecisionPoint
+from ..pdp_engine import DENY_ALL, PolicyDecisionPoint
 from ..topics import GROUP_SCORES, PDP_DECISIONS, RISK_SCORES, topic_name
 from .codec import decode_json_object
 from .consumer import DecodeError, Record
@@ -110,6 +111,7 @@ class PdpHandler:
             self.pdp.rc = rs.apply_risk(self.pdp.rc, eff)
             self.pdp.cfg = rs.apply_pdp(self.pdp.cfg, eff)
             self.pdp.theta_override = eff["pdp.theta_coll"]
+            self.pdp.theta_high_override = eff["risk.theta_high"] if "risk.theta_high" in rs.explicit(self.pdp.r) else None
             log.info("runtime settings applied: theta_high=%s theta_coll=%s block_ttl=%s", self.pdp.rc.theta_high,
                      self.pdp.theta_override or "model-calibrated", self.pdp.cfg.block_ttl)
 
@@ -124,6 +126,7 @@ class PdpHandler:
                 self.stats["policy_errors"] += 1
                 log.warning("policy sync failed (%s); existing decisions stay in force", type(e).__name__)
         self.pdp.expire_due()
+        self.pdp.heartbeat()
         self.drain()
         self.retry_revocations()
 
@@ -140,8 +143,8 @@ class PdpHandler:
         if self.policy is not None:
             self.policy.audit(recs)                      # raises -> retried; Kafka duplicates carry the same id
         for r in recs:                                   # queue revocations BEFORE acknowledging the outbox
-            if r["transition"] == "block" and r["enforced"] and self.revoker is not None:
-                self.pdp.r.hset(K_REVOKE, r["u"], r["reason"])
+            if r["transition"] == "block" and r["decision"] in DENY_ALL and r["enforced"] and self.revoker is not None:
+                self.pdp.r.hset(K_REVOKE, r["u"], f"{r['decision'].lower()}:{r['reason']}")
         self.pdp.outbox_ack(len(recs))
         self.stats["decisions_published"] += len(recs)
         for r in recs:
@@ -154,7 +157,7 @@ class PdpHandler:
         for u, reason in list(self.pdp.r.hgetall(K_REVOKE).items()):
             u, reason = (u.decode() if isinstance(u, bytes) else u), (reason.decode() if isinstance(reason, bytes) else reason)
             try:
-                n = self.revoker.revoke(u, f"pdp-block:{reason}")
+                n = self.revoker.revoke(u, f"pdp-{reason}")
                 self.pdp.r.hdel(K_REVOKE, u)
                 self.stats["sessions_revoked"] += n
             except Exception as e:  # noqa: BLE001 - retried next tick; the cached Block already denies requests

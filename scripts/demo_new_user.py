@@ -111,8 +111,11 @@ def main(argv=None) -> int:
         except ValueError:
             basis = {}
     s_ind = (basis or {}).get("s_ind")
+    th_b = (basis or {}).get("theta_B")
     check("PDP decision", dec.get("blocked"),
-          f"reason={dec.get('reason')}" + (f", S_ind={s_ind:.2f} >= theta_high {(basis or {}).get('theta_high')}" if s_ind else ""))
+          f"action={dec.get('action', dec.get('decision'))} reason={dec.get('reason')}"
+          + (f", S_ind={s_ind:.2f} >= " + (f"theta_B {th_b:.4f}" if th_b is not None else f"theta_high {(basis or {}).get('theta_high')}")
+             if s_ind else ""))
     inc = None
     for _ in range(10):
         inc = next((i for i in adm.get("/api/incidents?status=open").json()["incidents"] if args.user in i["users"]), None)

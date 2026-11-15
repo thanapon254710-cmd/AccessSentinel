@@ -220,8 +220,256 @@ def markdown_report(r: dict) -> str:
     return "\n".join(lines)
 
 
+# ============================================================================================================
+# Revised v3 TCN (Phase 3):  python -m accesssentinel.ml.train_tcn --arch v3 [--device cuda] [--promote]
+# ============================================================================================================
+"""
+Protocol (Revised v3 Step 4-5):
+  * data: SynthConfig.tcn_v3_study() (long val/test periods; attacks after the gap); timer context simulated
+    (features.SimulatedThreatFeed / SimulatedDevPosture; v3 Limitation 4)
+  * chronological split with gap g >= L events (Eq. 7, dataset.build_v3); encoder fitted on training only
+  * stage 1, self-supervised pre-training: next resource + next operation + time gap (l4 = 0)
+  * stage 2, fine-tuning on all four terms of Eq. 6, Focal Loss on L_sup only; early stopping on validation PR-AUC
+  * thresholds theta_low / theta_high / theta_B = quantiles 1 - alpha of S_ind on held-out NOMINAL validation
+    windows (Eq. 8); 0.4 / 0.6 are not used
+  * optional rolling-origin validation (--rolling-origin K): K origins inside the training period, each fold
+    trained on [t0, origin) and validated on the following days with the same gap rule
+  * test period scored once; latency measured on CPU (the deployed path) and on the GPU if present
+"""
+from ..config import TCNv3Config  # noqa: E402
+from ..tcn import TCNv3, multitask_loss  # noqa: E402
+from .dataset import build_v3  # noqa: E402
+from .features import SimulatedDevPosture, SimulatedThreatFeed  # noqa: E402
+
+
+def _tensors(b: dict, device):
+    t = {k: torch.from_numpy(np.ascontiguousarray(v)).to(device, non_blocking=True) for k, v in b.items()}
+    t["next_mask"] = t["next_mask"].bool()
+    return t
+
+
+@torch.no_grad()
+def scores_v3(model, idx, ids, device, batch: int = 1024) -> np.ndarray:
+    model.eval()
+    out = []
+    for i in range(0, len(ids), batch):
+        b = _tensors(idx.gather(ids[i:i + batch]), device)
+        out.append(torch.sigmoid(model(b["res"], b["op"], b["net"], b["num"], b["z"])["logit"]).float().cpu().numpy())
+    return np.concatenate(out) if out else np.zeros(0)
+
+
+def train_v3(idx, enc, cfg: TCNv3Config, train_ids, val_ids, device, seed: int, pre_epochs: int, ft_epochs: int,
+             patience: int = 3, log=print):
+    torch.manual_seed(seed); rng = np.random.default_rng(seed)
+    model = TCNv3(cfg, enc.n_res, enc.n_op, enc.n_net).to(device)
+    opt = torch.optim.Adam(model.parameters(), lr=cfg.lr)
+    hist = []
+
+    def epoch(supervised: bool):
+        model.train()
+        perm = rng.permutation(train_ids)
+        tot, parts_sum, n = 0.0, {}, 0
+        for i in range(0, len(perm), cfg.batch_size):
+            b = _tensors(idx.gather(perm[i:i + cfg.batch_size]), device)
+            out = model(b["res"], b["op"], b["net"], b["num"], b["z"])
+            loss, parts = multitask_loss(out, b, cfg, supervised)
+            opt.zero_grad(); loss.backward(); opt.step()
+            tot += float(loss.detach()); n += 1
+            for k, v in parts.items():
+                parts_sum[k] = parts_sum.get(k, 0.0) + v
+        return tot / max(n, 1), {k: v / max(n, 1) for k, v in parts_sum.items()}
+
+    for ep in range(pre_epochs):
+        t0 = time.time(); loss, parts = epoch(False)
+        hist.append({"stage": "pretrain", "epoch": ep, "loss": loss, **parts, "seconds": time.time() - t0})
+        log(f"  [pretrain] epoch {ep} loss {loss:.4f} {({k: round(v, 4) for k, v in parts.items()})} ({time.time() - t0:.0f}s)")
+    best, best_ap, bad = copy.deepcopy(model.state_dict()), -1.0, 0
+    for ep in range(ft_epochs):
+        t0 = time.time(); loss, parts = epoch(True)
+        s = scores_v3(model, idx, val_ids, device)
+        yv = idx.y[val_ids]
+        ap = float(average_precision_score(yv, s)) if yv.sum() else float("nan")
+        hist.append({"stage": "finetune", "epoch": ep, "loss": loss, **parts, "val_pr_auc": ap, "seconds": time.time() - t0})
+        log(f"  [finetune] epoch {ep} loss {loss:.4f} sup {parts.get('sup', 0):.4f} val PR-AUC {ap:.4f} ({time.time() - t0:.0f}s)")
+        if ap > best_ap:
+            best_ap, best, bad = ap, copy.deepcopy(model.state_dict()), 0
+        else:
+            bad += 1
+            if bad >= patience:
+                break
+    model.load_state_dict(best)
+    return model, hist, best_ap
+
+
+def calibrate_v3(scores_nominal: np.ndarray, cfg: TCNv3Config) -> dict:
+    q = lambda a: float(np.quantile(scores_nominal, 1.0 - a))
+    th = {"theta_low": q(cfg.alpha_low), "theta_high": q(cfg.alpha_high), "theta_B": q(cfg.alpha_block)}
+    th["theta_high"] = max(th["theta_high"], th["theta_low"]); th["theta_B"] = max(th["theta_B"], th["theta_high"])
+    th.update({"alpha_low": cfg.alpha_low, "alpha_high": cfg.alpha_high, "alpha_block": cfg.alpha_block,
+               "n_nominal": int(len(scores_nominal))})
+    return th
+
+
+def latency_v3(model, idx, ids, device_name: str, repeats: int = 100) -> dict:
+    dev = torch.device(device_name)
+    m = copy.deepcopy(model).to(dev).eval()
+    out = {}
+    for bsz in (1, 64):
+        b = _tensors(idx.gather(ids[:bsz]), dev)
+        with torch.no_grad():
+            for _ in range(5):
+                m(b["res"], b["op"], b["net"], b["num"], b["z"])
+            ts = []
+            for _ in range(repeats if bsz == 1 else max(20, repeats // 5)):
+                if dev.type == "cuda":
+                    torch.cuda.synchronize()
+                t0 = time.perf_counter()
+                m(b["res"], b["op"], b["net"], b["num"], b["z"])
+                if dev.type == "cuda":
+                    torch.cuda.synchronize()
+                ts.append((time.perf_counter() - t0) * 1000)
+        out[f"batch_{bsz}_ms_median"] = float(np.median(ts)); out[f"batch_{bsz}_ms_p95"] = float(np.percentile(ts, 95))
+    out["device"] = device_name
+    out["torch_threads"] = torch.get_num_threads()
+    return out
+
+
+def rolling_origin_v3(ds, threat, posture, cfg, k: int, device, seed: int, log=print, span_days: float = 12.0,
+                      first_origin_day: float = 12.0) -> dict:
+    """K origins inside the training period; fold j trains on [t0, o_j) and validates on [o_j, o_j + span)
+    (evaluated windows fully inside the validation segment = the same gap rule). The segment must be longer than
+    the gap of L - 1 events per user (~8 days here), otherwise nothing is evaluable (first run: 4-day segments
+    left ~480 windows and no attacks). Folds without attack windows report PR-AUC None."""
+    t0, t1 = ds.split_bounds["train"]
+    span = span_days * 86400.0
+    step = ((t1 - span) - (t0 + first_origin_day * 86400.0)) / max(1, k - 1)
+    origins = [t0 + first_origin_day * 86400.0 + j * step for j in range(k)]
+    folds = []
+    for j, o in enumerate(origins):
+        split_of = lambda t, o=o: "train" if t < o else ("val" if t < o + span else "ignore")
+        idx, enc, _ = build_v3(ds.events, ds.labels, split_of, threat, posture, cfg.window_len)
+        tr, va = idx.mask("train"), idx.mask("val")
+        pos = int(idx.y[va].sum())
+        model, _, ap = train_v3(idx, enc, cfg, tr, va, device, seed + j, 1, 3, patience=2, log=lambda *a: None)
+        ap = ap if (pos > 0 and ap == ap and ap >= 0) else None
+        folds.append({"origin_day": (o - t0) / 86400.0, "val_windows": int(len(va)), "val_positives": pos,
+                      "val_pr_auc": ap})
+        log(f"  [rolling-origin] fold {j}: origin day {(o - t0) / 86400:.0f}, {len(va)} windows ({pos} attack), "
+            f"val PR-AUC {ap if ap is None else round(ap, 4)}")
+    aps = [f["val_pr_auc"] for f in folds if f["val_pr_auc"] is not None]
+    return {"folds": folds, "pr_auc_mean": float(np.mean(aps)) if aps else None,
+            "pr_auc_std": float(np.std(aps)) if aps else None}
+
+
+def run_v3(model_dir: str, results_dir: str, synth: SynthConfig, cfg: TCNv3Config, device: str, seed: int,
+           promote: bool, rolling_origin: int = 0, log=print) -> dict:
+    if cfg.finetune_epochs < 1:
+        raise ValueError("refusing to train a v3 TCN without supervised fine-tuning: an untrained network must "
+                         "never be saved or served")
+    t_start = time.time()
+    started = datetime.now(timezone.utc).isoformat()
+    torch.manual_seed(seed)
+    log(f"generating synthetic data ({synth.n_users} users, {synth.days} days, seed {synth.seed}) ...")
+    ds = generate(synth)
+    threat, posture = SimulatedThreatFeed(), SimulatedDevPosture.from_dataset(ds)
+    idx, enc, _ = build_v3(ds.events, ds.labels, ds.split_of, threat, posture, cfg.window_len)
+    tr, va, te = idx.mask("train"), idx.mask("val"), idx.mask("test")
+    lost = {s: {"windows": int((idx.split == s).sum() - len(idx.mask(s))),
+                "attack_events_in_gap": int(idx.y[(idx.split == s) & ~idx.evaluable].sum())} for s in ("val", "test")}
+    log(f"windows: train {len(tr)} (+{int(idx.y[tr].sum())}), val {len(va)} (+{int(idx.y[va].sum())}), "
+        f"test {len(te)} (+{int(idx.y[te].sum())}); gap removed {lost}")
+    model, hist, best_ap = train_v3(idx, enc, cfg, tr, va, device, seed, cfg.pretrain_epochs, cfg.finetune_epochs, log=log)
+    attackers = {u for u, p in ds.users.items() if p.get("attacker")}
+    s_val = scores_v3(model, idx, va, device)
+    nominal = s_val[(idx.y[va] == 0) & ~np.isin(idx.users[va], list(attackers))]
+    th = calibrate_v3(nominal, cfg)
+    log(f"calibrated on {len(nominal)} nominal validation windows: theta_low {th['theta_low']:.4f}, "
+        f"theta_high {th['theta_high']:.4f}, theta_B {th['theta_B']:.4f}")
+    s_te = scores_v3(model, idx, te, device)
+    test = ev.report_at("tcn_v3", idx, te, s_te, attackers,
+                        {k: th[k] for k in ("theta_low", "theta_high", "theta_B")})
+    test["fixed_0.6_for_reference"] = ev.point_metrics(idx.y[te], s_te).get("at_0.6")
+    lat = {"cpu": latency_v3(model, idx, te, "cpu")}
+    if torch.cuda.is_available():
+        lat["cuda"] = latency_v3(model, idx, te, "cuda")
+    ro = rolling_origin_v3(ds, threat, posture, cfg, rolling_origin, device, seed, log) if rolling_origin else None
+    version = f"tcn3-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{ds.fingerprint()[:6]}"
+    manifest = {"parent_version": None, "tcn_config": cfg.to_dict(), "receptive_field": cfg.receptive_field(),
+                "data": {"source": "synthetic", "synth_config": asdict(synth), "fingerprint": ds.fingerprint(),
+                         "events": len(ds.events), "timer_context": "simulated (SimulatedThreatFeed, SimulatedDevPosture)"},
+                "encoder": {"n_res": enc.n_res, "n_op": enc.n_op, "n_net": enc.n_net, "fingerprint": enc.fingerprint()},
+                "split": {"rule": "Eq. 7 chronological, gap g = L - 1 events per user", "windows":
+                          {"train": int(len(tr)), "val": int(len(va)), "test": int(len(te))}, "removed_by_gap": lost},
+                "training": {"history": hist, "best_val_pr_auc": best_ap, "seed": seed, "device": device},
+                "test_summary": {"pr_auc": test["event_level"]["pr_auc"], "roc_auc": test["event_level"]["roc_auc"],
+                                 "at_theta_high": test["event_level"]["at_theta_high"]},
+                "git_commit": _git_commit(), "torch": torch.__version__}
+    registry.save_v3(model_dir, version, model.cpu(), enc, cfg, th, manifest)
+    if promote:
+        registry.promote(model_dir, version)
+    r = {"version": version, "started_at": started, "finished_at": datetime.now(timezone.utc).isoformat(),
+         "wall_seconds": time.time() - t_start, "platform": platform.platform(), "thresholds": th, "test": test,
+         "latency": lat, "rolling_origin": ro, **{k: manifest[k] for k in ("tcn_config", "receptive_field", "data", "split", "training")},
+         "promoted": promote}
+    os.makedirs(results_dir, exist_ok=True)
+    with open(os.path.join(results_dir, f"{version}.json"), "w", encoding="utf-8") as f:
+        json.dump(r, f, indent=2, default=str)
+    with open(os.path.join(results_dir, f"{version}.md"), "w", encoding="utf-8") as f:
+        f.write(markdown_report_v3(r))
+    log(f"saved {version} (promoted={promote}); report {results_dir}/{version}.md")
+    return r
+
+
+def markdown_report_v3(r: dict) -> str:
+    t, ev_ = r["test"], r["test"]["event_level"]
+    L = [f"# Revised v3 TCN {r['version']}", "",
+         f"Synthetic data only (fingerprint {r['data']['fingerprint']}, {r['data']['events']} events). Timer context "
+         "ThreatFeed / DevPosture is simulated. Started {0}, finished {1} ({2:.0f} s).".format(
+             r["started_at"], r["finished_at"], r["wall_seconds"]), "",
+         f"Architecture: L = {r['tcn_config']['window_len']}, d = 43, dilations {r['tcn_config']['dilations']}, "
+         f"filters {r['tcn_config']['filters']}, two convolutions per block, receptive field {r['receptive_field']}.", "",
+         f"Split (Eq. 7, gap = L - 1 events per user): windows {r['split']['windows']}; removed by the gap {r['split']['removed_by_gap']}.", "",
+         "## Thresholds (Eq. 8, quantiles of S_ind on nominal validation windows)", "",
+         "| threshold | alpha | value |", "|---|---|---|",
+         f"| theta_low | {r['thresholds']['alpha_low']} | {r['thresholds']['theta_low']:.4f} |",
+         f"| theta_high | {r['thresholds']['alpha_high']} | {r['thresholds']['theta_high']:.4f} |",
+         f"| theta_B | {r['thresholds']['alpha_block']} | {r['thresholds']['theta_B']:.4f} |", "",
+         f"## Test period ({ev_['n']} windows, {ev_['positives']} attack events)", "",
+         f"ROC-AUC {ev_['roc_auc']:.4f}, PR-AUC {ev_['pr_auc']:.4f}", "",
+         "| at | threshold | precision | recall | F1 | FPR | TP | FP | FN |", "|---|---|---|---|---|---|---|---|---|"]
+    for k in ("theta_low", "theta_high", "theta_B"):
+        m = ev_[f"at_{k}"]
+        L.append(f"| {k} | {m['threshold']:.4f} | {m['precision']:.3f} | {m['recall']:.3f} | {m['f1']:.3f} | {m['fpr']:.4f} | {m['tp']} | {m['fp']} | {m['fn']} |")
+    inst = t["attack_instances_at_theta_high"]
+    L += ["", f"Attack instances detected at theta_high: {inst['detected']}/{inst['instances']} "
+              f"(median minutes to detect {inst['median_minutes_to_detect']}).",
+          f"Normal user-days flagged at theta_high: {t['normal_user_days_flagged_at_theta_high']['rate']:.3%}.", "",
+          "| scenario | events | recall / flag rate |", "|---|---|---|"]
+    for sc, v in t["by_scenario_at_theta_high"].items():
+        L.append(f"| {sc} | {v['events']} | {v.get('recall', v.get('flag_rate')):.3f} |")
+    L += ["", "## Inference latency (one window = L x d)", "", "| device | batch 1 median ms | batch 1 p95 | batch 64 median ms |", "|---|---|---|---|"]
+    for k, v in r["latency"].items():
+        L.append(f"| {k} | {v['batch_1_ms_median']:.2f} | {v['batch_1_ms_p95']:.2f} | {v['batch_64_ms_median']:.2f} |")
+    if r.get("rolling_origin"):
+        ro = r["rolling_origin"]
+        head = (f"PR-AUC {ro['pr_auc_mean']:.4f} +- {ro['pr_auc_std']:.4f}" if ro["pr_auc_mean"] is not None else "no fold had attack windows")
+        L += ["", f"## Rolling-origin validation: {head}", ""]
+        for f in ro["folds"]:
+            v = "n/a (no attack windows)" if f["val_pr_auc"] is None else f"{f['val_pr_auc']:.4f}"
+            L.append(f"- origin day {f['origin_day']:.0f}: {f['val_windows']} windows ({f['val_positives']} attack), PR-AUC {v}")
+    L += ["", "## Training", ""]
+    for h in r["training"]["history"]:
+        L.append(f"- {h['stage']} {h['epoch']}: loss {h['loss']:.4f}" + (f", val PR-AUC {h['val_pr_auc']:.4f}" if "val_pr_auc" in h else ""))
+    return "\n".join(L) + "\n"
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--arch", choices=["d3", "v3"], default="d3", help="d3 = Deliverable 3 baseline; v3 = Revised v3")
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--pretrain-epochs", type=int, default=None)
+    ap.add_argument("--finetune-epochs", type=int, default=None)
+    ap.add_argument("--rolling-origin", type=int, default=0)
     ap.add_argument("--model-dir", default=os.environ.get("AS_MODEL_DIR", "models"))
     ap.add_argument("--results-dir", default="experiments/results")
     ap.add_argument("--epochs", type=int, default=25)
@@ -231,6 +479,15 @@ def main(argv=None) -> int:
     ap.add_argument("--data-seed", type=int, default=7)
     ap.add_argument("--promote", action="store_true")
     args = ap.parse_args(argv)
+    if args.arch == "v3":
+        cfg = TCNv3Config()
+        if args.pretrain_epochs is not None:
+            cfg.pretrain_epochs = args.pretrain_epochs
+        if args.finetune_epochs is not None:
+            cfg.finetune_epochs = args.finetune_epochs
+        run_v3(args.model_dir, args.results_dir, SynthConfig.tcn_v3_study(seed=23 if args.data_seed == 7 else args.data_seed),
+               cfg, args.device, args.seed, args.promote, args.rolling_origin)
+        return 0
     run(args.model_dir, args.results_dir, SynthConfig(seed=args.data_seed), TCNConfig(), args.epochs, args.patience,
         args.cv_folds, args.seed, args.promote)
     return 0

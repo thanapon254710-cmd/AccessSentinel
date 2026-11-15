@@ -10,7 +10,7 @@ import argparse
 import sys
 import time
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
@@ -19,6 +19,12 @@ from ..settings import get_settings
 from . import demo_catalog as demo
 from .engine import make_engine
 from .models import SCHEMA_VERSION, AclRule, Application, Base, Resource, SchemaInfo, User
+
+
+# In-place upgrades for existing databases (create_all only adds missing tables). Idempotent statements.
+UPGRADES = {
+    4: ["ALTER TABLE pdp_decisions ALTER COLUMN decision TYPE VARCHAR(16)"],     # v3 actions (Terminate, ...)
+}
 
 
 def create_schema(engine: Engine) -> None:
@@ -30,6 +36,10 @@ def create_schema(engine: Engine) -> None:
         elif info.version > SCHEMA_VERSION:
             raise RuntimeError(f"database schema v{info.version} is newer than this code (v{SCHEMA_VERSION})")
         else:
+            for step in (k for k in sorted(UPGRADES) if info.version < k <= SCHEMA_VERSION):
+                if engine.dialect.name == "postgresql":
+                    for sql in UPGRADES[step]:
+                        db.execute(text(sql))
             info.version = SCHEMA_VERSION
 
 

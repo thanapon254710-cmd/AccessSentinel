@@ -11,8 +11,8 @@ from sqlalchemy import (JSON, BigInteger, Boolean, CheckConstraint, DateTime, Fl
                         Integer, String, Text, UniqueConstraint, func)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-SCHEMA_VERSION = 3              # v2 (Phase 8): policy_blocks, pdp_decisions; v3 (Phase 9): incidents, feedback,
-                                #   settings_changes
+SCHEMA_VERSION = 4              # v2 (Phase 8): policy_blocks, pdp_decisions; v3 (Phase 9): incidents, feedback,
+                                #   settings_changes; v4 (Revised v3 Phase 7): pdp_decisions.decision VARCHAR(16)
 
 
 class Base(DeclarativeBase):
@@ -95,7 +95,7 @@ class PdpDecision(Base):
     decision_id: Mapped[str] = mapped_column(String(32), primary_key=True)
     user_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     t: Mapped[float] = mapped_column(Float, nullable=False, index=True)
-    decision: Mapped[str] = mapped_column(String(8), nullable=False)
+    decision: Mapped[str] = mapped_column(String(16), nullable=False)       # v3 actions (Eq. 20), e.g. "Terminate"
     transition: Mapped[str] = mapped_column(String(24), nullable=False)
     reason: Mapped[str] = mapped_column(String(32), nullable=False)
     mode: Mapped[str] = mapped_column(String(8), nullable=False)

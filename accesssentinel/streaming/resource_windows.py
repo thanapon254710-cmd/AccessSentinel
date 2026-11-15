@@ -66,8 +66,9 @@ def decode_event(rec: Record) -> dict:
 class RepartitionProcessor:
     """Stateless re-key of every event onto the Stage-1 key (r*, b, hash(u) mod J_r)."""
 
-    def __init__(self, out_topic: str, width: float, shards: int):
+    def __init__(self, out_topic: str, width: float, shards: int, rstar_topic: Optional[str] = None):
         self.out, self.width, self.shards = out_topic, width, shards     # source partition goes into meta.src_p
+        self.rstar_topic = rstar_topic                                    # v3 CMU view keyed by r* alone
         self.stats = {"forwarded": 0}
 
     def decode(self, rec):
@@ -77,8 +78,11 @@ class RepartitionProcessor:
         d = rec.data
         d.setdefault("meta", {})["src_p"] = rec.partition
         key = f"{rstar_of(d)}|{window_of(float(d['t']), self.width)}|{shard_of(d['u'], self.shards)}"
-        emit(self.out, key.encode(), json.dumps(d).encode(),
-             [("as-source", f"{rec.topic}:{rec.partition}:{rec.offset}".encode())])
+        body = json.dumps(d).encode()
+        src = [("as-source", f"{rec.topic}:{rec.partition}:{rec.offset}".encode())]
+        emit(self.out, key.encode(), body, src)
+        if self.rstar_topic:                                              # same transaction: both views or none
+            emit(self.rstar_topic, rstar_of(d).encode(), body, src)
         self.stats["forwarded"] += 1
 
     def on_tick(self, now, emit):
@@ -319,7 +323,7 @@ def main(argv=None) -> int:
     import threading
     from ..config import EscalationConfig
     from ..settings import get_settings
-    from ..topics import (ACCESS_EVENTS, ACCESS_EVENTS_BY_RESOURCE, LATE_EVENTS, RES_MERGE_CHANGELOG,
+    from ..topics import (ACCESS_EVENTS, ACCESS_EVENTS_BY_RESOURCE, ACCESS_EVENTS_BY_RSTAR, LATE_EVENTS, RES_MERGE_CHANGELOG,
                           RES_SHARD_CHANGELOG, RESOURCE_PARTIALS, RESOURCE_WINDOWS, topic_name)
     from .runtime import install_stop, setup
     which = (argv or sys.argv[1:] or ["all"])[0]
@@ -339,7 +343,8 @@ def main(argv=None) -> int:
     stages = []
     if which in ("repartition", "all"):
         stages.append(_stage(s, "repartitioner", t(ACCESS_EVENTS),
-                             RepartitionProcessor(t(ACCESS_EVENTS_BY_RESOURCE), s.res_window_seconds, s.res_shards), None, inst))
+                             RepartitionProcessor(t(ACCESS_EVENTS_BY_RESOURCE), s.res_window_seconds, s.res_shards,
+                                                  t(ACCESS_EVENTS_BY_RSTAR)), None, inst))
     if which in ("shard", "windows", "all"):
         stages.append(_stage(s, "resource-shard", t(ACCESS_EVENTS_BY_RESOURCE),
                              ShardStage(t(RESOURCE_PARTIALS), t(LATE_EVENTS), s.res_window_seconds, s.delta_late,
