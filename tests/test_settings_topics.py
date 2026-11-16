@@ -46,7 +46,12 @@ def test_invalid_values_rejected(field, value):
 
 def test_topic_registry():
     names = all_topic_names()
-    assert len(names) == len(set(names)) == 2 * len(TOPICS)
+    assert len(names) == len(set(names)) == len(TOPICS) + sum(t.dlq for t in TOPICS)
+    from accesssentinel.topics import topic_configs
+    cfg = topic_configs()
+    assert cfg["access-events"]["message.timestamp.type"] == "LogAppendTime"            # ti = broker time
+    assert all(cfg[n]["cleanup.policy"] == "compact" for n in names if n.endswith(".changelog"))
+    assert "access-events.ordered.dlq" in names and "sequencer.changelog.dlq" not in names
     assert "access-events" in names and "access-events.dlq" in names and "access-events-by-resource" in names
     assert all(n.startswith("x.") for n in all_topic_names("x"))
     assert topic_name("risk-scores") == "risk-scores" and topic_name("risk-scores", "p") == "p.risk-scores"

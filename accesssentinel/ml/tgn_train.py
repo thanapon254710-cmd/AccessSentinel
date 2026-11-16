@@ -20,12 +20,13 @@ members (k = max(3, 25 %)). |g(u)| < 2 -> S_coll undefined (no coupled group), a
 """
 import copy
 import json
+import math
 import os
 import random
 import time
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, replace
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -359,3 +360,341 @@ def group_instance_detection(ds, items, flags) -> dict:
             for i in insts:
                 hit[i] |= bool(f)
     return {"groups": len(hit), "detected": int(sum(hit.values())), "per_group": dict(sorted(hit.items()))}
+
+
+# ============================================================================================================
+# Revised v3 TGN (Phases 4 and 6): continuous memory (CMU) over the whole event stream + selective graph
+# encoding (SGE) + candidate coordination graph and per-member collective score (Eqs. 11-19).
+#     python -m accesssentinel.ml.train_tgn --arch v3 [--device cuda] [--promote]
+# ============================================================================================================
+"""
+Training (TGN procedure of Rossi et al. [23], adapted):
+  * the TRAINING-period event stream is replayed in time order, in batches of `batch_size` events
+  * at the start of a batch the memories of the nodes touched by the PREVIOUS batch are updated by the CMU
+    (gradients flow into the message function and the GRU through these updates), then the SGE embeds the
+    current batch's users / resources from the updated memories and each node's K most recent neighbours
+  * edge reconstruction: observed edges -> eps = 0, corrupted edges (same user, random other resource) -> 1;
+    stage A (first `self_supervised_epochs`) uses benign edges only; stage B adds the collusion labels of the
+    synthetic generator (stand-in for analyst-verified incidents) as eps = 1 targets
+  * early stopping on validation PR-AUC of eps for collusion edges
+Collective scoring at an escalation anchor (seed u, time t):
+  * window edges of the seed and of the users sharing its resources in [t - W, t]; eps from h_u(t), h_r(t)
+  * H_W (Eq. 15): pairs sharing >= h_min resources within Delta_c, resources with window degree > d_cap
+    excluded; weights w_uv (Eq. 16); groups = connected components with |g| >= n_min, >= ns_min shared
+    sensitive resources and density >= delta_min (Eq. 17)
+  * A_u (Eq. 18); Nov(u, g) = share of u's accesses to the group's shared resources that are FIRST accesses
+    of u to that resource [IMPL definition]; S_coll = Cal(w1 TM_pi(eps) + w2 A_u + w3 Nov) (Eq. 19), with w and
+    Cal fitted together by logistic regression on training-period anchors; theta_C, theta_A = quantiles on
+    nominal validation members (as Eq. 8)
+"""
+from ..config import TGNv3Config  # noqa: E402
+from ..tgn import NODE_TYPES, TGNv3  # noqa: E402
+
+OPS_V3 = ("view", "edit", "delete", "export")
+
+
+def edge_feat_v3(e) -> List[float]:
+    """f(e) for the CMU / SGE: sensitivity, denied, operation one-hot, unmapped path (7)."""
+    return [float(e.s), float(1 - e.y)] + [float(e.o == o) for o in OPS_V3] + [float(e.r.startswith("unmapped:"))]
+
+
+class StreamV3:
+    """The event stream as arrays + node indices (users, resources r*, applications)."""
+
+    def __init__(self, ds):
+        evs = sorted(ds.events, key=lambda e: (e.t, e.event_id))
+        self.users = sorted({e.u for e in evs})
+        self.res = sorted({e.rstar for e in evs})
+        self.apps = sorted({e.a for e in evs})
+        U, R = len(self.users), len(self.res)
+        self.uid = {u: i for i, u in enumerate(self.users)}
+        self.rid = {r: U + i for i, r in enumerate(self.res)}
+        self.aid = {a: U + R + i for i, a in enumerate(self.apps)}
+        self.n_nodes = U + R + len(self.apps)
+        self.U, self.R = U, R
+        self.res_app = {self.rid[e.rstar]: self.aid[e.a] for e in evs}
+        self.res_s = {self.rid[e.rstar]: int(e.s) for e in evs}
+        self.u = np.array([self.uid[e.u] for e in evs]); self.r = np.array([self.rid[e.rstar] for e in evs])
+        self.t = np.array([e.t for e in evs], dtype=np.float64)
+        self.f = np.array([edge_feat_v3(e) for e in evs], dtype=np.float32)
+        lab = [ds.labels[e.event_id] for e in evs]
+        self.coll = np.array([l.collusion for l in lab], dtype=np.float32)
+        self.indiv = np.array([l.individual for l in lab], dtype=np.float32)
+        self.split = np.array([ds.split_of(e.t) for e in evs])
+        self.events = evs
+        ann = EdgeAnnotator()                                     # same familiarity as the live graph index
+        self.fam = np.array([ann.annotate(e)["fam"] for e in evs], dtype=np.int64)
+        self.ntype = np.zeros((self.n_nodes, NODE_TYPES), np.float32)
+        self.ntype[:U, 0] = 1; self.ntype[U:U + R, 1] = 1; self.ntype[U + R:, 2] = 1
+
+
+class MemoryStateV3:
+    """Node memories, last-update times and K-most-recent neighbour buffers (offline replay; the live worker
+    keeps the same state in Redis)."""
+
+    def __init__(self, st: StreamV3, cfg: TGNv3Config, device):
+        N, K = st.n_nodes, cfg.n_neighbors
+        self.st, self.cfg, self.dev = st, cfg, device
+        self.M = torch.zeros(N, cfg.mem_dim, device=device)
+        self.last_t = np.full(N, np.nan)
+        self.nbr = np.full((N, K), -1, dtype=np.int64)
+        self.nbr_t = np.zeros((N, K)); self.nbr_f = np.zeros((N, K, cfg.edge_feat_dim), np.float32)
+        self.ptr = np.zeros(N, dtype=np.int64)
+        self.pending = None                                      # previous batch (indices) not yet in memory
+        self.ntype = torch.from_numpy(st.ntype).to(device)
+
+    def apply_pending(self, model, grad: bool):
+        """CMU step for the nodes of the pending batch ('last message' aggregation per node, as in [23])."""
+        if self.pending is None or len(self.pending) == 0:
+            return self.M
+        st, idx = self.st, self.pending
+        last = {}
+        for i in idx:                                            # last event per node within the batch
+            last[st.u[i]] = (i, st.r[i]); last[st.r[i]] = (i, st.u[i])
+        nodes = np.array(list(last.keys())); ev = np.array([last[n][0] for n in nodes]); other = np.array([last[n][1] for n in nodes])
+        lt = self.last_t[nodes]
+        dt = np.where(np.isnan(lt), 0.0, st.t[ev] - np.nan_to_num(lt))
+        d = self.dev
+        ctx = torch.enable_grad() if grad else torch.no_grad()
+        with ctx:
+            new = model.cmu(self.M[torch.from_numpy(nodes).to(d)], self.M[torch.from_numpy(other).to(d)],
+                            torch.from_numpy(dt.astype(np.float32)).to(d), torch.from_numpy(st.f[ev]).to(d))
+            M2 = self.M.clone()
+            M2[torch.from_numpy(nodes).to(d)] = new
+        self.last_t[nodes] = st.t[ev]
+        return M2
+
+    def commit(self, M2, batch_idx):
+        """Memory after the pending batch becomes the state; the current batch becomes pending; neighbour
+        buffers learn the current batch's edges (user <- resource, resource <- user)."""
+        self.M = M2.detach()
+        st, K = self.st, self.cfg.n_neighbors
+        for i in batch_idx:
+            for a, b in ((st.u[i], st.r[i]), (st.r[i], st.u[i])):
+                p = self.ptr[a] % K
+                self.nbr[a, p], self.nbr_t[a, p], self.nbr_f[a, p] = b, st.t[i], st.f[i]
+                self.ptr[a] += 1
+        self.pending = batch_idx
+
+    def embed(self, model, M, nodes: np.ndarray, t: np.ndarray):
+        """SGE embeddings h_v(t) for nodes at times t (resources also see their application as a neighbour)."""
+        d, K = self.dev, self.cfg.n_neighbors
+        nb = self.nbr[nodes]; nt = self.nbr_t[nodes]; nf = self.nbr_f[nodes]
+        mask = nb >= 0
+        dt = np.where(mask, t[:, None] - nt, 0.0).astype(np.float32)
+        nbc = np.where(mask, nb, 0)
+        nb_t = torch.from_numpy(nbc).to(d)
+        m_n = M[nb_t] * torch.from_numpy(mask).to(d).unsqueeze(-1)
+        h = model.sge(M[torch.from_numpy(nodes).to(d)], self.ntype[torch.from_numpy(nodes).to(d)], m_n,
+                      self.ntype[nb_t], torch.from_numpy(nf).to(d), torch.from_numpy(dt).to(d), torch.from_numpy(mask).to(d))
+        return h
+
+
+def _bce(logit, target, weight=None):
+    return F.binary_cross_entropy_with_logits(logit, target, weight=weight)
+
+
+def train_tgn_v3(st: StreamV3, cfg: TGNv3Config, device, seed: int, log=print):
+    torch.manual_seed(seed); rng = np.random.default_rng(seed)
+    model = TGNv3(cfg).to(device)
+    opt = torch.optim.Adam(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    tr = np.where(st.split == "train")[0]
+    res_nodes = np.array(sorted(st.res_app))
+    hist, best, best_ap, bad = [], copy.deepcopy(model.state_dict()), -1.0, 0
+    for ep in range(cfg.epochs):
+        supervised = ep >= cfg.self_supervised_epochs
+        model.train()
+        ms = MemoryStateV3(st, cfg, device)
+        t0, tot, n = time.time(), 0.0, 0
+        for b0 in range(0, len(tr), cfg.batch_size):
+            idx = tr[b0:b0 + cfg.batch_size]
+            M2 = ms.apply_pending(model, grad=True)
+            u, r, t = st.u[idx], st.r[idx], st.t[idx]
+            neg = rng.choice(res_nodes, len(idx))
+            neg = np.where(neg == r, rng.choice(res_nodes, len(idx)), neg)
+            nodes = np.concatenate([u, r, neg]); tt = np.concatenate([t, t, t])
+            h = ms.embed(model, M2, nodes, tt)
+            B = len(idx)
+            hu, hr, hn = h[:B], h[B:2 * B], h[2 * B:]
+            f = torch.from_numpy(st.f[idx]).to(device)
+            coll = torch.from_numpy(st.coll[idx]).to(device)
+            lp, ln = model.dec(hu, hr, f), model.dec(hu, hn, f)
+            if supervised:
+                w = 1.0 + (cfg.sup_weight * 20.0 - 1.0) * coll           # collusion edges are rare: up-weight
+                loss = _bce(lp, coll, w) + _bce(ln, torch.ones_like(ln))
+            else:
+                keep = (coll == 0).float()                               # stage A: benign edges only
+                loss = (_bce(lp, torch.zeros_like(lp), keep) + _bce(ln, torch.ones_like(ln)))
+            opt.zero_grad(); loss.backward(); opt.step()
+            ms.commit(M2, idx)
+            tot += float(loss.detach()); n += 1
+        ap, _ = edge_ap_v3(model, st, cfg, device, "val")
+        hist.append({"epoch": ep, "stage": "joint" if supervised else "self_supervised", "loss": tot / max(n, 1),
+                     "val_edge_pr_auc": ap, "seconds": time.time() - t0})
+        log(f"  [tgn-v3] epoch {ep} ({'joint' if supervised else 'self-sup'}) loss {tot / max(n, 1):.4f} "
+            f"val collusion-edge PR-AUC {ap:.4f} ({time.time() - t0:.0f}s)")
+        if supervised:
+            if ap > best_ap:
+                best_ap, best, bad = ap, copy.deepcopy(model.state_dict()), 0
+            else:
+                bad += 1
+                if bad >= 5:
+                    break
+    model.load_state_dict(best)
+    return model, hist, best_ap
+
+
+@torch.no_grad()
+def edge_ap_v3(model, st: StreamV3, cfg: TGNv3Config, device, split: str):
+    """Replay the stream up to the end of `split` (memory continues across splits, as deployed) and score
+    every edge of `split` at its time: PR-AUC of eps against the collusion labels."""
+    model.eval()
+    ms = MemoryStateV3(st, cfg, device)
+    end = np.where(st.split == split)[0]
+    stop = end.max() + 1 if len(end) else 0
+    scores, labels = [], []
+    for b0 in range(0, stop, 512):
+        idx = np.arange(b0, min(b0 + 512, stop))
+        M2 = ms.apply_pending(model, grad=False)
+        sel = idx[st.split[idx] == split]
+        if len(sel):
+            h = ms.embed(model, M2, np.concatenate([st.u[sel], st.r[sel]]), np.concatenate([st.t[sel], st.t[sel]]))
+            B = len(sel)
+            scores.append(torch.sigmoid(model.dec(h[:B], h[B:], torch.from_numpy(st.f[sel]).to(device))).cpu().numpy())
+            labels.append(st.coll[sel])
+        ms.commit(M2, idx)
+    if not scores:
+        return float("nan"), None
+    s, y = np.concatenate(scores), np.concatenate(labels)
+    return (float(average_precision_score(y, s)) if y.sum() else float("nan")), (s, y)
+
+
+# ---------------------------------------------------------------------------------------------- collective score
+def coordination_groups(edges: List[dict], cfg: TGNv3Config, deg: Dict[str, int], res_s: Dict[str, int]):
+    """H_W and groups (Eqs. 15-17). edges: [{u, r, t, eps}] in the window. Returns (groups, w, shared)."""
+    by_r = defaultdict(lambda: defaultdict(list))
+    for e in edges:
+        if deg.get(e["r"], 0) <= cfg.d_cap:
+            by_r[e["r"]][e["u"]].append(e["t"])
+    pair_res = defaultdict(dict)                                  # (u, v) -> r -> min |t_u - t_v|
+    for r, us in by_r.items():
+        ul = sorted(us)
+        for i in range(len(ul)):
+            for j in range(i + 1, len(ul)):
+                a, b = ul[i], ul[j]
+                gap = min(abs(x - y) for x in us[a] for y in us[b])
+                if gap <= cfg.delta_c:
+                    pair_res[(a, b)][r] = gap
+    w = {}
+    for (a, b), rs in pair_res.items():
+        if len(rs) >= cfg.h_min:
+            w[(a, b)] = sum(res_s.get(r, 0) / math.log(1 + max(deg.get(r, 1), 1)) * math.exp(-gap / cfg.tau) for r, gap in rs.items())
+    adj = defaultdict(set)
+    for (a, b) in w:
+        adj[a].add(b); adj[b].add(a)
+    groups, seen = [], set()
+    for start in list(adj):
+        if start in seen:
+            continue
+        comp, stack = set(), [start]
+        while stack:
+            x = stack.pop()
+            if x in comp:
+                continue
+            comp.add(x); stack.extend(adj[x] - comp)
+        seen |= comp
+        n = len(comp)
+        n_edges = sum(1 for (a, b) in w if a in comp and b in comp)
+        density = n_edges / (n * (n - 1) / 2) if n > 1 else 0.0
+        shared = {r for r, us in by_r.items() if res_s.get(r, 0) == 1 and len(set(us) & comp) >= 2}
+        if n >= cfg.n_min and len(shared) >= cfg.ns_min and density >= cfg.delta_min:
+            groups.append({"members": sorted(comp), "density": density, "shared_sensitive": sorted(shared)})
+    return groups, w
+
+
+def member_features(u: str, g: dict, edges: List[dict], w: Dict, cfg: TGNv3Config, first_access: Dict = None) -> List[float]:
+    """[TM_pi(eps of u's edges), A_u (Eq. 18), Nov(u, g)]."""
+    eps = sorted(e["eps"] for e in edges if e["u"] == u)
+    k = int(len(eps) * cfg.trim_pi)
+    core = eps[k:len(eps) - k] if len(eps) > 2 * k else eps
+    tm = float(np.mean(core)) if core else 0.0
+    others = [v for v in g["members"] if v != u]
+    a_u = sum(w.get((min(u, v), max(u, v)), 0.0) for v in others) / max(len(others), 1)
+    sh = [e for e in edges if e["u"] == u and e["r"] in g["shared_sensitive"]]
+    nov = float(np.mean([float(e.get("fam", 1) == 0) for e in sh])) if sh else 0.0      # first-day access (live parity)
+    return [tm, a_u, nov]
+
+
+@torch.no_grad()
+def anchor_replay_v3(model, st: StreamV3, cfg: TGNv3Config, device, anchors: List[Tuple[float, str]]):
+    """Replay the whole stream (no gradients); at each anchor (t, seed user) compute eps for the window edges of
+    the seed and of the users sharing its resources, then H_W, groups and member features.
+    Nov uses the graph index's familiarity (fam == 0: first day the user accessed the resource), as live.
+    Returns one record per anchor: {seed, t, edges, groups, w}."""
+    model.eval()
+    ms = MemoryStateV3(st, cfg, device)
+    anchors = sorted(anchors)
+    out, ai = [], 0
+    seen_access = set()
+    first_access = {}                                             # (user, r*) -> 1 if the user's first access
+    W = cfg.window
+    for b0 in range(0, len(st.t), 256):
+        idx = np.arange(b0, min(b0 + 256, len(st.t)))
+        bt = st.t[idx[0]] if len(idx) else float("inf")
+        M2 = ms.apply_pending(model, grad=False)
+        while ai < len(anchors) and anchors[ai][0] <= bt:
+            t, seed = anchors[ai]; ai += 1
+            out.append(_score_anchor(model, ms, M2, st, cfg, device, t, seed, first_access))
+        if not len(idx):
+            break
+        for i in idx:
+            key = (st.u[i], st.r[i])
+            if key not in seen_access:
+                seen_access.add(key); first_access[(st.users[st.u[i]], st.res[st.r[i] - st.U])] = 1
+            else:
+                first_access.setdefault((st.users[st.u[i]], st.res[st.r[i] - st.U]), 0)
+        ms.commit(M2, idx)
+    if ai < len(anchors):                                         # anchors after the last batch's first event
+        M2 = ms.apply_pending(model, grad=False)
+        while ai < len(anchors):
+            t, seed = anchors[ai]; ai += 1
+            out.append(_score_anchor(model, ms, M2, st, cfg, device, t, seed, first_access))
+    return out
+
+
+def _score_anchor(model, ms, M2, st, cfg, device, t, seed, first_access):
+    W = cfg.window
+    lo, hi = np.searchsorted(st.t, [t - W, t], side="right")
+    win = np.arange(lo, hi)
+    if seed not in st.uid or not len(win):
+        return {"seed": seed, "t": t, "edges": [], "groups": [], "w": {}}
+    su = st.uid[seed]
+    seed_res = set(st.r[win][st.u[win] == su])
+    users = {su}
+    for r in seed_res:                                            # sampled neighbourhood: K most recent users per r
+        us = st.u[win][st.r[win] == r]
+        users |= set(us[-cfg.n_neighbors:].tolist())
+    sel = win[np.isin(st.u[win], list(users))]
+    if not len(sel):
+        return {"seed": seed, "t": t, "edges": [], "groups": [], "w": {}}
+    nodes = np.unique(np.concatenate([st.u[sel], st.r[sel]]))
+    h = ms.embed(model, M2, nodes, np.full(len(nodes), t))
+    pos = {n: i for i, n in enumerate(nodes)}
+    hu = h[torch.tensor([pos[x] for x in st.u[sel]], device=device)]
+    hr = h[torch.tensor([pos[x] for x in st.r[sel]], device=device)]
+    eps = torch.sigmoid(model.dec(hu, hr, torch.from_numpy(st.f[sel]).to(device))).cpu().numpy()
+    edges = [{"u": st.users[st.u[i]], "r": st.res[st.r[i] - st.U], "t": float(st.t[i]), "eps": float(s), "coll": float(st.coll[i]),
+              "fam": int(st.fam[i])}
+             for i, s in zip(sel, eps)]
+    deg = defaultdict(set)
+    for i in win:
+        deg[st.res[st.r[i] - st.U]].add(st.u[i])
+    deg = {r: len(v) for r, v in deg.items()}
+    res_s = {st.res[k - st.U]: v for k, v in st.res_s.items()}
+    groups, w = coordination_groups(edges, cfg, deg, res_s)
+    feats = {}
+    for g in groups:
+        for m in g["members"]:
+            feats[m] = member_features(m, g, edges, w, cfg, first_access)
+    return {"seed": seed, "t": t, "edges": edges, "groups": groups, "w": {f"{a}|{b}": v for (a, b), v in w.items()},
+            "features": feats}

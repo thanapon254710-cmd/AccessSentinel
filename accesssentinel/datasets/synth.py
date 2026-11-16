@@ -35,7 +35,9 @@ import numpy as np
 
 from ..db import demo_catalog as demo
 from ..events import AccessEvent
-from ..schema import EVENT_SCHEMA_VERSION, REQUIRED_PERMISSION
+from ..schema import REQUIRED_PERMISSION
+
+EVENT_SCHEMA_VERSION = 1      # synthetic records stay schema v1 (no gateway stream / sequence number); keeps dataset fingerprints
 
 DAY, HOUR, MIN = 86400.0, 3600.0, 60.0
 SPLITS = ("train", "val", "test")
@@ -64,6 +66,18 @@ class SynthConfig:
     # Phase 7 (off by default so the Phase 5 dataset stays byte-identical):
     collusion_v2: bool = False      # shared cross-app target sets, "familiar" variants, staggered bursts
     benign_teams: bool = False      # hard negatives: recurring team meetings co-accessing sensitive resources
+    # Revised v3 Phase 3: attacks start only after this many days of the val / test period, so they fall after
+    # the chronological gap g >= L events (Eq. 7) and can be evaluated. (0, 0, 0) keeps older datasets identical.
+    attack_margin_days: Tuple[int, int, int] = (0, 0, 0)
+
+    @classmethod
+    def tcn_v3_study(cls, seed: int = 23) -> "SynthConfig":
+        """Preset for the Revised-v3 TCN (Phase 3): L = 128 needs a gap of >= 128 events per user between splits
+        (Eq. 7), i.e. ~8-13 days at this activity level, so validation and test periods are long and attacks are
+        placed after the gap."""
+        return cls(n_users=400, days=70, split_days=(36, 14, 20), seed=seed, attack_margin_days=(0, 10, 10),
+                   attacks={"compromised_account": (6, 3, 5), "insider_exfiltration": (6, 3, 5),
+                            "bac_probe": (6, 3, 5), "low_and_slow": (5, 2, 4)})
 
     @classmethod
     def collusion_study(cls, seed: int = 11) -> "SynthConfig":
@@ -181,6 +195,9 @@ class _Gen:
                 "pref": dict(zip(perm_res, w)),
                 "obj_pool": int(rng.integers(40, 400)),
             })
+            # simulated MDM registry (v3 timer context DevPosture): devices IT issued to the user. Not a label:
+            # replacement laptops are registered too, attacker and personal travel devices are not. No RNG draw.
+            self.users[u]["managed_devices"] = [self.users[u]["device"]]
 
     def normal_event(self, u: str, t: float, ip: str, dev: str, new_session: bool, label: Label = None):
         rng, prof = self.rng, self.users[u]
@@ -223,6 +240,7 @@ class _Gen:
                 dev = f"{dev}-travel"
         if rng.random() < 0.006:                                   # laptop replacement (persistent)
             prof["device"] = dev = f"dev-{self.uid()[:10]}"; tag = Label(scenario="benign_new_device")
+            prof.setdefault("managed_devices", []).append(dev)              # issued by IT -> managed
         n = int(rng.poisson(prof["rate"] * (length / 8.5)))
         k = max(1, int(rng.integers(2, 6)))
         starts = np.sort(rng.uniform(start, start + length - 0.3, k))
@@ -268,6 +286,7 @@ class _Gen:
     # ------------------------------------------------------------------ attacks
     def pick_day(self, split: str, span: int = 1) -> int:
         a, b = self.split_day_ranges[split]
+        a = min(a + self.cfg.attack_margin_days[SPLITS.index(split)], b - 1)
         return int(self.rng.integers(a, max(a + 1, b - span + 1)))
 
     def attack(self, kind: str, u: str, split: str, inst: str):

@@ -22,8 +22,8 @@ from accesssentinel.settings import get_settings  # noqa: E402
 SUSPENDED = "suspended by the continuous-monitoring risk policy"
 
 
-def sh(*args) -> subprocess.CompletedProcess:
-    return subprocess.run([sys.executable, *args], capture_output=True, text=True, timeout=120)
+def sh(*args, timeout: float = 120) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, *args], capture_output=True, text=True, timeout=timeout)
 
 
 def admin(*args):
@@ -78,10 +78,12 @@ def individual(s, args):
     t0, n, hit, statuses = time.time(), 0, None, []
     while time.time() - t0 < args.timeout and hit is None:
         r = c.get(probes[n % len(probes)]); n += 1; statuses.append(r.status_code)
-        if suspended(r):
+        # the block shows up as request-time enforcement (403 "suspended") or, if the PDP's session revocation
+        # wins the race, as session-time enforcement (401): either counts, the PDP decision is checked below
+        if suspended(r) or r.status_code == 401:
             hit = (n, time.time() - t0)
         time.sleep(0.2)
-    res.append((hit is not None, "probing is suspended by the PDP (request-time enforcement)",
+    res.append((hit is not None, "probing is stopped by the PDP (403 suspended or session ended)",
                 f"after {hit[0] - 1} attack requests, {hit[1]:.1f} s (exposure window)" if hit else f"not blocked after {n} requests"))
     time.sleep(3)
     st = json.loads(admin("status", u).stdout)
@@ -94,8 +96,9 @@ def individual(s, args):
     time.sleep(20)
     res.append((json.loads(admin("status", u).stdout).get("blocked"), "still blocked 20 s later (sticky)", "no release, no expiry"))
     a = audit(u)
-    res.append((any(x["decision"] == "Block" and x["actor"] == "pdp" for x in a), "Block in the PostgreSQL audit trail",
-                str([(x["transition"], x["reason"]) for x in a[:3]])))
+    res.append((any(x["decision"] in ("Terminate", "Block") and x["actor"] == "pdp" for x in a),
+                "Terminate / Block in the PostgreSQL audit trail",
+                str([(x["decision"], x["transition"], x["reason"]) for x in a[:3]])))
     rel = admin("release", u, "--by", "analyst-demo", "--note", "smoke test: confirmed test traffic")
     c3, st3 = login(gw, u, pw)
     ok = st3 == 200 and c3.get("/apps/hr/directory").status_code == 200
@@ -143,24 +146,35 @@ def policy(s, args):
 def group(s, args):
     import redis as redis_lib
     r = redis_lib.Redis(**s.redis_kwargs(), decode_responses=True)
-    out = sh("scripts/smoke_tgn.py", "collusion", "--index", str(args.index))
+    from accesssentinel.pdp_engine import RANK, collective_action
+    since = time.time()
+    out = sh("scripts/smoke_tgn.py", "collusion", "--index", str(args.index), "--timeout", "1800", timeout=2400)
     flagged = []
     for k in r.scan_iter("coll:syn-tgn-*"):
         h = r.hgetall(k)
-        if h.get("above_theta_coll") == "1":
+        if h.get("above_theta_coll") == "1" and float(h["t"]) >= since:
             flagged.append((float(h["t"]), h["group_id"], json.loads(h["members"])))
     if not flagged:
-        print(out.stdout[-1500:]); return report([(False, "a TGN group above theta_coll exists", "none")])
+        print(out.stdout[-1500:]); return report([(False, "a TGN group above theta_C exists", "none")])
     t, gid, members = max(flagged)
     time.sleep(5)
     st = {m: json.loads(admin("status", m).stdout) for m in members}
-    blocked = all(v.get("blocked") for v in st.values())
-    coll = {m: v.get("reason") == "collective" or "collective" in json.loads(v.get("also") or "[]") for m, v in st.items()}
+    exp, got = {}, {}
+    for m in members:                                    # Eq. 21 per member from its own S_coll_u and A_u
+        h = r.hgetall(f"coll:{m}")
+        f = lambda k: float(h[k]) if h.get(k) not in (None, "") else None
+        exp[m] = collective_action(f("s_coll"), f("A_u"), f("theta_coll") or 1.0, f("theta_A")) or "Allow"
+        got[m] = st[m].get("action", "Allow")
+    # A member already under a MORE severe action (e.g. Terminate) keeps it: the collective evidence is recorded.
+    ok = all(got[m] == exp[m] or RANK.get(got[m], 0) > RANK[exp[m]] for m in members)
+    acted = [m for m in members if exp[m] != "Allow"]
+    coll = {m: st[m].get("reason") == "collective" or "collective" in json.loads(st[m].get("also") or "[]") for m in acted}
+    short = lambda m: m.split("-", 3)[-1]
     return report([(True, "TGN flagged a group", f"group {gid}, {len(members)} members"),
-                   (blocked, "every member of g(u) blocked (group-wide enforcement)",
-                    ", ".join(f"{m.split('-', 3)[-1]}:{v.get('reason')}" for m, v in st.items())),
-                   (all(coll.values()), "collective evidence recorded for every member (block or evidence transition)",
-                    ", ".join(f"{m.split('-', 3)[-1]}:{'yes' if ok else 'no'}" for m, ok in coll.items()))])
+                   (ok and bool(acted), "every member gets its Eq. 21 action (Restrict if A_u >= theta_A, else StepUp)",
+                    ", ".join(f"{short(m)}:{got[m]} (expected {exp[m]})" for m in members)),
+                   (all(coll.values()), "collective evidence recorded for every acted-on member",
+                    ", ".join(f"{short(m)}:{'yes' if v else 'no'}" for m, v in coll.items()))])
 
 
 def main(argv=None) -> int:

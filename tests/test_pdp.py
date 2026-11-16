@@ -40,8 +40,8 @@ def group(members, s, theta=0.9, t=T0):
 def test_individual_block_is_written_for_the_gateway_and_outboxed():
     c = Clock(); p = pdp(c)
     assert p.on_risk_score(risk("u", 0.59)) == []
-    (rec,) = p.on_risk_score(risk("u", 0.83))
-    assert (rec["decision"], rec["reason"], rec["enforced"]) == ("Block", "individual", True)
+    (rec,) = p.on_risk_score(risk("u", 0.83))                              # D3 score (no theta_B): Terminate
+    assert (rec["decision"], rec["reason"], rec["enforced"]) == ("Terminate", "individual", True)
     st = p.status("u")
     assert st["blocked"] and st["reason"] == "individual" and float(st["expires_at"]) == pytest.approx(T0 + 86400)
     assert json.loads(p.r.lindex(K_OUTBOX, 0))["decision_id"] == rec["decision_id"]
@@ -77,7 +77,7 @@ def test_new_kind_of_evidence_on_a_blocked_user_is_recorded_not_dropped():
     out = p.on_group_score(group(["a", "b"], 0.97, t=c.t))
     ev = {r["u"]: r for r in out}
     assert ev["a"]["transition"] == "evidence" and ev["a"]["reason"] == "collective" and ev["a"]["block_reason"] == "individual"
-    assert ev["b"]["transition"] == "block" and ev["b"]["reason"] == "collective"
+    assert ev["b"]["transition"] == "block" and ev["b"]["reason"] == "collective" and ev["b"]["decision"] == "Restrict"
     st = p.status("a")
     assert st["reason"] == "individual" and st["expires_at"] == exp and json.loads(st["also"]) == ["collective"]
     assert p.on_group_score(group(["a", "b"], 0.98, t=c.t)) == []          # same evidence kind again: nothing new
@@ -88,6 +88,7 @@ def test_group_wide_enforcement_uses_the_calibrated_theta():
     assert p.on_group_score(group(["a", "b", "c"], 0.85, theta=0.9)) == []
     out = p.on_group_score(group(["a", "b", "c"], 0.95, theta=0.9))
     assert [r["u"] for r in out] == ["a", "b", "c"] and all(r["reason"] == "collective" and r["group_id"] == "g1" for r in out)
+    assert all(r["decision"] == "Restrict" for r in out)                    # D3 group score: no A_u -> Restrict
     assert out[0]["basis"]["members"] == ["a", "b", "c"] and out[0]["s_coll"] == 0.95
     p2 = PolicyDecisionPoint(fakeredis.FakeRedis(), PDPConfig(), RiskConfig(), theta_coll=0.8, clock=c)
     assert len(p2.on_group_score(group(["a", "b"], 0.85, theta=0.9))) == 2     # operator override of theta
@@ -115,7 +116,7 @@ def test_analyst_release_with_grace_period():
     c.t += 60
     assert p.on_risk_score(risk("u", 0.95, t=c.t)) == []                 # same ongoing evidence: no re-block
     c.t += 900
-    assert p.on_risk_score(risk("u", 0.95, t=c.t))[0]["decision"] == "Block"
+    assert p.on_risk_score(risk("u", 0.95, t=c.t))[0]["decision"] == "Terminate"
 
 
 def test_policy_blocks_need_the_policy_lifted():
@@ -195,8 +196,8 @@ def test_service_publishes_audits_and_revokes_sessions():
     h.handle([rec("risk-scores", risk("x", 0.95)), rec("group-scores", group(["a", "b"], 0.97), 1)])
     h.tick()
     assert sorted(r["u"] for r in prod.sent) == ["a", "b", "x"] and len(pol.rows) == 3
-    assert sorted(u for u, _ in rev.calls) == ["a", "b", "x"] and p.r.llen(K_OUTBOX) == 0
-    assert all(reason.startswith("pdp-block:") for _, reason in rev.calls)
+    assert rev.calls == [("x", "pdp-terminate:individual")] and p.r.llen(K_OUTBOX) == 0   # Restrict keeps sessions
+    assert float(p.r.get("pdp:alive")) == T0                                 # heartbeat for the gateway TTL
 
 
 def test_failed_revocation_is_retried_and_the_block_still_holds():
@@ -206,7 +207,7 @@ def test_failed_revocation_is_retried_and_the_block_still_holds():
     assert p.r.hexists(K_REVOKE, "x") and p.status("x")["blocked"] and h.stats["revoke_failures"] == 1
     rev.fail = False
     h.tick()
-    assert rev.calls == [("x", "pdp-block:individual")] and not p.r.hexists(K_REVOKE, "x")
+    assert rev.calls == [("x", "pdp-terminate:individual")] and not p.r.hexists(K_REVOKE, "x")
 
 
 def test_failed_publish_keeps_the_outbox():
@@ -230,3 +231,81 @@ def test_policy_source_outage_keeps_existing_decisions():
     c.t += 30
     h.tick()                                                   # PostgreSQL unreachable: x must stay blocked
     assert p.status("x")["blocked"] and h.stats["policy_errors"] == 1
+
+
+
+# ------------------------------------------------------------------------------------------ Revised v3 (Phase 7)
+from accesssentinel.pdp_engine import ACTIONS, RANK, decide  # noqa: E402
+
+
+def v3risk(u, s, t=T0, th=0.05, tb=0.09):
+    return {**risk(u, s, t), "theta_high": th, "theta_B": tb, "model_version": "tcn3-x"}
+
+
+def v3group(members, member_scores, s, theta=0.86, theta_a=0.36, t=T0):
+    return {**group(members, s, theta, t), "model_kind": "tgn-v3", "theta_A": theta_a, "member_scores": member_scores,
+            "model_version": "tgn3-x"}
+
+
+@pytest.mark.parametrize("deny,s_ind,s_coll,a_u,expected", [
+    (True, 0.99, 0.99, 0.99, "Block"),                 # row 1 wins over everything
+    (False, 0.10, 0.99, 0.99, "Terminate"),            # row 2 before Restrict
+    (False, 0.07, 0.90, 0.50, "Restrict"),             # row 3 before Throttle
+    (False, 0.07, 0.90, 0.10, "StepUp"),               # row 4 before Throttle
+    (False, 0.07, 0.50, 0.90, "Throttle"),             # S_coll below theta_C
+    (False, 0.07, None, None, "Throttle"),
+    (False, 0.02, 0.50, 0.90, "Allow"),
+    (False, 0.09, None, None, "Terminate"),            # boundary: S_ind = theta_B
+    (False, 0.05, None, None, "Throttle"),             # boundary: S_ind = theta_high
+    (False, 0.02, 0.86, 0.36, "Restrict"),             # boundaries: S_coll = theta_C, A_u = theta_A
+])
+def test_eq21_mapping_top_down(deny, s_ind, s_coll, a_u, expected):
+    assert decide(deny, s_ind, 0.05, 0.09, s_coll, a_u, 0.86, 0.36) == expected
+    assert ACTIONS == ("Allow", "Throttle", "StepUp", "Restrict", "Terminate", "Block") and RANK["Block"] == 5
+
+
+def test_v3_throttle_band_escalates_to_terminate_and_never_downgrades():
+    c = Clock(); p = pdp(c, throttle_ttl=900)
+    assert p.on_risk_score(v3risk("u", 0.04)) == []                        # below theta_high
+    (thr,) = p.on_risk_score(v3risk("u", 0.06))
+    assert (thr["decision"], thr["expires_at"]) == ("Throttle", pytest.approx(T0 + 900))
+    assert not p.status("u")["blocked"] and p.status("u")["action"] == "Throttle"
+    c.t += 30
+    (term,) = p.on_risk_score(v3risk("u", 0.30, t=c.t))
+    assert term["decision"] == "Terminate" and term["previous_action"] == "Throttle" and term["psi"] > thr["psi"]
+    assert p.status("u")["blocked"] and p.on_risk_score(v3risk("u", 0.06, t=c.t)) == []   # no downgrade
+    assert p.status("u")["action"] == "Terminate"
+
+
+def test_v3_operator_theta_high_above_theta_b_leaves_no_throttle_band():
+    c = Clock(); p = pdp(c)
+    p.theta_high_override = 0.2
+    assert p.on_risk_score(v3risk("u", 0.15)) == []
+    assert p.on_risk_score(v3risk("u", 0.25))[0]["decision"] == "Terminate"
+
+
+def test_v3_group_restricts_core_members_and_steps_up_peripheral_ones():
+    c = Clock(); p = pdp(c)
+    ms = {"core": {"s_coll": 0.95, "A_u": 0.80}, "edge": {"s_coll": 0.90, "A_u": 0.10},
+          "low": {"s_coll": 0.40, "A_u": 0.90}}
+    out = {r["u"]: r for r in p.on_group_score(v3group(["core", "edge", "low"], ms, 0.95))}
+    assert out["core"]["decision"] == "Restrict" and out["edge"]["decision"] == "StepUp" and "low" not in out
+    assert out["edge"]["basis"]["A_u"] == 0.10 and out["edge"]["basis"]["theta_A"] == 0.36
+    assert p.status("edge")["expires_at"] and not p.status("core")["blocked"]
+    c.t += 10                                                               # stronger attribution later: escalate
+    ms2 = {"edge": {"s_coll": 0.92, "A_u": 0.50}}
+    (up,) = p.on_group_score(v3group(["edge"], ms2, 0.92, t=c.t))
+    assert (up["decision"], up["previous_action"]) == ("Restrict", "StepUp")
+
+
+def test_v3_decisions_carry_the_version_triple_and_psi_is_strictly_increasing():
+    c = Clock(); p = pdp(c)
+    p.sync_policy({})
+    recs = p.on_risk_score(v3risk("a", 0.5)) + p.on_risk_score(v3risk("b", 0.06)) + p.release("a", actor="x")
+    psis = [r["psi"] for r in recs]
+    assert psis == sorted(psis) and len(set(psis)) == 3 and psis[0] >= int(T0 * 1000)
+    assert recs[0]["v_model"] == "tcn3-x" and len(recs[0]["v_policy"]) == 12
+    assert int(p.status("b")["psi"]) == psis[1]
+    p.r.delete("pdp:psi")                                                   # flushed counter: re-seeded from the clock
+    c.t += 1
+    assert p.on_risk_score(v3risk("c", 0.5, t=c.t))[0]["psi"] > psis[-1]

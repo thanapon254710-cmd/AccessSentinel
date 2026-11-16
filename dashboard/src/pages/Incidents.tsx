@@ -20,7 +20,7 @@ export default function Incidents({ nav, id, me }: { nav: Nav; id?: string; me: 
       <div className="page-h">
         <div>
           <h2>Security Incidents</h2>
-          <p>Incidents are opened from PDP Block decisions and TGN groups above θ_coll. Analyst verdicts are the only labels used for retraining.</p>
+          <p>Incidents are opened from PDP enforcement decisions (Throttle … Block, Eq. 21) and TGN groups above θ_C. Analyst verdicts are the only labels used for retraining.</p>
         </div>
       </div>
       <div className="split">

@@ -24,6 +24,39 @@ class TCNConfig:
 
 
 @dataclass
+class TCNv3Config:
+    """Revised v3 TCN (Step 4, Eq. 4). [v3] = value from the revised paper, [IMPL] = implementation choice."""
+    window_len: int = 128                                     # [v3] L
+    feature_dim: int = 43                                     # [v3] d (Table III)
+    kernel_size: int = 2                                      # [v3] k
+    dilations: Tuple[int, ...] = (1, 2, 4, 8, 16, 32)         # [v3] six residual blocks, two convs each
+    filters: Tuple[int, ...] = (256, 256, 128, 128, 64, 64)   # [v3]
+    dropout: float = 0.2                                      # [IMPL]
+    head_hidden: int = 32                                     # [IMPL]
+    lambdas: Tuple[float, float, float, float] = (1.0, 1.0, 0.5, 1.0)   # [IMPL] l1..l4 of Eq. 6
+    focal_gamma: float = 2.0                                  # [IMPL] Focal Loss on L_sup only [v3]
+    focal_alpha: float = 0.25                                 # [IMPL]
+    lr: float = 1e-3                                          # [IMPL] Adam
+    batch_size: int = 256                                     # [IMPL]
+    pretrain_epochs: int = 3                                  # [IMPL] self-supervised (l4 = 0)
+    finetune_epochs: int = 8                                  # [IMPL] all four terms; early stop on val PR-AUC
+    alpha_low: float = 0.05                                   # [IMPL] Eq. 8 quantile levels on nominal data:
+    alpha_high: float = 0.01                                  #        theta = Q_{1-alpha}(S_ind | D_cal_nom)
+    alpha_block: float = 0.001                                #        alpha_B < alpha_h < alpha_l
+
+    def receptive_field(self) -> int:
+        return 1 + 2 * (self.kernel_size - 1) * sum(self.dilations)        # Eq. 4: 1 + 2 * 63 = 127
+
+    def to_dict(self) -> dict:
+        from dataclasses import asdict
+        return {k: list(v) if isinstance(v, tuple) else v for k, v in asdict(self).items()}
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "TCNv3Config":
+        return cls(**{k: tuple(v) if isinstance(v, list) else v for k, v in d.items() if k in cls.__dataclass_fields__})
+
+
+@dataclass
 class RiskConfig:
     theta_low: float = 0.4                    # [D3]
     theta_high: float = 0.6                   # [D3]
@@ -53,6 +86,15 @@ class EscalationConfig:
     sweep_min_rare: int = 3                   # [IMPL] C1: rare sensitive accesses needed in the lookback
     sweep_min_baseline_events: int = 20       # [IMPL] C1 ignores users without enough history (cold start)
     sweep_min_medium: int = 5                 # [IMPL] C2: Medium-tier scores without any High in the lookback
+    # ---- Revised v3 compute admission (Algorithm 1, Eqs. 26-30); a work unit = 1 ms of SGE inference
+    cost_c0: float = 35.59                    # [MEASURED Phase 6] C_u = c0 + c1 |E(N_h(u))| + c2 |V(N_h(u))| in ms of
+    cost_c1: float = 0.0889                   # SGE wall time; least squares over 20 seeded neighbourhoods (|E| 22-3520,
+    cost_c2: float = 0.8212                   # |V| 12-177), R2 0.92, MAPE 33%: evaluation/results/raw/sge-cost-fit-20261115-run2.json
+    rho_graph: float = 0.7                    # [v3 example] rho' target utilisation of the TGN workers
+    tgn_workers: int = 2                      # deployed SGE workers (tgn-rt, tgn-bg)
+    mu_graph: float = 1000.0                  # [IMPL] work units per second per worker (1 ms units -> 1000/s)
+    res_deadline: float = 900.0               # [IMPL] a resource-triggered user waits at most this long for budget
+    use_resource_windows: bool = True         # [v3] Path B from finalised event-time windows (resource-windows)
 
 
 @dataclass
@@ -80,10 +122,47 @@ class TGNConfig:
 
 
 @dataclass
+class TGNv3Config:
+    """Revised v3 TGN = CMU + SGE (Step 7, Eqs. 11-19). [v3] = initial value from the paper (following [23]),
+    [IMPL] = implementation choice the paper leaves open. All values are illustrative and uncalibrated (v3 Lim. 3)."""
+    mem_dim: int = 100                        # [v3] node memory dimension
+    msg_dim: int = 100                        # [v3] message dimension
+    time_dim: int = 100                       # [v3] time-encoder dimension
+    emb_dim: int = 100                        # [IMPL] SGE output (= memory dimension)
+    n_neighbors: int = 10                     # [v3] neighbours per hop
+    n_hops: int = 1                           # [v3]
+    n_heads: int = 2                          # [IMPL] graph attention heads
+    edge_feat_dim: int = 7                    # [IMPL] s, deny, operation one-hot (4), unmapped path
+    lr: float = 1e-4                          # [v3] Adam
+    epochs: int = 50                          # [v3] maximum; early stopping on validation [IMPL]
+    weight_decay: float = 1e-6                # [v3] L2
+    batch_size: int = 200                     # [IMPL] events per training batch (memory updated per batch)
+    self_supervised_epochs: int = 3           # [IMPL] edge reconstruction only, then joint with collusion labels
+    sup_weight: float = 1.0                   # [IMPL] weight of the supervised collusion term
+    # candidate coordination graph and collective score (Eqs. 15-19), all [IMPL]
+    window: float = 3600.0                    # analysis window W for the SGE neighbourhood and H_W (s)
+    delta_c: float = 1800.0                   # co-access proximity Delta_c (s)
+    h_min: int = 1                            # shared resources for a candidate pair. Calibrated on VALIDATION
+                                              # anchors (Phase 4): h_min=2 put 18 % of collusion seeds and 27 % of
+                                              # benign anchors in a group (worse than chance); h_min=1: 79 % / 57 %
+    d_cap: int = 25                           # resources with window degree above this are excluded from pairs
+    tau: float = 900.0                        # decay time-scale of tie weights (s)
+    n_min: int = 2                            # minimum group size
+    ns_min: int = 1                           # minimum sensitive resources shared by the group
+    delta_min: float = 0.3                    # minimum group density
+    trim_pi: float = 0.1                      # pi of the trimmed mean of edge anomaly scores
+    alpha_coll: float = 0.01                  # theta_C = Q_{1-alpha}(S_coll | nominal validation)
+    alpha_attr: float = 0.05                  # theta_A = Q_{1-alpha}(A_u | nominal validation)
+
+
+@dataclass
 class PDPConfig:
     theta_coll: float = 0.6                   # [IMPL] D3 gives no collective threshold (deployed: calibrated TGN value)
     coll_ttl: float = 3600.0                  # [IMPL] collective score expires after this long
-    block_ttl: float = 24 * 3600.0            # [IMPL] a risk-based Block lasts until released or this expiry (A3)
+    block_ttl: float = 24 * 3600.0            # [IMPL] Terminate (and a D3 Block) lasts until released or this expiry (A3)
+    restrict_ttl: float = 24 * 3600.0         # [IMPL] v3 Restrict (collective, A_u >= theta_A) expiry
+    stepup_ttl: float = 3600.0                # [IMPL] v3 StepUp (collective, A_u < theta_A) expiry
+    throttle_ttl: float = 900.0               # [IMPL] v3 Throttle (theta_high <= S_ind < theta_B) expiry
     release_grace: float = 3600.0             # [IMPL] after an analyst release, ML evidence cannot re-block for this long
     max_score_age: float = 600.0              # [IMPL] older risk scores (e.g. a backlog after restart) are not enforced
     max_group_score_age: float = 900.0        # [IMPL] same for TGN group scores

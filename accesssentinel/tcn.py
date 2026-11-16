@@ -5,7 +5,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from .config import TCNConfig
+from typing import Dict, Tuple
+
+from .config import TCNConfig, TCNv3Config
 from .metrics import roc_auc
 
 
@@ -147,3 +149,89 @@ class TCNScorer:
 
     def score(self, windows: np.ndarray) -> np.ndarray:
         return predict(self.model, windows.astype(np.float32), device=self.device)
+
+
+# ============================================================================================================
+# Revised v3 TCN (Phase 3). The D3 TCN above is kept as the baseline.
+# ============================================================================================================
+"""Revised v3 TCN (Step 4, Eqs. 3-6).
+
+  input   X_u in R^{L x 43}: embeddings (resource 12, permission/operation 6, network 6) + 19 numeric features
+  body    6 residual blocks, each with TWO causal dilated convolutions (kernel k = 2), dilations
+          (1, 2, 4, 8, 16, 32), filters (256, 256, 128, 128, 64, 64); receptive field
+          R = 1 + 2 (k - 1) sum(D) = 1 + 2 * 63 = 127 <= L = 128                                     (Eq. 4)
+  heads   on the last-step representation h_T:
+            next resource   (classification over the resource vocabulary)       L_next-res
+            next operation  (classification over (p, o))                          L_next-op
+            time gap        (regression of log1p seconds to the next event)        L_time-gap
+            supervised      S_ind = sigmoid(f([h_T ; z_u(t)]))                     L_sup (Focal Loss)
+          z_u(t) (timer context) joins only the supervised scoring head (Table III).
+  loss    L = l1 L_next-res + l2 L_next-op + l3 L_time-gap + l4 L_sup                                (Eq. 6)
+"""
+from .ml.features import D_V3, EMB_NET, EMB_OP, EMB_RES, N_Z  # noqa: E402
+
+
+class ResidualBlock(nn.Module):
+    """Two dilated causal convolutions + residual connection (Bai et al. style TCN block)."""
+
+    def __init__(self, cin, cout, k, dilation, dropout):
+        super().__init__()
+        self.c1, self.c2 = CausalConv1d(cin, cout, k, dilation), CausalConv1d(cout, cout, k, dilation)
+        self.drop = nn.Dropout(dropout)
+        self.skip = nn.Conv1d(cin, cout, 1) if cin != cout else nn.Identity()
+
+    def forward(self, x):
+        y = self.drop(F.relu(self.c1(x)))
+        y = self.drop(F.relu(self.c2(y)))
+        return F.relu(y + self.skip(x))
+
+
+class TCNv3(nn.Module):
+    def __init__(self, cfg: "TCNv3Config", n_res: int, n_op: int, n_net: int):
+        super().__init__()
+        assert len(cfg.dilations) == len(cfg.filters) == 6
+        assert cfg.receptive_field() <= cfg.window_len, "receptive field must not exceed L"
+        self.cfg = cfg
+        self.emb_res = nn.Embedding(n_res, EMB_RES, padding_idx=0)
+        self.emb_op = nn.Embedding(n_op, EMB_OP, padding_idx=0)
+        self.emb_net = nn.Embedding(n_net, EMB_NET, padding_idx=0)
+        blocks, cin = [], D_V3
+        for d, f in zip(cfg.dilations, cfg.filters):
+            blocks.append(ResidualBlock(cin, f, cfg.kernel_size, d, cfg.dropout))
+            cin = f
+        self.body = nn.Sequential(*blocks)
+        h = cfg.filters[-1]
+        self.next_res = nn.Linear(h, n_res)
+        self.next_op = nn.Linear(h, n_op)
+        self.time_gap = nn.Linear(h, 1)
+        self.score = nn.Sequential(nn.Linear(h + N_Z, cfg.head_hidden), nn.ReLU(), nn.Dropout(cfg.dropout),
+                                   nn.Linear(cfg.head_hidden, 1))
+
+    def embed(self, res, op, net, num) -> torch.Tensor:
+        x = torch.cat([self.emb_res(res), self.emb_op(op), self.emb_net(net), num], dim=-1)   # (B, L, 43)
+        return x
+
+    def forward(self, res, op, net, num, z) -> Dict[str, torch.Tensor]:
+        x = self.embed(res, op, net, num).transpose(1, 2)                                      # (B, 43, L)
+        h = self.body(x)[:, :, -1]                                                              # last step
+        return {"logit": self.score(torch.cat([h, z], dim=-1)).squeeze(-1),
+                "next_res": self.next_res(h), "next_op": self.next_op(h), "time_gap": self.time_gap(h).squeeze(-1)}
+
+
+def multitask_loss(out, batch, cfg: TCNv3Config, supervised: bool) -> Tuple[torch.Tensor, Dict[str, float]]:
+    """Eq. 6. Self-supervised terms use only windows that HAVE a next event in the same split (mask)."""
+    l1, l2, l3, l4 = cfg.lambdas
+    m = batch["next_mask"]
+    parts = {}
+    if m.any():
+        parts["next_res"] = F.cross_entropy(out["next_res"][m], batch["next_res"][m])
+        parts["next_op"] = F.cross_entropy(out["next_op"][m], batch["next_op"][m])
+        parts["time_gap"] = F.smooth_l1_loss(out["time_gap"][m], batch["next_gap"][m])
+    else:
+        zero = out["logit"].sum() * 0.0
+        parts["next_res"] = parts["next_op"] = parts["time_gap"] = zero
+    total = l1 * parts["next_res"] + l2 * parts["next_op"] + l3 * parts["time_gap"]
+    if supervised:
+        parts["sup"] = focal_loss(out["logit"], batch["y"], gamma=cfg.focal_gamma, alpha=cfg.focal_alpha)
+        total = total + l4 * parts["sup"]
+    return total, {k: float(v.detach()) for k, v in parts.items()}

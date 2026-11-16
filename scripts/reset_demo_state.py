@@ -33,7 +33,7 @@ def main(argv=None) -> int:
         ap.error("name users or pass --all-demo")
     r = redis_lib.Redis(**s.redis_kwargs())
     for u in users:
-        keys = [f"tcn:profile:{u}", f"risk:{u}", f"decision:{u}", f"shadow:decision:{u}", f"override:{u}", f"coll:{u}",
+        keys = [f"tcn:profile:{u}", f"tcn3:state:{u}", f"risk:{u}", f"decision:{u}", f"shadow:decision:{u}", f"override:{u}", f"coll:{u}",
                 f"esc:cool:rt:{u}", f"esc:cool:bg:{u}"]
         n = r.delete(*keys)
         r.zrem("tcn:recheck", u); r.zrem("pdp:blocked", u); r.zrem("shadow:pdp:blocked", u); r.zrem("esc:active", u)

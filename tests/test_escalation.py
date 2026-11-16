@@ -90,14 +90,18 @@ def test_cooldown_runs_on_the_injected_clock():
     assert len(e.flush_realtime()) == 1
 
 
-def test_realtime_cap_defers_overflow_by_urgency_and_never_drops():
-    c = Clock(); e = esc(c, max_realtime_per_window=2)
-    for i, s in enumerate([0.61, 0.99, 0.7, 0.95, 0.8]):
-        e.on_score(score(f"u{i}", s))
+def test_realtime_budget_admits_by_priority_high_overflow_left_to_the_pdp():
+    """v3 Algorithm 1: realtime candidates are admitted while the window budget lasts; high-risk overflow is
+    not analysed by the TGN (the PDP acts on S_ind alone), it is not re-queued."""
+    c = Clock(); e = esc(c, rho_graph=1.0, tgn_workers=1, mu_graph=1.0, analysis_window=60.0,
+                         cost_c0=20.0, cost_c1=0.0, cost_c2=0.0)          # budget 60 units, 20 per user -> 3 users
+    for i, sv in enumerate([0.61, 0.99, 0.7, 0.95, 0.8]):
+        e.on_score(score(f"u{i}", sv))
     c.t += 5
     first = e.flush_realtime()
-    assert [r["u"] for r in first] == ["u1", "u3"] and e.r.hlen(K_PENDING) == 3
-    assert [r["u"] for r in e.flush_realtime()] == ["u4", "u2"] and [r["u"] for r in e.flush_realtime()] == ["u0"]
+    assert len(first) == 3 and all(r["cost"] == 20.0 for r in first)
+    assert e.r.hlen(K_PENDING) == 0 and int(e.r.hget(K_STATS, "high_pdp_alone:realtime")) == 2
+    assert e.flush_realtime() == []
 
 
 # ------------------------------------------------------------------------------------------ Path D
@@ -112,16 +116,54 @@ def test_path_d_samples_active_low_risk_users_only():
     assert e2.flush_background() == []
 
 
-def test_background_skips_users_in_realtime_cooldown_and_sheds_overflow():
-    c = Clock(); e = esc(c, gamma=1.0, max_background_per_window=1)
-    e.on_score(score("hot", 0.9)); c.t += 5; e.flush_realtime()
+def test_background_skips_cooling_users_and_drops_sample_overflow():
+    c = Clock(); e = esc(c, gamma=1.0, rho_graph=1.0, tgn_workers=1, mu_graph=1.0, analysis_window=60.0,
+                         cost_c0=20.0, cost_c1=0.0, cost_c2=0.0)          # 60 units per window
+    e.on_score(score("hot", 0.9)); c.t += 5; e.flush_realtime()             # spends 20 of this window's budget
     e.r.hset("esc:tier", "hot", "low")                          # now low but still cooling from the realtime escalation
     for u in ("a", "b", "c"):
         e.on_score(score(u, 0.1))
     out = e.flush_background()
-    assert len(out) == 1 and out[0]["u"] != "hot"
-    assert int(e.r.hget(K_STATS, "shed:background")) == 2          # a/b/c minus the one emitted; "hot" is not shed
-    assert int(e.r.hget(K_STATS, "suppressed:background")) == 1     # ... it is cooling
+    assert len(out) == 2 and "hot" not in {r["u"] for r in out}           # 40 units left -> 2 samples
+    assert int(e.r.hget(K_STATS, "sample_dropped:background")) == 1         # sampled overflow is dropped
+    assert int(e.r.hget(K_STATS, "suppressed:background")) == 1             # "hot" is cooling
+
+
+def test_priority_admit_algorithm_1_order_bound_and_overflow_actions():
+    from accesssentinel.escalation_engine import priority_admit
+    cands = {"s1": ["sample"], "w1": ["sweep"], "h1": ["high"], "r1": ["resource", "sample"], "h2": ["high", "sweep"],
+             "r2": ["resource"]}
+    costs = {"s1": 5, "w1": 5, "h1": 5, "r1": 5, "h2": 5, "r2": 5}
+    adm, used, over = priority_admit(cands, costs, budget=12.0)
+    assert adm == ["r1", "r2"] and used == 10 <= 12                         # resource first; bound holds
+    assert over == {"sample_dropped": ["s1"], "sweep_deferred": ["w1"], "resource_queued": [],
+                    "high_pdp_alone": ["h1", "h2"]}
+    adm, used, over = priority_admit(cands, costs, budget=30.0)
+    assert adm == ["r1", "r2", "h1", "h2", "w1", "s1"] and len(set(adm)) == len(adm)   # each user at most once
+    import random as _r
+    rng = _r.Random(1)
+    for _ in range(200):                                                     # property: sum of costs <= budget
+        cs = {f"u{i}": [rng.choice(["resource", "high", "sweep", "sample"])] for i in range(rng.randint(0, 30))}
+        cost = {u: rng.uniform(1, 40) for u in cs}
+        b = rng.uniform(0, 300)
+        adm, used, _ = priority_admit(cs, cost, b)
+        assert sum(cost[u] for u in adm) <= b + 1e-9 and abs(used - sum(cost[u] for u in adm)) < 1e-9
+
+
+def test_resource_trigger_from_a_finalised_window_and_queue_with_deadline():
+    c = Clock(); e = esc(c, kappa=2, rho_graph=1.0, tgn_workers=1, mu_graph=1.0, analysis_window=60.0,
+                         cost_c0=40.0, cost_c1=0.0, cost_c2=0.0, res_deadline=100.0)   # 60 units: one user per window
+    win = {"kind": "final", "s": 1, "rstar": "default/hr:payroll", "window": 7, "users": ["a", "b", "c"]}
+    assert e.on_resource_window(win) == 3 and e.on_resource_window({**win, "kind": "correction"}) == 0
+    assert e.on_resource_window({**win, "users": ["a", "b"]}) == 0          # not more than kappa
+    c.t += 5
+    assert len(e.flush_realtime()) == 1 and e.r.hlen(K_PENDING) == 2       # two queued for budget
+    c.t += 60
+    assert len(e.flush_realtime()) == 1 and e.r.hlen(K_PENDING) == 1       # next window admits one more
+    c.t += 120
+    e.flush_realtime()
+    assert int(e.r.hget(K_STATS, "resource_expired:realtime") or 0) + len(e.flush_realtime()) >= 0
+    assert e.r.hlen(K_PENDING) == 0                                         # admitted or expired after the deadline
 
 
 # ------------------------------------------------------------------------------------------ Path C
@@ -172,7 +214,7 @@ class Producer:
 
 def handler(e, prod):
     return EscalationHandler(e, prod, "escalations.realtime", "escalations.background", "risk-scores",
-                             "access-events-by-resource")
+                             "resource-windows")
 
 
 def test_failed_publish_restages_and_the_next_tick_emits_again():
@@ -191,7 +233,8 @@ def test_handler_routes_topics_and_rejects_bad_scores():
     c = Clock(); e = esc(c, kappa=0, gamma=0.0)
     prod = Producer(fail=False); h = handler(e, prod)
     good = Record("risk-scores", 0, 0, b"u", json.dumps(score("u", 0.95)).encode(), 0)
-    res = Record("access-events-by-resource", 0, 0, b"k", json.dumps(ev("w", T0).__dict__).encode(), 0)
+    res = Record("resource-windows", 0, 0, b"k", json.dumps({"kind": "final", "s": 1, "rstar": "default/hr:payroll",
+                                                              "window": 1, "users": ["w"]}).encode(), 0)
     for r in (good, res):
         r.data = h.decode(r)
     h.handle([good, res]); c.t += 5; h.tick()

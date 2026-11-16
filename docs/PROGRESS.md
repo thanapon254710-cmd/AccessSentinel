@@ -15,7 +15,7 @@ Running record of completed work, test results and remaining work. Status labels
 | 7 TGN | Done (2026-11-11) — two-stage TGN trained and evaluated (synthetic), deployed, live parity verified |
 | 8 PDP + enforcement | Done (2026-11-11) — sticky lifecycle, outbox audit, enforcement verified live |
 | 9 Feedback + dashboard | In progress — built and verified live; analyst confirmation in the UI pending (needs a sign-in) |
-| 10 Integration + experiments | Not started |
+| 10 Integration + experiments | Superseded by the Revised v3 / Deliverable 4 roadmap (`docs/V3_AUDIT.md`) |
 
 ## Log
 
@@ -578,6 +578,111 @@ Not done / known limits:
 - No multi-factor authentication or SSO for the dashboard; one shared seed password for the two demo security
   accounts (development only).
 - Retraining is triggered manually (CLI), not scheduled.
+
+### 2026-11-15 — Revised v3 / Deliverable 4: Phase 1 (audit and roadmap)
+
+New specification: `AccessSentinel_Revised_v3_highlighted.pdf`. Branch `v3/phase1-audit`.
+
+Done:
+- Read the v3 paper in full; compared every requirement (Eqs. 1–34, Algorithm 1, Tables II–V) with the code:
+  `docs/V3_AUDIT.md` §3. Largest gaps: TCN architecture/features/objective/calibration (L 20 -> 128,
+  d 50 -> 43, multi-task), no continuous node memory (CMU) — the current TGN only runs for escalated users,
+  which v3 rules out — no SGE / coordination graph / per-member Scoll, no compute budget or PriorityAdmit, PDP
+  has 2 of 6 actions, no event-time watermarks or late-event policies, gateway fails closed instead of
+  sensitivity-based fallback, no ψ check at the gateway.
+- Environment recorded by `evaluation/env_info.py` (`evaluation/results/raw/environment-phase1.json`):
+  i5-13500HX 14C/20T, 15.7 GB RAM, RTX 4050 6 GB (unused: CPU-only PyTorch), Docker VM 7.6 GB.
+- References: [25] Prov-Trust found (doi 10.1007/s44443-026-00731-5, full text not accessible); [24] has a
+  candidate (Modell et al., IEEE BigData 2021 workshop) that the team must confirm. `evaluation/references/`.
+- Roadmap Phases 2–12 and experiment plan A–H: `docs/V3_AUDIT.md` §8–9.
+
+Waiting on team decisions D1–D7 (`docs/V3_AUDIT.md` §5). No v3 code changed; tests unchanged (152 pass).
+
+### 2026-11-15 — Revised v3 Phase 2 (event pipeline: schema, ordering, exactly-once, resource windows)
+
+Decision D1 taken: no Flink. The Python stream tier gained event-time ordering, keyed-state checkpoints and
+Kafka transactions instead.
+
+Added:
+- **Event schema v2** (v3 Eq. 1): `seq` (ν, per gateway/session stream), `stream`, `tenant` (r* =
+  `tenant/app:resource` via `AccessEvent.rstar`), `ti` (Kafka ingestion time, broker `LogAppendTime` on
+  `access-events`, filled by consumers), `v_policy` (hash of the gateway's catalog). v1 / synthetic records
+  still validate (synthetic data stays v1, dataset fingerprints unchanged). The gateway stamps `ts_gw_in` and
+  `ts_gw_pub`.
+- **Event-time ordering** (`streaming/event_time.py`): per-user watermark W = max te − δlate (Eq. 2), release
+  in (te, ν) order, idle bound (an event never waits more than δlate, so Lat_reorder ≤ δlate). The ν fast path
+  releases at once while a user has a single active session. The four late-event policies are history_only,
+  rescore, retro_alert and discard, chosen by sensitivity (defaults: s=0 history_only, s=1 rescore).
+- **Exactly-once stages** (`streaming/transactional.py`): each iteration is one Kafka transaction holding the
+  outputs, the changelog of changed keyed state (compacted topic) and the input offsets (KIP-447 fencing).
+  After restart or rebalance, state is rebuilt from the changelog (R3). Static group membership is used.
+  Scope: Kafka outputs + state + offsets; Redis/HDFS side effects stay at-least-once with idempotent writes.
+- **Sequencer service**: access-events → `access-events.ordered` (+ `late-events` audit). The TCN workers
+  now read the ordered stream (consumer group `tcn-v3`), honour late policies, and put a per-stage `trace`
+  into every risk score (input for Experiment C).
+- **Resource-keyed view, two-stage shard-and-merge** (`streaming/resource_windows.py`):
+  - The repartitioner is now transactional; key `r*|b|hash(u) mod J_r`.
+  - Stage 1 keeps exact per-shard participant sets of sensitive resources per event-time window b
+    (Δres = 900 s). It finalises a window by the minimum watermark over SOURCE partitions, with idle-source
+    handling.
+  - Stage 2 merges shards and emits `resource-windows` exactly once per (r*, b), plus corrections for late
+    shards.
+- **HDFS hourly aggregates** (`history_aggregates.py`): `agg-user-hourly` and `agg-resource-participants`,
+  computed by a background thread in hdfs-sink for closed hours. The sink also archives `late-events` and
+  `resource-windows`.
+- `streaming.consumer.fetch` (low-latency batch fetch) and idle position commits, used by all consumers.
+- Topic configs enforced by provisioning (compacted changelogs, LogAppendTime).
+- Compose services `sequencer` and `resource-windows`; new consumer groups in the lag monitor.
+- Tests: 32 new (event-time property tests, exactly-once with injected commit failure and crash/restart on an
+  in-memory transactional Kafka, shard-merge exactness and finality, aggregates, consumer). Full suite: 176
+  passed, 4 skipped.
+
+Verified live:
+- `smoke_v3_stream.py order` 7/7: 30 events from two interleaved sessions + 2 late events → ordered stream
+  exactly once, in event-time order; late events flagged history_only (s=0) / rescore (s=1); reorder wait
+  ≤ δlate (max 2.009 s); ti filled; the TCN scored 31 events (not the history-only one) with trace.
+- `smoke_v3_stream.py windows` 5/5: 5 users on a sensitive resource → exactly one final window with exactly
+  those users (3 of 4 shards reported); a late event after finalisation is audited, no second final.
+- **Crash test**: sequencer killed with SIGKILL 14 s into a 30 s burst of 3,000 events, then restarted →
+  3,000/3,000 events on the ordered stream, 0 duplicates, in sequence order; 49 state records restored. Run
+  twice (before and after static membership).
+- Regression (PDP shadow, demo state reset): gateway 29/29, streaming 10/10 (now incl. "resource view exactly
+  once": 0 duplicates), poison 3/3, escalation A 1/1, B 3/3, C 3/3. Enforce mode: `smoke_pdp individual` 9/9
+  (suspended after 5 attack requests, 1.0 s), `demo_new_user` 8/8 ×3.
+- Preview of Experiment C, measured on gateway traffic of two fresh single-session users (22 events; not the
+  experiment): gateway-in → TCN score median 19.0 ms, p95 23.1 ms (gateway 1.3, gateway → sequencer 7.0,
+  reorder 0.0, sequencer → TCN 7.3, TCN batch 2.8 ms). New-user attack blocked after 3 attack requests (0.6 s)
+  instead of 7 (1.4 s) before this phase.
+
+Found while verifying (all fixed, with regression tests):
+- Two interleaved sessions + the ν fast path: in-lateness events of the other session were overtaken and
+  treated as late (R1 violation). The fast path is now off while another session of the user was active within
+  60 s (`AS_SEQUENCER_CONCURRENCY_WINDOW`). Trade-off: a session silent for > 60 s that resumes with a delayed
+  event can produce a "behind_released" late event (handled by its policy, never lost).
+- Window finalisation used max te per by-resource partition. Because the repartitioner merges source
+  partitions that are fetched in chunks, this declared lagging sources' events late. Fixed with a min over
+  source-partition watermarks and idle handling.
+- Lateness in Stage 1 was judged per shard key; a late user hashing to an empty shard counted as new data.
+  Now judged per window.
+- Idle stages committed ~300 empty transactions a minute; now a transaction is opened only when there is
+  something to write.
+- After a hard kill the sequencer processed nothing for ~38 s (dead member's 45 s session). Static membership
+  + 10 s session: ~1 s from process start to resume.
+- Consumers of transactional topics showed one message of "lag" per partition (commit markers). Idle
+  consumers now commit their position.
+- At light load each stage waited its full poll timeout (librdkafka batch consume): median 2.9 s gateway →
+  score in the first trace, mostly the 1 s TCN poll and 2 s idle reorders of multi-session test users. Fixed
+  by `fetch` and the concurrency window (19 ms median above).
+- The new stages wrote dead-letter headers in a different format; aligned.
+
+Not done / limits:
+- "rescore" corrects the window only approximately in the D3 TCN (no re-ordering of already-observed events);
+  exact correction comes with the v3 TCN state (Phase 3).
+- Resource triggers are emitted when a window is FINAL (v3 Table IV), i.e. up to Δres + grace after the first
+  access. The existing real-time Path B (Redis counting) still runs; Phase 5 rewires escalation to
+  `resource-windows` and Experiment C will measure the delay.
+- TCN keyed state stays in Redis (at-least-once, eid de-duplication), not in a changelog.
+- The trace uses wall clock on one host: no cross-host clock skew is measured.
 
 ### Remaining
 

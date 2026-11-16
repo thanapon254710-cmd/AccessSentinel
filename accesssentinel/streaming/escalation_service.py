@@ -21,7 +21,8 @@ from typing import List
 
 from ..config import EscalationConfig, RiskConfig
 from ..escalation_engine import Escalator, baseline_range
-from ..topics import ACCESS_EVENTS_BY_RESOURCE, ESCALATIONS_BACKGROUND, ESCALATIONS_REALTIME, RISK_SCORES, topic_name
+from ..topics import (ACCESS_EVENTS_BY_RESOURCE, ESCALATIONS_BACKGROUND, ESCALATIONS_REALTIME, RESOURCE_WINDOWS,
+                      RISK_SCORES, topic_name)
 from .codec import decode_access_event, decode_json_object
 from .consumer import DecodeError, Record
 
@@ -49,8 +50,13 @@ class EscalationHandler:
         self.stats = {"scores": 0, "resource_events": 0, "realtime": 0, "background": 0, "sweeps": 0}
 
     def decode(self, rec: Record):
-        if rec.topic == self.resource_topic:
+        if rec.topic == self.resource_topic and not self.esc.cfg.use_resource_windows:
             return decode_access_event(rec.value)
+        if rec.topic == self.resource_topic:
+            d = decode_json_object(rec.value)
+            if "users" not in d or "rstar" not in d:
+                raise DecodeError("resource window without users / rstar")
+            return d
         d = decode_json_object(rec.value)
         if not isinstance(d.get("u"), str) or not isinstance(d.get("s_ind"), (int, float)):
             raise DecodeError("risk score without u / s_ind")
@@ -59,7 +65,10 @@ class EscalationHandler:
     def handle(self, records: List[Record]):
         for rec in records:
             if rec.topic == self.resource_topic:
-                self.esc.on_event(rec.data)
+                if self.esc.cfg.use_resource_windows:
+                    self.esc.on_resource_window(rec.data)          # v3: finalised event-time window (Alg. 1, l. 2)
+                else:
+                    self.esc.on_event(rec.data)                    # D3 baseline: sliding count per event
                 self.stats["resource_events"] += 1
             else:
                 self.esc.on_score(rec.data)
@@ -78,6 +87,7 @@ class EscalationHandler:
         if eff:
             self.esc.cfg = rs.apply_escalation(self.esc.cfg, eff)
             self.esc.rc = rs.apply_risk(self.esc.rc, eff)
+            self.esc.theta_high_override = eff["risk.theta_high"] if "risk.theta_high" in rs.explicit(self.esc.r) else None
             log.info("runtime settings applied: %s", self.esc.config_snapshot())
         self._emit(self.esc.flush_realtime(), self.rt_topic, "realtime")
         if self.sweep_loader is not None and self.esc.sweep_due():
@@ -103,6 +113,36 @@ class EscalationHandler:
     def _cb(self, err, msg) -> None:
         if err is not None:
             self._errors.append(str(err))
+
+
+def neighbourhood_size_fn(redis, tenant: str = "default", window: float = 3600.0, k: int = 10):
+    """(|E(N_h(u))|, |V(N_h(u))|) for Eq. 26, from the live edge index, matching what the SGE embeds (Phase 6):
+    the user's window edges + up to K recent users per touched resource (1 hop) and all of their window edges.
+    The neighbours' own window edges are counted too (ZCOUNT, no decoding), because the SGE embeds all of them:
+    counting one edge per neighbour under-estimated |E| ~7x on dense neighbourhoods (Phase 6 cost fit)."""
+    def raw(ids):
+        return [json.loads(v) for v in redis.mget([f"g:e:{i.decode() if isinstance(i, bytes) else i}" for i in ids]) if v] if ids else []
+
+    def size(u: str, now: float):
+        t0 = now - window
+        seed = raw(redis.zrangebyscore(f"g:user:{u}", t0, now))
+        res = sorted({e["r"] for e in seed})
+        users = {u}
+        for rk in res:
+            recent = []
+            for e in raw(redis.zrevrangebyscore(f"g:res:{rk}", now, t0)):        # most recent first, as the SGE takes them
+                if e["u"] not in recent:
+                    recent.append(e["u"])
+                if len(recent) >= k:
+                    break
+            users |= set(recent)
+        others = sorted(users - {u})
+        pipe = redis.pipeline(transaction=False)
+        for v in others:
+            pipe.zcount(f"g:user:{v}", t0, now)
+        n_other = sum(int(c) for c in pipe.execute()) if others else 0
+        return len(seed) + n_other, len(users) + len(res)
+    return size
 
 
 def escalation_config(s) -> EscalationConfig:
@@ -141,7 +181,7 @@ def main(argv=None) -> int:
     producer = Producer(producer_config(s.kafka_bootstrap, client))
     topics = {k: topic_name(v, s.kafka_topic_prefix) for k, v in
               {"rt": ESCALATIONS_REALTIME, "bg": ESCALATIONS_BACKGROUND, "scores": RISK_SCORES,
-               "res": ACCESS_EVENTS_BY_RESOURCE}.items()}
+               "res": RESOURCE_WINDOWS if cfg.use_resource_windows else ACCESS_EVENTS_BY_RESOURCE}.items()}
 
     if args.cmd == "sweep-now":
         at = _ts(args.at) if args.at else time.time()
@@ -157,6 +197,7 @@ def main(argv=None) -> int:
         return 0
 
     esc = Escalator(r, cfg, RiskConfig(), rng=random.Random())
+    esc.cost_fn = neighbourhood_size_fn(r, s.tenant)
     handler = EscalationHandler(esc, producer, topics["rt"], topics["bg"], topics["scores"], topics["res"],
                                 sweep_loader=lake_loader(lake, cfg))
     from ..runtime_settings import Watcher

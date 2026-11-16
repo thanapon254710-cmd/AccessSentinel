@@ -23,8 +23,7 @@ import uuid
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from accesssentinel.adapters.hdfs_lake import make_lake  # noqa: E402
-from accesssentinel.broker import resource_key  # noqa: E402
-from accesssentinel.config import StreamConfig  # noqa: E402
+from accesssentinel.streaming.resource_windows import rstar_of, shard_of, window_of  # noqa: E402
 from accesssentinel.settings import get_settings  # noqa: E402
 from accesssentinel.streaming.lag import GROUP_TOPICS, group_lag  # noqa: E402
 from accesssentinel.topics import ACCESS_EVENTS, ACCESS_EVENTS_BY_RESOURCE, topic_name  # noqa: E402
@@ -121,18 +120,17 @@ def cmd_verify(args) -> int:
             if ev.get("correlation_id") not in reqs:
                 continue
             seen[ev["correlation_id"]] = seen.get(ev["correlation_id"], 0) + 1
-            from accesssentinel.events import AccessEvent
-            if m.key().decode() != resource_key(AccessEvent(**ev), StreamConfig().time_bucket):
+            want = f"{rstar_of(ev)}|{window_of(float(ev['t']), s.res_window_seconds)}|{shard_of(ev['u'], s.res_shards)}"
+            if m.key().decode() != want:
                 wrong_key += 1
             key_parts.setdefault(m.key(), set()).add(m.partition())
     c.close()
     results.append((len(seen) == len(reqs), "every request is in the resource-keyed topic", f"{len(seen)}/{len(reqs)}"))
-    results.append((wrong_key == 0, "resource-view key = app:resource#time-bucket", f"wrong={wrong_key}"))
+    results.append((wrong_key == 0, "resource-view key = r*|window|shard (v3 Stage 1)", f"wrong={wrong_key}"))
     results.append((all(len(p) == 1 for p in key_parts.values()), "each resource key in one partition",
                     f"{len(key_parts)} keys"))
     redelivered = sum(n - 1 for n in seen.values())
-    results.append((True, "resource-view redeliveries (allowed: at-least-once, dropped downstream by event_id)",
-                    str(redelivered)))
+    results.append((redelivered == 0, "resource view exactly once (transactional repartitioner)", f"duplicates={redelivered}"))
     return report(results)
 
 

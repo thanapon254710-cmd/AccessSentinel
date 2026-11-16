@@ -143,7 +143,7 @@ def main(argv=None) -> int:
             continue
         ev = got[0]
         actual = dict(a=ev["a"], r=ev["r"], s=ev["s"], o=ev["o"], p=ev["p"], y=ev["y"], reason=ev["meta"].get("reason"))
-        ok = (actual == exp and ev["u"] == user and ev["schema_version"] == 1 and len(ev["event_id"]) == 32
+        ok = (actual == exp and ev["u"] == user and ev["schema_version"] == 2 and ev.get("seq", -1) >= 1 and len(ev["event_id"]) == 32
               and {"ip", "device", "session"} <= set(ev["c"]))
         results.append((ok, f"event check: {label}", f"u={ev['u']} " + " ".join(f"{k}={v}" for k, v in actual.items())))
     split = {u: sorted(p) for u, p in partitions.items() if len(p) > 1}

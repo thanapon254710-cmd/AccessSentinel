@@ -4,7 +4,8 @@ the history lake. It shares nothing with the real-time path except the Kafka top
     python -m accesssentinel.streaming.hdfs_sink
 
 Topics -> datasets:  access-events -> events (date/app partitions);  risk-scores, group-scores,
-pdp-decisions, analyst-feedback -> dataset of the same name (date partitions).
+pdp-decisions, analyst-feedback, late-events, resource-windows -> dataset of the same name (date partitions).
+A background thread writes the hourly aggregates (accesssentinel/history_aggregates.py).
 Buffers rows and writes one Parquet file per partition when `sink_flush_rows` rows are buffered or the
 oldest row is `sink_flush_seconds` old; offsets are committed only after that write (StreamConsumer).
 """
@@ -15,14 +16,14 @@ from typing import Dict, List, Optional, Tuple
 
 from ..events import AccessEvent
 from ..topics import (ACCESS_EVENTS, ANALYST_FEEDBACK, ESCALATIONS_BACKGROUND, ESCALATIONS_REALTIME, GROUP_SCORES,
-                      PDP_DECISIONS, RISK_SCORES, topic_name)
+                      LATE_EVENTS, PDP_DECISIONS, RESOURCE_WINDOWS, RISK_SCORES, topic_name)
 from .codec import decode_access_event, decode_json_object, record_id
 from .consumer import Record
 
 log = logging.getLogger("accesssentinel.hdfs_sink")
 
 SINK_TOPICS = (ACCESS_EVENTS, RISK_SCORES, ESCALATIONS_REALTIME, ESCALATIONS_BACKGROUND, GROUP_SCORES, PDP_DECISIONS,
-               ANALYST_FEEDBACK)
+               ANALYST_FEEDBACK, LATE_EVENTS, RESOURCE_WINDOWS)     # v3: late-event audit + resource windows (R5)
 
 
 class HdfsSinkHandler:
@@ -46,7 +47,10 @@ class HdfsSinkHandler:
 
     def decode(self, rec: Record):
         if rec.topic == self.access_topic:
-            return decode_access_event(rec.value)
+            ev = decode_access_event(rec.value)
+            if not ev.ti and rec.timestamp_ms and rec.timestamp_ms > 0:
+                ev.ti = rec.timestamp_ms / 1000.0                 # v3 ti: broker LogAppendTime of the record
+            return ev
         return decode_json_object(rec.value)
 
     def handle(self, records: List[Record]):
@@ -155,10 +159,31 @@ def main() -> int:
     dlq = DeadLetterQueue(Producer(producer_config(s.kafka_bootstrap, "hdfs-sink-dlq")), group)
     sc = StreamConsumer(consumer, handler.topics(), handler, dlq, batch_size=s.consumer_batch, heartbeat=Heartbeat())
     install_stop(sc.stop)
+    _start_aggregator(s, redis_lib)
     log.info("hdfs-sink consuming %s (history backend=%s)", handler.topics(), s.history_backend)
     sc.run()
     log.info("hdfs-sink stopped: %s %s", sc.stats, handler.stats)
     return 0
+
+
+def _start_aggregator(s, redis_lib, every: float = 600.0) -> None:
+    """v3 Step 3: hourly feature aggregates + resource-participant summaries, in a background thread with its
+    own lake client (best effort: a failure is logged and retried at the next interval)."""
+    import threading
+    from ..adapters.hdfs_lake import make_lake
+    from ..history_aggregates import HourlyAggregator
+
+    def loop():
+        agg = HourlyAggregator(make_lake(s), redis_lib.Redis(**s.redis_kwargs()))
+        while True:
+            try:
+                for h, nu, nr in agg.run_pending(time.time(), 48):
+                    log.info("aggregated hour %s: %d user rows, %d resource rows", time.strftime("%Y-%m-%d %H:00", time.gmtime(h)), nu, nr)
+            except Exception as e:  # noqa: BLE001
+                log.warning("hourly aggregation failed (%s); retrying later", type(e).__name__)
+            time.sleep(every)
+
+    threading.Thread(target=loop, name="hourly-aggregates", daemon=True).start()
 
 
 if __name__ == "__main__":

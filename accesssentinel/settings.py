@@ -84,8 +84,25 @@ class Settings(BaseSettings):
     esc_analysis_window: Optional[float] = None
 
     # --- Policy Decision Point (Phase 8) ---------------------------------------------------------------
+    # ---- Revised v3 event pipeline (Phase 2)
+    tenant: str = "default"                         # r* = (tenant, a, r)
+    gateway_id: str = "gw1"                         # stream id prefix for the sequence number nu
+    delta_late: float = 2.0                         # delta_late (Eq. 2), seconds: allowed lateness / max reorder wait
+    late_policy_s0: str = "history_only"            # late-event policy for s = 0 resources ...
+    late_policy_s1: str = "rescore"                 # ... and for s = 1 resources (history_only|rescore|retro_alert|discard)
+    sequencer_idle_state_seconds: float = 86400.0   # per-user ordering state kept this long after the last event
+    sequencer_concurrency_window: float = 60.0      # another session active within this -> no fast path (watermark)
+    res_window_seconds: float = 900.0               # Delta_res: event-time resource window b (Step 6, 15 min)
+    res_shards: int = 4                             # J_r: Stage-1 shards per (r*, b) for hot resources
+    res_merge_timeout: float = 30.0                 # Stage 2 waits this long (processing time) for missing shards
+    res_window_grace: float = 5.0                   # a window b is final when the Stage-1 watermark passes its end + this
+    txn_batch: int = 500                            # max records per Kafka transaction
     pdp_mode: str = "enforce"                       # enforce | shadow (decide + audit, do not enforce)
     gateway_internal_url: str = "http://localhost:8000"   # containers: http://gateway:8000 (session revocation)
+    # Gateway enforcement of the v3 action set (Step 8). [IMPL] values: v3 gives no TTL or rate.
+    pdp_decision_ttl: float = 30.0                  # PDP heartbeat older than this -> sensitivity fallback (0 = off)
+    pdp_fallback_apps: str = ""                     # per-application override, e.g. "finance=closed,docs=open"
+    throttle_per_minute: int = 20                   # Throttle: requests per user per minute before HTTP 429
 
     @field_validator("pdp_mode")
     @classmethod

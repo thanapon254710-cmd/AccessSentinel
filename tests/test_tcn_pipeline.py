@@ -230,3 +230,166 @@ def test_tiers_and_medium_recheck_schedule():
     now["t"] += 601
     h.tick()
     assert r.zscore(RECHECK, "live") is None and r.hget("risk:live", "tier") == b"low"
+
+
+# ============================================================================================================
+# Revised v3 TCN (Phase 3)
+# ============================================================================================================
+import torch  # noqa: E402
+
+from accesssentinel.config import TCNv3Config  # noqa: E402
+from accesssentinel.ml.dataset import build_v3  # noqa: E402
+from accesssentinel.ml.features import (D_V3, N_NUM, EncoderV3, SimulatedDevPosture, SimulatedThreatFeed,  # noqa: E402
+                                        UserStateV3, observe_v3, timer_context_at)
+from accesssentinel.ml.train_tcn import calibrate_v3, run_v3  # noqa: E402
+from accesssentinel.pdp_engine import theta_high_for  # noqa: E402
+from accesssentinel.streaming.tcn_worker import STATE_V3  # noqa: E402
+from accesssentinel.tcn import TCNv3, multitask_loss  # noqa: E402
+
+NEUTRAL = (lambda u, ip, t: 0.0, lambda u, d, t: 1.0)
+
+
+def test_v3_architecture_matches_the_paper():
+    cfg = TCNv3Config()
+    assert (cfg.window_len, cfg.feature_dim, cfg.receptive_field()) == (128, 43, 127) and D_V3 == 43
+    m = TCNv3(cfg, n_res=30, n_op=8, n_net=65)
+    assert len(m.body) == 6 and all(hasattr(b, "c1") and hasattr(b, "c2") for b in m.body)   # two convs per block
+    assert [b.c1.conv.dilation[0] for b in m.body] == [1, 2, 4, 8, 16, 32]
+    assert [b.c2.conv.out_channels for b in m.body] == [256, 256, 128, 128, 64, 64]
+    B = 4
+    out = m(torch.zeros(B, 128, dtype=torch.long), torch.zeros(B, 128, dtype=torch.long),
+            torch.zeros(B, 128, dtype=torch.long), torch.zeros(B, 128, N_NUM), torch.zeros(B, 4))
+    assert out["logit"].shape == (B,) and out["next_res"].shape == (B, 30) and out["next_op"].shape == (B, 8)
+
+
+def test_v3_is_causal_future_steps_do_not_change_earlier_outputs():
+    torch.manual_seed(0)
+    m = TCNv3(TCNv3Config(dropout=0.0), n_res=10, n_op=4, n_net=65).eval()
+    x = [torch.randint(1, 10, (1, 128)), torch.randint(1, 4, (1, 128)), torch.randint(1, 65, (1, 128)), torch.randn(1, 128, N_NUM)]
+    h1 = m.body(m.embed(*x).transpose(1, 2))[:, :, :100]
+    x2 = [t.clone() for t in x]
+    x2[3][:, 100:] += 5.0                                                   # change only steps >= 100
+    h2 = m.body(m.embed(*x2).transpose(1, 2))[:, :, :100]
+    assert torch.allclose(h1, h2, atol=1e-6)
+
+
+def test_v3_loss_focal_only_when_supervised_and_masked_targets():
+    cfg = TCNv3Config()
+    m = TCNv3(cfg, 10, 4, 65)
+    B = 3
+    batch = {"res": torch.ones(B, 128, dtype=torch.long), "op": torch.ones(B, 128, dtype=torch.long),
+             "net": torch.ones(B, 128, dtype=torch.long), "num": torch.zeros(B, 128, N_NUM), "z": torch.zeros(B, 4),
+             "y": torch.tensor([0.0, 1.0, 0.0]), "next_res": torch.tensor([1, 2, 3]), "next_op": torch.tensor([1, 1, 2]),
+             "next_gap": torch.zeros(B), "next_mask": torch.tensor([True, False, True])}
+    out = m(batch["res"], batch["op"], batch["net"], batch["num"], batch["z"])
+    _, parts = multitask_loss(out, batch, cfg, supervised=False)
+    assert "sup" not in parts and set(parts) == {"next_res", "next_op", "time_gap"}
+    _, parts = multitask_loss(out, batch, cfg, supervised=True)
+    assert "sup" in parts
+
+
+def test_v3_features_late_insert_and_timer_context():
+    st = UserStateV3()
+    for t in (100.0, 200.0, 300.0):
+        observe_v3(st, ev(t=t), *NEUTRAL)
+    rec, z = observe_v3(st, ev(t=250.0), *NEUTRAL)                         # late event: inserted at its position
+    assert [r["te"] for r in st.window] == [100.0, 200.0, 250.0, 300.0]
+    assert len(z) == 4 and rec["first_seen"] == 0
+    z1 = timer_context_at(st, 1000.0, 0.0, 1.0)
+    z2 = timer_context_at(st, 5000.0, 0.0, 1.0)
+    assert z2[0] > z1[0] and z2[1] > z1[1]                                 # inactivity and session age grow (Eq. 9)
+    st2 = UserStateV3.from_dict(json.loads(json.dumps(st.to_dict())))
+    assert st2.window == st.window
+
+
+def test_v3_simulated_timer_context_is_deterministic_and_label_free():
+    tf = SimulatedThreatFeed(p_listed=1.0)
+    assert tf("u", "203.0.113.7", 1e9) > 0.8 and tf("u", "10.20.1.5", 1e9) < 0.1
+    assert tf("u", "203.0.113.7", 1e9) == tf("u", "203.0.113.7", 1e9)
+    dp = SimulatedDevPosture({"u": {"dev-ok"}}, p_degraded=0.0)
+    assert dp("u", "dev-ok", 1e9) > 0.8 and dp("u", "dev-attacker", 1e9) < 0.5
+
+
+def test_v3_dataset_gap_rule_and_train_only_encoder(ds):
+    threat, posture = SimulatedThreatFeed(), SimulatedDevPosture.from_dataset(ds)
+    idx, enc, recs = build_v3(ds.events, ds.labels, ds.split_of, threat, posture)
+    for s in ("val", "test"):
+        ids = idx.mask(s)
+        if len(ids):
+            assert np.all(idx.end[ids] - (idx.L - 1) >= idx.split_start[ids])   # whole window inside its split
+    ordered = sorted(ds.events, key=lambda e: (e.t, e.event_id))
+    train_res = {r["res"] for r, e in zip(recs, ordered) if ds.split_of(e.t) == "train"}
+    assert set(enc.res_vocab) == train_res                                 # vocabulary from training only
+    b = idx.gather(idx.mask("train")[:2])
+    assert b["num"].shape == (2, 128, N_NUM) and b["z"].shape == (2, 4)
+
+
+def test_v3_calibration_quantiles_are_ordered():
+    s = np.linspace(0, 1, 10001)
+    th = calibrate_v3(s, TCNv3Config())
+    assert th["theta_low"] < th["theta_high"] < th["theta_B"]
+    assert abs(th["theta_high"] - 0.99) < 1e-3 and abs(th["theta_low"] - 0.95) < 1e-3
+
+
+def test_v3_refuses_to_save_an_untrained_model(tmp_path):
+    with pytest.raises(ValueError):
+        run_v3(str(tmp_path), str(tmp_path), SynthConfig(), TCNv3Config(finetune_epochs=0), "cpu", 0, False)
+
+
+def test_pdp_and_escalation_use_the_calibrated_theta_high_unless_overridden():
+    rc = RiskConfig()
+    assert theta_high_for({"theta_high": 0.83}, rc, None) == 0.83
+    assert theta_high_for({}, rc, None) == rc.theta_high                    # D3 scores: configured default
+    assert theta_high_for({"theta_high": 0.83}, rc, 0.7) == 0.7             # explicit operator setting wins
+
+
+class V3StubScorer:
+    arch, version, L = "tcn-v3", "tcn3-stub", 128
+
+    def __init__(self, value, thresholds):
+        self.value, self.thresholds, self.calls = value, thresholds, []
+
+    def score_windows(self, ws, zs=None):
+        self.calls.append(([[r["te"] for r in w] for w in ws], zs))
+        return np.full(len(ws), self.value)
+
+
+def test_worker_v3_path_late_policies_thresholds_and_recheck():
+    r, prod = fakeredis.FakeRedis(), FakeProducer()
+    sc = V3StubScorer(0.5, {"theta_low": 0.3, "theta_high": 0.45, "theta_B": 0.9})
+    h = TcnWorkerHandler(StubProvider(sc), r, prod, "risk-scores", clock=lambda: 1_794_000_100.0)
+    e1, e2 = ev(t=1_794_000_000.0), ev(t=1_794_000_050.0)
+    late_hist = ev(t=1_794_000_010.0); late_hist.meta["late_policy"] = "history_only"
+    late_res = ev(t=1_794_000_020.0); late_res.meta["late_policy"] = "rescore"
+    h.handle(recs_for([e1, e2, late_hist, late_res]))
+    sent = [v for _, _, v in prod.sent]
+    assert [x["event_id"] for x in sent] == [e1.event_id, e2.event_id, late_res.event_id]   # history_only not scored
+    assert sent[0]["tier"] == "high" and sent[0]["theta_high"] == 0.45 and sent[0]["thresholds"] == "calibrated"
+    last_window = sc.calls[0][0][-1]
+    assert last_window[-1] == 1_794_000_050.0 and 1_794_000_020.0 in last_window and last_window == sorted(last_window)
+    st = UserStateV3.from_dict(json.loads(r.get(STATE_V3.format("u1"))))
+    assert [x["te"] for x in st.window] == sorted(x["te"] for x in st.window) and len(st.window) == 4
+    sc.value = 0.35                                                         # Medium user re-check (Eq. 9)
+    out = h._recheck_v3(["u1"], sc, 1_794_009_000.0)
+    assert out[0]["trigger"] == "recheck" and out[0]["tier"] == "medium" and out[0]["timer_context"][0] > 8.0
+
+
+def test_v3_encoder_is_robust_to_train_serve_skew():
+    """Regression (Phase 3 live check): synthetic training events are schema v1 without v_policy, so the version
+    features were constant; live schema-v2 events scaled them to ~5e5 and every live score was 0.0. Constant
+    features are now neutralised, binary ones unscaled, continuous ones clipped."""
+    from accesssentinel.ml.features import CLIP, NUM_FIELDS
+    st = UserStateV3()
+    train = [observe_v3(st, make_event("u1", "hr", ["payroll", "directory"][i % 2], i % 2 == 0, "view", i % 7 != 0,
+                                       {"ip": "10.0.0.5", "device": "d1"}, "c" * 32, t=1_794_000_000.0 + 60 * i),
+                        *NEUTRAL)[0] for i in range(50)]                     # schema v2 defaults: no v_policy
+    enc = EncoderV3.fit(train)
+    assert NUM_FIELDS.index("policy_h") in enc.neutral and NUM_FIELDS.index("schema_v") in enc.neutral
+    assert NUM_FIELDS.index("s") not in enc.neutral and NUM_FIELDS.index("y") not in enc.neutral
+    live = make_event("u1", "hr", "payroll", 1, "view", False, {"ip": "10.0.0.5", "device": "d1"}, "c" * 32,
+                      t=1_794_009_000.0, seq=3, stream="gw1:x", v_policy="1cbb0e4395ea")
+    rec, _ = observe_v3(st, live, *NEUTRAL)
+    _, _, _, num, z = enc.encode_record(rec)
+    assert np.all(np.abs(num) <= CLIP) and num[NUM_FIELDS.index("schema_v")] == 0.0
+    assert num[NUM_FIELDS.index("y")] == 0.0 and num[NUM_FIELDS.index("s")] == 1.0        # binary: as is
+    assert EncoderV3.from_dict(enc.to_dict()).neutral == enc.neutral

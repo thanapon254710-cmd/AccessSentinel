@@ -1,0 +1,522 @@
+{
+  "version": "tcn3-20261115T083751Z-0c7a4e",
+  "started_at": "2026-11-15T08:13:55.397012+00:00",
+  "finished_at": "2026-11-15T08:37:51.893789+00:00",
+  "wall_seconds": 1436.4967761039734,
+  "platform": "Windows-10-10.0.26300-SP0",
+  "thresholds": {
+    "theta_low": 0.0285068079829216,
+    "theta_high": 0.05303136631846428,
+    "theta_B": 0.09968052059412003,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 41826
+  },
+  "test": {
+    "model": "tcn_v3",
+    "thresholds": {
+      "theta_low": 0.0285068079829216,
+      "theta_high": 0.05303136631846428,
+      "theta_B": 0.09968052059412003
+    },
+    "event_level": {
+      "n": 89843,
+      "positives": 1180,
+      "roc_auc": 0.9840495538524564,
+      "pr_auc": 0.908139462421637,
+      "at_theta_low": {
+        "threshold": 0.0285068079829216,
+        "tp": 1108,
+        "fp": 4808,
+        "tn": 83855,
+        "fn": 72,
+        "precision": 0.18728870858688304,
+        "recall": 0.9389830508474576,
+        "f1": 0.31228861330326946,
+        "fpr": 0.054227806413047155
+      },
+      "at_theta_high": {
+        "threshold": 0.05303136631846428,
+        "tp": 1069,
+        "fp": 1150,
+        "tn": 87513,
+        "fn": 111,
+        "precision": 0.48174853537629564,
+        "recall": 0.9059322033898305,
+        "f1": 0.6290085319211532,
+        "fpr": 0.012970461184485072
+      },
+      "at_theta_B": {
+        "threshold": 0.09968052059412003,
+        "tp": 1038,
+        "fp": 152,
+        "tn": 88511,
+        "fn": 142,
+        "precision": 0.8722689075630252,
+        "recall": 0.8796610169491526,
+        "f1": 0.8759493670886076,
+        "fpr": 0.00171435660873194
+      }
+    },
+    "by_scenario_at_theta_high": {
+      "bac_probe": {
+        "events": 216,
+        "recall": 0.9444444444444444
+      },
+      "benign_flash_crowd": {
+        "events": 13,
+        "flag_rate": 0.0
+      },
+      "benign_month_end": {
+        "events": 89,
+        "flag_rate": 0.24719101123595505
+      },
+      "benign_new_device": {
+        "events": 656,
+        "flag_rate": 0.018292682926829267
+      },
+      "benign_overtime": {
+        "events": 5232,
+        "flag_rate": 0.00974770642201835
+      },
+      "benign_travel": {
+        "events": 3050,
+        "flag_rate": 0.009508196721311476
+      },
+      "compromised_account": {
+        "events": 430,
+        "recall": 0.986046511627907
+      },
+      "coordinated_collection": {
+        "events": 48,
+        "flag_rate": 0.0625
+      },
+      "insider_exfiltration": {
+        "events": 441,
+        "recall": 0.9251700680272109
+      },
+      "low_and_slow": {
+        "events": 93,
+        "recall": 0.3548387096774194
+      },
+      "normal": {
+        "events": 79556,
+        "flag_rate": 0.012984564332042838
+      },
+      "split_exfiltration": {
+        "events": 19,
+        "flag_rate": 0.0
+      }
+    },
+    "attack_instances_at_theta_high": {
+      "instances": 19,
+      "detected": 18,
+      "median_minutes_to_detect": 0.277627968788147,
+      "per_instance": {
+        "bac_probe-test-0": {
+          "events": 48,
+          "detected": true,
+          "minutes_to_detect": 0.314104962348938,
+          "events_before_detection": 2
+        },
+        "bac_probe-test-1": {
+          "events": 49,
+          "detected": true,
+          "minutes_to_detect": 0.13453213771184286,
+          "events_before_detection": 1
+        },
+        "bac_probe-test-2": {
+          "events": 40,
+          "detected": true,
+          "minutes_to_detect": 0.25066183805465697,
+          "events_before_detection": 1
+        },
+        "bac_probe-test-3": {
+          "events": 48,
+          "detected": true,
+          "minutes_to_detect": 0.2996454477310181,
+          "events_before_detection": 1
+        },
+        "bac_probe-test-4": {
+          "events": 31,
+          "detected": true,
+          "minutes_to_detect": 1.267197640736898,
+          "events_before_detection": 3
+        },
+        "compromised_account-test-0": {
+          "events": 98,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        },
+        "compromised_account-test-1": {
+          "events": 99,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        },
+        "compromised_account-test-2": {
+          "events": 79,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        },
+        "compromised_account-test-3": {
+          "events": 98,
+          "detected": true,
+          "minutes_to_detect": 1.9140270749727886,
+          "events_before_detection": 3
+        },
+        "compromised_account-test-4": {
+          "events": 56,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        },
+        "insider_exfiltration-test-0": {
+          "events": 75,
+          "detected": true,
+          "minutes_to_detect": 0.7852795600891114,
+          "events_before_detection": 4
+        },
+        "insider_exfiltration-test-1": {
+          "events": 64,
+          "detected": true,
+          "minutes_to_detect": 0.2556104898452759,
+          "events_before_detection": 2
+        },
+        "insider_exfiltration-test-2": {
+          "events": 106,
+          "detected": true,
+          "minutes_to_detect": 1.5830374439557393,
+          "events_before_detection": 5
+        },
+        "insider_exfiltration-test-3": {
+          "events": 109,
+          "detected": true,
+          "minutes_to_detect": 1.0227768381436666,
+          "events_before_detection": 5
+        },
+        "insider_exfiltration-test-4": {
+          "events": 87,
+          "detected": true,
+          "minutes_to_detect": 2.9407329042752584,
+          "events_before_detection": 12
+        },
+        "low_and_slow-test-0": {
+          "events": 13,
+          "detected": false,
+          "minutes_to_detect": null,
+          "events_before_detection": null
+        },
+        "low_and_slow-test-1": {
+          "events": 30,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        },
+        "low_and_slow-test-2": {
+          "events": 23,
+          "detected": true,
+          "minutes_to_detect": 7388.215874667962,
+          "events_before_detection": 21
+        },
+        "low_and_slow-test-3": {
+          "events": 27,
+          "detected": true,
+          "minutes_to_detect": 0.0,
+          "events_before_detection": 0
+        }
+      }
+    },
+    "normal_user_days_flagged_at_theta_high": {
+      "normal_user_days": 2588,
+      "flagged": 189,
+      "rate": 0.07302936630602783
+    },
+    "fixed_0.6_for_reference": {
+      "tp": 854,
+      "fp": 6,
+      "tn": 88657,
+      "fn": 326,
+      "precision": 0.9930232558139535,
+      "recall": 0.7237288135593221,
+      "f1": 0.8372549019607842,
+      "fpr": 6.767197139731343e-05
+    }
+  },
+  "latency": {
+    "cpu": {
+      "batch_1_ms_median": 6.107850014814176,
+      "batch_1_ms_p95": 9.668285012594424,
+      "batch_64_ms_median": 57.79774999246001,
+      "batch_64_ms_p95": 70.2167149895104,
+      "device": "cpu",
+      "torch_threads": 14
+    },
+    "cuda": {
+      "batch_1_ms_median": 2.85730000177864,
+      "batch_1_ms_p95": 6.21666001243284,
+      "batch_64_ms_median": 8.301950001623482,
+      "batch_64_ms_p95": 13.91482999897562,
+      "device": "cuda",
+      "torch_threads": 14
+    }
+  },
+  "rolling_origin": {
+    "folds": [
+      {
+        "origin_day": 12.0,
+        "val_windows": 34354,
+        "val_positives": 348,
+        "val_pr_auc": 0.7627525943154373
+      },
+      {
+        "origin_day": 18.0,
+        "val_windows": 33883,
+        "val_positives": 41,
+        "val_pr_auc": 0.8918988192451249
+      },
+      {
+        "origin_day": 24.0,
+        "val_windows": 32640,
+        "val_positives": 83,
+        "val_pr_auc": 0.9689755753367671
+      }
+    ],
+    "pr_auc_mean": 0.874542329632443,
+    "pr_auc_std": 0.08508002223039708,
+    "note": "re-run 2026-11-15T08:49:38.310427+00:00 after fixing the segment length (first run used 4-day segments, shorter than the gap; its values were not meaningful)"
+  },
+  "tcn_config": {
+    "window_len": 128,
+    "feature_dim": 43,
+    "kernel_size": 2,
+    "dilations": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "filters": [
+      256,
+      256,
+      128,
+      128,
+      64,
+      64
+    ],
+    "dropout": 0.2,
+    "head_hidden": 32,
+    "lambdas": [
+      1.0,
+      1.0,
+      0.5,
+      1.0
+    ],
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "lr": 0.001,
+    "batch_size": 256,
+    "pretrain_epochs": 3,
+    "finetune_epochs": 8,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001
+  },
+  "receptive_field": 127,
+  "data": {
+    "source": "synthetic",
+    "synth_config": {
+      "n_users": 400,
+      "days": 70,
+      "start": "2026-09-07",
+      "split_days": [
+        36,
+        14,
+        20
+      ],
+      "seed": 23,
+      "role_mix": {
+        "staff": 0.34,
+        "hr_manager": 0.1,
+        "finance_analyst": 0.13,
+        "legal": 0.1,
+        "executive": 0.07,
+        "auditor": 0.12,
+        "it_admin": 0.14
+      },
+      "attacks": {
+        "compromised_account": [
+          6,
+          3,
+          5
+        ],
+        "insider_exfiltration": [
+          6,
+          3,
+          5
+        ],
+        "bac_probe": [
+          6,
+          3,
+          5
+        ],
+        "low_and_slow": [
+          5,
+          2,
+          4
+        ]
+      },
+      "collusion_groups": {
+        "coordinated_collection": [
+          3,
+          1,
+          2
+        ],
+        "split_exfiltration": [
+          2,
+          1,
+          2
+        ]
+      },
+      "group_size": 3,
+      "max_attacker_share_per_role": 0.25,
+      "collusion_v2": false,
+      "benign_teams": false,
+      "attack_margin_days": [
+        0,
+        10,
+        10
+      ],
+      "events_per_day_median": 22.0,
+      "office_subnets": 5
+    },
+    "fingerprint": "0c7a4e032ad5bd45",
+    "events": 502859,
+    "timer_context": "simulated (SimulatedThreatFeed, SimulatedDevPosture)"
+  },
+  "split": {
+    "rule": "Eq. 7 chronological, gap g = L - 1 events per user",
+    "windows": {
+      "train": 262406,
+      "val": 50642,
+      "test": 89843
+    },
+    "removed_by_gap": {
+      "val": {
+        "windows": 49396,
+        "attack_events_in_gap": 3
+      },
+      "test": {
+        "windows": 50572,
+        "attack_events_in_gap": 58
+      }
+    }
+  },
+  "training": {
+    "history": [
+      {
+        "stage": "pretrain",
+        "epoch": 0,
+        "loss": 2.222033395056139,
+        "next_res": 1.4830129432980312,
+        "next_op": 0.18086465503330584,
+        "time_gap": 1.116311600682331,
+        "seconds": 78.42700672149658
+      },
+      {
+        "stage": "pretrain",
+        "epoch": 1,
+        "loss": 2.011315918689118,
+        "next_res": 1.3118358212604857,
+        "next_op": 0.15709995974370844,
+        "time_gap": 1.084760275035806,
+        "seconds": 76.12343740463257
+      },
+      {
+        "stage": "pretrain",
+        "epoch": 2,
+        "loss": 1.977268686420039,
+        "next_res": 1.286936641029912,
+        "next_op": 0.1504884466272915,
+        "time_gap": 1.079687198003133,
+        "seconds": 75.1071445941925
+      },
+      {
+        "stage": "finetune",
+        "epoch": 0,
+        "loss": 1.9593753525388171,
+        "next_res": 1.2725367629737185,
+        "next_op": 0.1481893694039151,
+        "time_gap": 1.0745381019268816,
+        "sup": 0.001380171170271831,
+        "val_pr_auc": 0.938895885246334,
+        "seconds": 82.12295794487
+      },
+      {
+        "stage": "finetune",
+        "epoch": 1,
+        "loss": 1.9454503127938358,
+        "next_res": 1.2617624514748944,
+        "next_op": 0.14681520651241667,
+        "time_gap": 1.072570571890119,
+        "sup": 0.0005873698456573612,
+        "val_pr_auc": 0.9428405395077099,
+        "seconds": 81.77856612205505
+      },
+      {
+        "stage": "finetune",
+        "epoch": 2,
+        "loss": 1.9370100770080299,
+        "next_res": 1.2546729916020443,
+        "next_op": 0.14605116572223792,
+        "time_gap": 1.0716999873780368,
+        "sup": 0.00043592991166094107,
+        "val_pr_auc": 0.9469295002092902,
+        "seconds": 81.6519546508789
+      },
+      {
+        "stage": "finetune",
+        "epoch": 3,
+        "loss": 1.926789226936318,
+        "next_res": 1.2465492019876403,
+        "next_op": 0.14513138127213682,
+        "time_gap": 1.0694979735982348,
+        "sup": 0.00035965473401494187,
+        "val_pr_auc": 0.9420557224721069,
+        "seconds": 81.88731694221497
+      },
+      {
+        "stage": "finetune",
+        "epoch": 4,
+        "loss": 1.9201198906926384,
+        "next_res": 1.241312420623809,
+        "next_op": 0.14465787216156836,
+        "time_gap": 1.0676314741314967,
+        "sup": 0.00033386276451412175,
+        "val_pr_auc": 0.9418898709801325,
+        "seconds": 81.27959513664246
+      },
+      {
+        "stage": "finetune",
+        "epoch": 5,
+        "loss": 1.9132765285220528,
+        "next_res": 1.2360153949981079,
+        "next_op": 0.1440499113077483,
+        "time_gap": 1.065844358349869,
+        "sup": 0.000289043541106355,
+        "val_pr_auc": 0.9406903206890356,
+        "seconds": 81.0545756816864
+      }
+    ],
+    "best_val_pr_auc": 0.9469295002092902,
+    "seed": 0,
+    "device": "cuda"
+  },
+  "promoted": false,
+  "defective": "**DEFECTIVE \u2014 do not use.** This model's encoder scaled features that were constant in the synthetic training data (schema / policy version) by 1/1e-6, so live schema-v2 events produced inputs of ~5e5 and every live score was 0.0 (found in the Phase 3 live check, 2026-11-15). The synthetic test numbers below are real for synthetic data but the model is unusable live; it was removed from the registry. Superseded by the retrained version."
+}

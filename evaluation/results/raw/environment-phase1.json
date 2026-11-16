@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-11-15T06:57:25.068217+00:00",
+  "unix_time": 1794725845.0682175,
+  "host_os": "Windows-10-10.0.26300-SP0",
+  "python": "3.11.0",
+  "cpu": {
+    "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+    "logical_cpus": 20
+  },
+  "ram_bytes": {
+    "total": 16886128640,
+    "available": 761245696
+  },
+  "gpu": [
+    "NVIDIA GeForce RTX 4050 Laptop GPU, 6141 MiB, 610.47"
+  ],
+  "libraries": {
+    "torch": "2.15.0+cpu",
+    "numpy": "2.0.2",
+    "pandas": "2.2.3",
+    "sklearn": "1.5.2",
+    "pyarrow": "26.0.1",
+    "confluent_kafka": "2.16.1",
+    "matplotlib": "3.9.2"
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 14,
+  "git_commit": "2560afe92e22a28d9e64d33d6cf1d2b8c7b5a458",
+  "git_dirty": true,
+  "docker": {
+    "server_version": "28.3.3",
+    "vm_cpus": 20,
+    "vm_memory_bytes": 8178016256
+  }
+}

@@ -3,7 +3,9 @@
 Per proxied request (/apps/<a>/<path>):
   1. authenticate the session (Redis)                       -> 401 if missing / revoked / expired
   2. resolve resource r, operation o, required permission p   (catalog snapshot from PostgreSQL)
-  3. request-time enforcement: cached PDP Block               -> 403   (never waits for Kafka/ML)
+  3. request-time enforcement of the cached PDP action (v3 Eq. 20, psi-ordered; never waits for Kafka/ML):
+       Terminate / Block -> 403 (session ended)   Restrict -> 403 on s = 1   StepUp -> 401, sign in again
+       Throttle -> 429 above the rate             PDP heartbeat older than the TTL -> sensitivity fallback
   4. first-line ACL (role-based, default deny)                -> 403
   5. build e_t = (u,t,a,r,s,p,o,c,y) and publish to Kafka      (non-blocking; allowed AND denied requests)
   6. forward allowed requests to the application with the internal upstream token and identity headers
@@ -27,7 +29,7 @@ from ...schema import make_event, new_id
 from ...security import one_way_ref, tokens_equal, verify_password
 from ...settings import Settings
 from .access import BadRequest, Catalog, MethodNotAllowed, resolve
-from .decisions import active_block
+from .decisions import DENY_ALL, DecisionView, parse_fallback
 from .pages import home_page, login_page, message_page
 from .sessions import UNKNOWN_USER, SessionStore
 
@@ -66,6 +68,8 @@ async def _read_body(request: Request, limit: int) -> bytes:
 def create_app(settings: Settings, store, redis, publisher, upstream: httpx.AsyncClient,
                cleanup: Optional[List[Callable[[], Awaitable[None]]]] = None) -> FastAPI:
     sessions = SessionStore(redis, settings.session_idle_seconds, settings.session_max_seconds)
+    view = DecisionView(settings.pdp_decision_ttl, parse_fallback(settings.pdp_fallback_apps))
+    gateway_id = settings.gateway_id
     upstream_token = settings.secret("upstream_token")
     internal_token = settings.secret("internal_token")
     state = {"catalog": None, "catalog_loaded_at": None,
@@ -113,6 +117,16 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
     app = FastAPI(title="AccessSentinel Gateway", lifespan=lifespan, docs_url=None, redoc_url=None,
                   openapi_url=None)
     app.state.gw = state
+    app.state.decisions = view
+
+    async def throttled(u: str) -> bool:
+        """Throttle: fixed one-minute window per user, settings.throttle_per_minute requests."""
+        key = f"thr:{u}:{int(time.time() // 60)}"
+        pipe = redis.pipeline()
+        pipe.incr(key)
+        pipe.expire(key, 120)
+        n, _ = await pipe.execute()
+        return int(n) > settings.throttle_per_minute
 
     def audit(actor: str, action: str, **kw) -> Awaitable[None]:
         return run_in_threadpool(store.audit, actor, action, **kw)
@@ -157,6 +171,10 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
             checks["redis"] = "down"
         ready = all(v == "ok" for v in checks.values())
         checks["event_publisher"] = publisher.stats()
+        try:
+            checks["pdp"] = "ok" if await view.pdp_available(redis) else "unavailable (sensitivity fallback)"
+        except RedisError:
+            pass
         return JSONResponse({"ready": ready, "checks": checks}, status_code=200 if ready else 503)
 
     # ----------------------------------------------------------------- pages / auth
@@ -197,7 +215,8 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
             n = await sessions.login_failed(username, settings.login_lock_seconds)
             await audit(actor, "login_failed", ip=ip, detail={"consecutive_failures": n})
             return fail(401, "Invalid user ID or password.")
-        if await active_block(redis, user.id):
+        d = await view.current(redis, user.id)
+        if d and d.get("decision") in DENY_ALL:
             await audit(user.id, "login_refused_blocked", ip=ip)
             return fail(403, "Access is suspended by the risk policy. Contact the security team.")
         await sessions.login_succeeded(user.id)
@@ -254,13 +273,14 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
     async def stats(request: Request):
         if not internal_ok(request):
             return JSONResponse({"error": "forbidden"}, status_code=403)
-        return {"counts": state["counts"], "event_publisher": publisher.stats(),
+        return {"counts": state["counts"], "event_publisher": publisher.stats(), "decisions": view.stats,
                 "catalog_loaded_at": state["catalog_loaded_at"]}
 
     # ----------------------------------------------------------------- the protected applications
     @app.api_route("/apps/{app_id}/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE"])
     async def proxy(app_id: str, path: str, request: Request):
         t0 = time.perf_counter()
+        t_in = time.time()
         cid = request.state.cid
         counts = state["counts"]
         counts["requests"] += 1
@@ -291,21 +311,38 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
         n = await sessions.touch(sess["ref"])
         ctx = {"ip": _client_ip(request), "device": sess.get("device", ""),
                "session": "new" if n == 1 else "active", "session_ref": sess["ref"][:16]}
+        action = None
         if not target.known:
             allowed, reason, s = False, "unknown-resource", 1
         else:
             s = catalog.sensitivity[(app_id, target.resource)]
-            block = await active_block(redis, u)
-            if block:
-                allowed, reason = False, f"pdp-block:{block.get('reason', 'unspecified')}"
+            d = await view.current(redis, u)
+            action = d.get("decision") if d else None
+            why = (d or {}).get("reason", "unspecified")
+            if action in DENY_ALL:
+                allowed, reason = False, f"pdp-{action.lower()}:{why}"
+            elif not await view.pdp_available(redis) and view.fallback_denies(app_id, s):
+                allowed, reason = False, "pdp-fallback:restrict"
+            elif action == "Restrict" and int(s) == 1:
+                allowed, reason = False, f"pdp-restrict:{why}"
+            elif action == "StepUp" and float(sess.get("created") or 0) < float(d.get("decided_at") or 0):
+                allowed, reason = False, f"pdp-stepup:{why}"
+            elif action == "Throttle" and await throttled(u):
+                allowed, reason = False, f"pdp-throttle:{why}"
             elif not catalog.allowed(app_id, target.resource, role, target.permission):
                 allowed, reason = False, "acl-deny"
             else:
                 allowed, reason = True, "allow"
         meta = {"method": request.method, "reason": reason, "role": role}
+        if action:
+            meta["pdp_action"] = action
         if target.object_id:
             meta["object_id"] = target.object_id
-        event = make_event(u, app_id, target.resource, s, target.operation, allowed, ctx, cid, meta)
+        meta["ts_gw_in"] = t_in                                    # trace stamps for the latency study (Exp. C)
+        meta["ts_gw_pub"] = time.time()
+        event = make_event(u, app_id, target.resource, s, target.operation, allowed, ctx, cid, meta,
+                           seq=n, stream=f"{gateway_id}:{sess['ref'][:16]}", tenant=settings.tenant,
+                           v_policy=catalog.version)
         publisher.publish(event)                                   # never blocks on Kafka
         counts["allowed" if allowed else "denied"] += 1
 
@@ -315,8 +352,26 @@ def create_app(settings: Settings, store, redis, publisher, upstream: httpx.Asyn
                      (time.perf_counter() - t0) * 1000)
 
         if not allowed:
-            if reason.startswith("pdp-block"):
+            if reason.startswith(("pdp-block", "pdp-terminate")):
+                if reason.startswith("pdp-terminate"):
+                    await sessions.revoke(sess["ref"], u)          # session-time enforcement at the gateway itself
                 status, msg = 403, "Access is suspended by the continuous-monitoring risk policy."
+            elif reason.startswith("pdp-restrict"):
+                status, msg = 403, "Access to sensitive resources is restricted by the risk policy."
+            elif reason.startswith("pdp-fallback"):
+                status, msg = 403, "Sensitive resources are unavailable while the risk decision service is unavailable."
+            elif reason.startswith("pdp-stepup"):
+                await sessions.revoke(sess["ref"], u)              # StepUp: this session must re-authenticate
+                done(401)
+                if _wants_html(request):
+                    return RedirectResponse("/", status_code=303)
+                return JSONResponse({"error": "step-up required", "step_up": True,
+                                     "detail": "Sign in again to continue."}, status_code=401)
+            elif reason.startswith("pdp-throttle"):
+                done(429)
+                resp = reply(request, 429, "Too many requests", "Your request rate is limited by the risk policy.")
+                resp.headers["Retry-After"] = "60"
+                return resp
             elif reason == "unknown-resource":
                 status, msg = 404, "Unknown resource."
             else:

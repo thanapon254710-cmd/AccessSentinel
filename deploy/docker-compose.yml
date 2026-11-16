@@ -70,6 +70,16 @@ services:
     restart: "no"
     depends_on:
       kafka: {condition: service_healthy}
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+      - "127.0.0.1:8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    depends_on:
+      - kafka
+    networks: [accesssentinel]   # must share Kafka's network to resolve kafka:29092
 
   # ---------------------------------------------------------------- Apache Hadoop HDFS (1 NN + 1 DN)
   namenode:
@@ -209,6 +219,43 @@ services:
       start_period: 20s
     depends_on:
       kafka-init: {condition: service_completed_successfully}
+
+  sequencer:                        # v3 Step 2: per-user event-time order (watermark Eq. 2, late-event policies),
+    <<: *app                        #   exactly-once (Kafka transactions + changelog) -> access-events.ordered
+    command: ["python", "-m", "accesssentinel.streaming.sequencer"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+
+  resource-windows:                 # v3 Step 2: two-stage shard-and-merge per (r*, window), exactly-once
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.resource_windows", "windows"]
+    mem_limit: 256m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+  cmu-user:                         # v3 Step 7a: CMU, user memories updated for EVERY event (ordered stream)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.tgn_worker", "cmu-user"]
+    volumes: [../models:/app/models:ro]
+    mem_limit: 384m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+  cmu-resource:                     # v3 Step 7a: CMU, resource memories (access-events-by-rstar, one writer per r*)
+    <<: *app
+    command: ["python", "-m", "accesssentinel.streaming.tgn_worker", "cmu-resource"]
+    volumes: [../models:/app/models:ro]
+    mem_limit: 384m
+    healthcheck: *stream-health
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
 
   hdfs-sink:                        # storage path: independent consumer group -> HDFS Parquet history
     <<: *app
