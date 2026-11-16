@@ -386,3 +386,37 @@ def test_v3_pdp_unavailable_sensitivity_fallback_and_per_app_override(gw):
     c.portal.call(gw.redis.set, "pdp:alive", time.time() - 31)
     view._alive = (-1e18, None)
     assert c.get("/apps/hr/payroll").status_code == 403                     # heartbeat older than the TTL
+
+
+# ---------------------------------------------------------------- password hashing bound (OOM fix)
+def test_password_checks_are_bounded_per_process(monkeypatch):
+    import threading
+    import time
+    """A login burst must not run more Argon2 operations at once than HASH_CONCURRENCY (each needs 64 MiB)."""
+    from accesssentinel import security as _security
+    active, peak, lock = [0], [0], threading.Lock()
+
+    class SlowHasher:
+        def verify(self, h, pw):
+            with lock:
+                active[0] += 1; peak[0] = max(peak[0], active[0])
+            time.sleep(0.02)
+            with lock:
+                active[0] -= 1
+            return True
+
+    monkeypatch.setattr(_security, "_ph", SlowHasher())
+    ths = [threading.Thread(target=_security.verify_password, args=("h", "pw")) for _ in range(40)]
+    for t in ths:
+        t.start()
+    for t in ths:
+        t.join()
+    assert peak[0] == _security.HASH_CONCURRENCY
+
+
+def test_verify_password_still_works():
+    from accesssentinel import security as _security
+    h = _security.hash_password("correct horse battery")
+    assert _security.verify_password(h, "correct horse battery")
+    assert not _security.verify_password(h, "wrong password!")
+    assert not _security.verify_password(None, "correct horse battery")      # unknown user

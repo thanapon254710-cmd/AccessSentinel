@@ -1,0 +1,32 @@
+{
+ "tag": "baseline",
+ "burst": {
+  "rate": 100.0,
+  "t_first": 1794764396.2691772,
+  "t_last": 1794764426.2606573,
+  "undelivered": 0
+ },
+ "stages": {
+  "sequencer": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 2.4160025119781494,
+   "gap_p99_s": 0.10980400562286377,
+   "first_out": 1794764398.375486,
+   "last_out": 1794764428.4078274
+  },
+  "tcn": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 0.694061279296875,
+   "gap_p99_s": 0.0792500066757202,
+   "first_out": 1794764400.8393,
+   "last_out": 1794764428.4336972
+  },
+  "cmu_users_with_memory": "30/30"
+ }
+}

@@ -77,7 +77,8 @@ class PdpHandler:
         self.pdp, self.p, self.out_topic, self.policy, self.revoker = pdp, producer, out_topic, policy, revoker
         self.scores_topic, self.group_topic, self.poll, self.clock = scores_topic, group_topic, poll_seconds, clock
         self._next_policy = 0.0
-        self.settings = None                      # runtime_settings.Watcher (dashboard Settings page)
+        self._revoke_next, self._revoke_backoff = 0.0, 0.0
+        self.settings = None                     # runtime_settings.Watcher (dashboard Settings page)
         self._errors: List[str] = []
         self.stats = {"risk_scores": 0, "group_scores": 0, "decisions_published": 0, "sessions_revoked": 0,
                       "revoke_failures": 0, "policy_errors": 0}
@@ -152,7 +153,11 @@ class PdpHandler:
         return len(recs)
 
     def retry_revocations(self) -> None:
-        if self.revoker is None:
+        # Session revocation is best-effort hygiene: the cached decision already denies requests at the gateway.
+        # It must never slow the decision path, so a failure stops this round and backs off (1 s doubling to
+        # 30 s) instead of trying every pending user - with the gateway down, each attempt costs a connect timeout
+        # and N pending users would otherwise stall the consumer loop for N timeouts per tick (found in Exp. G).
+        if self.revoker is None or self.clock() < self._revoke_next:
             return
         for u, reason in list(self.pdp.r.hgetall(K_REVOKE).items()):
             u, reason = (u.decode() if isinstance(u, bytes) else u), (reason.decode() if isinstance(reason, bytes) else reason)
@@ -160,9 +165,14 @@ class PdpHandler:
                 n = self.revoker.revoke(u, f"pdp-{reason}")
                 self.pdp.r.hdel(K_REVOKE, u)
                 self.stats["sessions_revoked"] += n
-            except Exception as e:  # noqa: BLE001 - retried next tick; the cached Block already denies requests
+                self._revoke_backoff = 0.0
+            except Exception as e:  # noqa: BLE001 - retried after the backoff; the cached Block already denies requests
                 self.stats["revoke_failures"] += 1
-                log.warning("session revocation for %s failed (%s); will retry", u, type(e).__name__)
+                self._revoke_backoff = min(max(1.0, 2 * self._revoke_backoff), 30.0)
+                self._revoke_next = self.clock() + self._revoke_backoff
+                log.warning("session revocation for %s failed (%s); retrying in %.0f s", u, type(e).__name__,
+                            self._revoke_backoff)
+                return
 
     def _cb(self, err, msg):
         if err is not None:

@@ -1,0 +1,32 @@
+{
+ "tag": "kill-sequencer-2",
+ "burst": {
+  "rate": 100.0,
+  "t_first": 1794764482.603522,
+  "t_last": 1794764512.5942066,
+  "undelivered": 0
+ },
+ "stages": {
+  "sequencer": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 7.374438047409058,
+   "gap_p99_s": 0.10978411197662354,
+   "first_out": 1794764484.7099428,
+   "last_out": 1794764514.7270827
+  },
+  "tcn": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 7.734834909439087,
+   "gap_p99_s": 0.08681574821472167,
+   "first_out": 1794764484.7223854,
+   "last_out": 1794764514.765579
+  },
+  "cmu_users_with_memory": "30/30"
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "experiment": "G",
+ "cmd": "ttl",
+ "started_at": "2026-11-15T18:39:37.370905+00:00",
+ "finished_at": "2026-11-15T18:41:00.491786+00:00",
+ "thresholds": {
+  "theta_high": 0.0482,
+  "theta_B": 0.0849,
+  "theta_low": 0.0284,
+  "theta_coll": 0.8609,
+  "theta_A": 0.3643
+ },
+ "result": {
+  "ttl_s": 60,
+  "decision_to_expiry_s": 59.994033336639404,
+  "login_during": 403,
+  "expire_decision_after_expiry_s": 1.0258142948150635,
+  "gateway_login_after_expiry_s": 1.1270935535430908,
+  "restored_block_ttl": 60.0
+ },
+ "environment": {
+  "recorded_at": "2026-11-15T18:41:00.491810+00:00",
+  "unix_time": 1794768060.4918134,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178016256,
+   "available": 1093951488
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

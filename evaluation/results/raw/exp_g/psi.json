@@ -1,0 +1,171 @@
+{
+ "experiment": "G",
+ "cmd": "psi",
+ "started_at": "2026-11-15T18:39:01.721258+00:00",
+ "finished_at": "2026-11-15T18:39:05.538564+00:00",
+ "thresholds": {
+  "theta_high": 0.0482,
+  "theta_B": 0.0849,
+  "theta_low": 0.0284,
+  "theta_coll": 0.8609,
+  "theta_A": 0.3643
+ },
+ "result": {
+  "baseline_status": 200,
+  "trials": 20,
+  "rejected": 20,
+  "rows": [
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Block",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   },
+   {
+    "stale_action": "Terminate",
+    "status": 200,
+    "rejected": true
+   }
+  ],
+  "gateway_stats": {
+   "counts": {
+    "requests": 6861,
+    "allowed": 6755,
+    "denied": 56,
+    "unauthenticated": 50,
+    "upstream_errors": 0
+   },
+   "event_publisher": {
+    "submitted": 6811,
+    "delivered": 6811,
+    "spooled": 0,
+    "replayed": 0,
+    "in_flight": 0,
+    "last_error": null
+   },
+   "decisions": {
+    "stale_rejected": 20,
+    "fallback_restricted": 0
+   },
+   "catalog_loaded_at": 1794767936.3949049
+  }
+ },
+ "environment": {
+  "recorded_at": "2026-11-15T18:39:05.538587+00:00",
+  "unix_time": 1794767945.5385914,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178016256,
+   "available": 1126178816
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

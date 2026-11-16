@@ -186,6 +186,36 @@ def test_sweep_rules_low_and_slow_threshold_evasion_and_uncommon_coaccess():
     assert "evader" not in out2                                  # reached High at least once -> not evasion
 
 
+def test_slim_lake_loader_gives_the_same_sweep_candidates_as_full_events(tmp_path):
+    """The memory-bounded sweep loader (sensitive lookback only, (u, rkey) baseline, (u, tier) scores, streamed
+    reads) must not change the Path C result compared with loading every full event and score."""
+    from accesssentinel.adapters.hdfs_lake import HistoryLake, LocalFsClient
+    from accesssentinel.escalation_engine import baseline_range
+    from accesssentinel.streaming.escalation_service import lake_loader
+    cfg = EscalationConfig()
+    lb0 = T0 - cfg.sweep_lookback
+    b0, b1 = baseline_range(lb0, cfg)
+    rng = random.Random(3)
+    evs = [ev(f"u{rng.randrange(12)}", rng.uniform(b0 + 1, b1), r=rng.choice(["directory", "payroll", "reviews"]),
+              s=rng.choice([0, 1])) for _ in range(600)]
+    evs += [ev(f"u{rng.randrange(12)}", rng.uniform(lb0 + 1, T0), r=rng.choice(["payroll", "reviews", "board-minutes"]),
+               s=rng.choice([0, 1]), a=rng.choice(["hr", "docs"])) for _ in range(300)]
+    evs += [ev(u, T0 - 600, r="board-minutes", a="docs") for u in ("p", "q", "r", "s2")]
+    scores = [score(f"u{k % 5}", rng.choice([0.45, 0.5, 0.2, 0.7]), t=T0 - 60 * k) for k in range(40)]
+    for i, sc in enumerate(scores):
+        sc["score_id"] = f"sc-{i}"
+    lake = HistoryLake(LocalFsClient(str(tmp_path / "hist")), base="/accesssentinel")
+    lake.write_events([(e, {"partition": 0, "offset": i}) for i, e in enumerate(evs)])
+    lake.write_events([(e, {"partition": 0, "offset": i}) for i, e in enumerate(evs[:50])])    # duplicates: removed
+    lake.write_records("risk-scores", [{"record_id": sc["score_id"], "ts": sc["t"], "payload": sc} for sc in scores])
+    full = sweep_candidates(lake.read_events(lb0, T0), lake.read_events(b0, b1),
+                            [r["payload"] for r in lake.read_records("risk-scores", lb0, T0)], cfg, T0)
+    slim = lake_loader(lake, cfg)(T0)
+    assert full and sweep_candidates(slim["lookback_events"], slim["baseline_events"], slim["lookback_scores"],
+                                     cfg, T0) == full
+    assert all(e.s == 1 for e in slim["lookback_events"]) and set(slim["lookback_scores"][0]) == {"u", "tier"}
+
+
 def test_run_sweep_schedule_lock_and_background_emission():
     c = Clock(); e = esc(c, t_sweep=7200, gamma=0.0)
     calls = []
@@ -275,3 +305,35 @@ def test_sweep_at_a_historical_time_ignores_live_cooldowns():
                                   "lookback_scores": [score("slow", 0.5, t=now - k) for k in range(6)]}, force=True)
     (rec,) = e_past.drain_sweep()
     assert rec["u"] == "slow" and rec["paths"] == ["sweep"]
+
+
+# ------------------------------------------------------------------------------------------ Revised v3 replay (Exp. E / F)
+def test_offline_final_windows_match_the_resource_window_stage_semantics():
+    from accesssentinel.ml.escalation_eval import final_windows
+    from accesssentinel.schema import make_event as mk
+    evs = [mk(u, "hr", "payroll", 1, "view", True, {"ip": "10.0.0.1", "device": "d"}, "c" * 32, t=T0 + dt)
+           for u, dt in (("a", 10), ("b", 20), ("a", 30), ("c", 950))]
+    evs.append(mk("d", "hr", "directory", 0, "view", True, {"ip": "10.0.0.1", "device": "d"}, "c" * 32, t=T0 + 15))
+    w = final_windows(evs, 900.0, grace=5.0)
+    b0 = int((T0 + 10) // 900)
+    assert all(r["kind"] == "final" and r["s"] == 1 for _, r in w)              # sensitive resources only
+    first = [r for _, r in w if r["window"] == b0][0]
+    assert first["users"] == ["a", "b"] and first["rstar"] == "default/hr:payroll"
+    assert [t for t, _ in w] == sorted(t for t, _ in w) and w[0][0] == (b0 + 1) * 900 + 5.0     # emitted when final
+
+
+def test_offline_size_fn_and_admission_coverage():
+    from types import SimpleNamespace
+    from accesssentinel.ml.escalation_eval import coverage_v3, offline_size_fn
+    from accesssentinel.ml.tgn_graph import MemoryEdgeIndex
+    E = lambda u, r, t, i: {"id": f"e{i}", "u": u, "r": r, "t": t}
+    idx = MemoryEdgeIndex([E("s", "hr:payroll", 100, 0), E("s", "hr:payroll", 110, 1), E("n1", "hr:payroll", 120, 2),
+                           E("n1", "docs:x", 130, 3), E("far", "docs:x", 140, 4)])
+    assert offline_size_fn(idx, 3600.0, 10)("s", 200.0) == (2 + 2, 2 + 1)        # seed 2 edges + n1's 2; users s,n1 + 1 res
+    lab = lambda inst: SimpleNamespace(instance=inst)
+    ev = lambda eid, t: SimpleNamespace(event_id=eid, t=t)
+    ds = SimpleNamespace(events=[ev("x1", 1000.0), ev("x2", 2000.0)], labels={"x1": lab("g1"), "x2": lab("g1")},
+                         instances={"g1": {"kind": "low_slow_group", "split": "test", "members": ["m1", "m2"]}})
+    cov = coverage_v3(ds, [{"u": "m2", "t": 2500.0, "paths": ["sample"]}], ["low_slow_group"])
+    assert cov["g1"]["covered"] and cov["g1"]["members_admitted"] == 1 and cov["g1"]["paths"] == ["sample"]
+    assert not coverage_v3(ds, [{"u": "m2", "t": 9000.0, "paths": ["sample"]}], ["low_slow_group"])["g1"]["covered"]

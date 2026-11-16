@@ -84,7 +84,8 @@ def report(name: str, idx, mask, scores, attackers) -> dict:
 def report_at(name: str, idx, mask, scores, attackers, thresholds: Dict[str, float]) -> dict:
     """Like report(), at CALIBRATED thresholds (Revised v3 Eq. 8) instead of the fixed D3 0.4 / 0.6."""
     y, sc, inst, t, users = idx.y[mask], idx.scenario[mask], idx.instance[mask], idx.t[mask], idx.users[mask]
-    individual_inst = np.where(np.isin(sc, ["compromised_account", "insider_exfiltration", "bac_probe", "low_and_slow"]), inst, "")
+    from ..datasets.synth import INDIVIDUAL_V3                 # incl. the Phase 8 scenarios
+    individual_inst = np.where(np.isin(sc, list(INDIVIDUAL_V3)), inst, "")
     out = {"model": name, "thresholds": thresholds,
            "event_level": {"n": int(len(y)), "positives": int(y.sum()),
                            "roc_auc": float(roc_auc_score(y, scores)) if 0 < y.sum() < len(y) else None,

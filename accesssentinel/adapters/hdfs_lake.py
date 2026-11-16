@@ -21,7 +21,7 @@ import shutil
 import time
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
 from urllib.parse import quote, unquote
 
 import pyarrow as pa
@@ -117,6 +117,18 @@ def _row_event(row: dict) -> AccessEvent:
     return AccessEvent(**d)
 
 
+def _align(batch, schema):
+    """A record batch in the column order and types of `schema`; missing columns become nulls."""
+    cols = []
+    for f in schema:
+        if f.name in batch.schema.names:
+            col = batch.column(batch.schema.get_field_index(f.name))
+            cols.append(col if col.type == f.type else col.cast(f.type))
+        else:
+            cols.append(pa.nulls(batch.num_rows, type=f.type))
+    return pa.RecordBatch.from_arrays(cols, schema=schema)
+
+
 def _dedup_key(row: dict, id_field: str) -> Optional[str]:
     v = row.get(id_field)
     return v if v else None
@@ -154,13 +166,20 @@ class HistoryLake:
         self.client.write(path, data=sink.getvalue(), overwrite=False)
         return path
 
-    def _read_dir(self, directory: str) -> List[dict]:
-        rows = []
+    def _iter_dir(self, directory: str, columns: Optional[Sequence[str]] = None) -> Iterator[dict]:
+        """Rows of a partition, one part file and one record batch at a time; `columns` reads only those
+        columns (those present in each file). Memory: one batch, not the whole partition."""
+        import pyarrow.parquet as pq
         for name in self._ls(directory):
             if name.endswith(".parquet"):
                 with self.client.read(f"{directory}/{name}") as r:
-                    rows.extend(read_parquet_bytes(r.read()).to_pylist())
-        return rows
+                    pf = pq.ParquetFile(io.BytesIO(r.read()))
+                cols = None if columns is None else [c for c in columns if c in pf.schema_arrow.names]
+                for batch in pf.iter_batches(batch_size=2048, columns=cols, use_threads=False):
+                    yield from batch.to_pylist()
+
+    def _read_dir(self, directory: str) -> List[dict]:
+        return list(self._iter_dir(directory))
 
     # ------------------------------------------------------------------ writes
     def write_events(self, items: Sequence[Tuple[AccessEvent, dict]]) -> List[str]:
@@ -183,12 +202,15 @@ class HistoryLake:
         return [self._write_table(self._part_dir(dataset, d), rs) for d, rs in sorted(groups.items())]
 
     # ------------------------------------------------------------------ reads
-    def read_events(self, t0: float, t1: float, apps: Optional[Iterable[str]] = None,
-                    users: Optional[Iterable[str]] = None, dedup: bool = True) -> List[AccessEvent]:
-        """Events with t0 < t <= t1 (same semantics as HistoricalStore.read_range), sorted by t."""
+    def iter_event_rows(self, t0: float, t1: float, apps: Optional[Iterable[str]] = None,
+                        users: Optional[Iterable[str]] = None, dedup: bool = True,
+                        columns: Optional[Sequence[str]] = None) -> Iterator[dict]:
+        """Raw rows of the events with t0 < t <= t1, unsorted, streamed file by file. Memory is one part file plus
+        the dedup keys - the background sweep materialised a whole day of events and scores as objects and was
+        OOM-killed after a day of load (Exp. C, 2026-11-15)."""
         app_set = set(apps) if apps is not None else None
         user_set = set(users) if users is not None else None
-        seen, out = set(), []
+        seen = set()
         for d in self._dates(EVENTS, t0, t1):
             day_dir = self._part_dir(EVENTS, d)
             for name in self._ls(day_dir):
@@ -196,7 +218,7 @@ class HistoryLake:
                     continue
                 if app_set is not None and unquote(name.split("=", 1)[1]) not in app_set:
                     continue
-                for row in self._read_dir(f"{day_dir}/{name}"):
+                for row in self._iter_dir(f"{day_dir}/{name}", columns):
                     if not (t0 < row["t"] <= t1) or (user_set is not None and row["u"] not in user_set):
                         continue
                     k = _dedup_key(row, "event_id")
@@ -204,25 +226,44 @@ class HistoryLake:
                         if k in seen:
                             continue
                         seen.add(k)
-                    out.append(_row_event(row))
+                    yield row
+
+    def read_events(self, t0: float, t1: float, apps: Optional[Iterable[str]] = None,
+                    users: Optional[Iterable[str]] = None, dedup: bool = True) -> List[AccessEvent]:
+        """Events with t0 < t <= t1 (same semantics as HistoricalStore.read_range), sorted by t."""
+        out = [_row_event(row) for row in self.iter_event_rows(t0, t1, apps, users, dedup)]
         out.sort(key=lambda e: (e.t, e.event_id))
         return out
 
     def user_history(self, user: str, t0: float, t1: float) -> List[AccessEvent]:
         return self.read_events(t0, t1, users=[user])
 
-    def read_records(self, dataset: str, t0: float, t1: float, dedup: bool = True) -> List[dict]:
+    def read_records(self, dataset: str, t0: float, t1: float, dedup: bool = True,
+                     fields: Optional[Sequence[str]] = None, keys: Optional[Iterable[str]] = None) -> List[dict]:
+        """Records with t0 < ts <= t1, sorted by ts. `fields`: keep only these payload keys (and ts), so a caller
+        that needs two fields of a day of records does not hold every full payload. `keys`: only records whose
+        Kafka key (the user, for risk scores) is in the set, filtered BEFORE the payload is parsed - the
+        dashboard's per-user risk page parsed every score of the day for every user and OOM-killed the API."""
+        key_set = set(keys) if keys is not None else None
+        cols = ("record_id", "ts", "key", "payload") if (fields or key_set is not None) else None
         seen, out = set(), []
         for d in self._dates(dataset, t0, t1):
-            for row in self._read_dir(self._part_dir(dataset, d)):
+            for row in self._iter_dir(self._part_dir(dataset, d), cols):
                 if not (t0 < float(row["ts"]) <= t1):
+                    continue
+                if key_set is not None and row.get("key") not in key_set:
                     continue
                 k = _dedup_key(row, "record_id")
                 if dedup and k is not None:
                     if k in seen:
                         continue
                     seen.add(k)
-                row["payload"] = json.loads(row["payload"]) if isinstance(row.get("payload"), str) else row.get("payload")
+                payload = json.loads(row["payload"]) if isinstance(row.get("payload"), str) else row.get("payload")
+                if fields is not None:
+                    payload = {f: payload.get(f) for f in fields} if isinstance(payload, dict) else payload
+                    row = {"ts": row["ts"], "payload": payload}
+                else:
+                    row["payload"] = payload
                 out.append(row)
         out.sort(key=lambda r: float(r["ts"]))
         return out
@@ -251,24 +292,40 @@ class HistoryLake:
         names = [n for n in self._ls(directory) if n.endswith(".parquet")]
         if len(names) <= 1:
             return {"files_before": len(names), "rows": None}
-        tables = []
-        for n in names:
+        # Streaming merge: one input file and one record batch in memory at a time, plus the ids seen. The
+        # previous version concatenated the whole partition and turned it into Python dicts; the sink compacts
+        # today's partition whenever it passes compact_max_files, so after a day of load that OOM-killed the
+        # HDFS sink (384 MB) - found in Exp. C, 2026-11-15.
+        def _pf(n):
             with self.client.read(f"{directory}/{n}") as r:
-                tables.append(read_parquet_bytes(r.read()))
-        rows = pa.concat_tables(tables, promote_options="default").to_pylist()
+                return pq.ParquetFile(io.BytesIO(r.read()))
+        schema = pa.unify_schemas([_pf(n).schema_arrow for n in names], promote_options="default")
         id_field = "event_id" if dataset == EVENTS else "record_id"
-        seen, keep = set(), []
-        for row in rows:
-            k = _dedup_key(row, id_field)
-            if k is not None:
-                if k in seen:
-                    continue
-                seen.add(k)
-            keep.append(row)
-        self._write_table(directory, keep)
+        seen, rows_before, rows_after = set(), 0, 0
+        sink = io.BytesIO()
+        with pq.ParquetWriter(sink, schema, compression="snappy") as w:
+            for n in names:
+                for batch in _pf(n).iter_batches(batch_size=4096, use_threads=False):
+                    rows_before += batch.num_rows
+                    ids = batch.column(id_field).to_pylist() if id_field in batch.schema.names else [None] * batch.num_rows
+                    keep = []
+                    for k in ids:
+                        if k:
+                            if k in seen:
+                                keep.append(False)
+                                continue
+                            seen.add(k)
+                        keep.append(True)
+                    batch = batch.filter(pa.array(keep)) if not all(keep) else batch
+                    if batch.num_rows:
+                        w.write_batch(_align(batch, schema))
+                        rows_after += batch.num_rows
+        self.client.makedirs(directory)
+        path = f"{directory}/part-{int(time.time() * 1000)}-{uuid.uuid4().hex[:8]}.parquet"
+        self.client.write(path, data=sink.getvalue(), overwrite=False)
         for n in names:
             self.client.delete(f"{directory}/{n}")
-        return {"files_before": len(names), "rows_before": len(rows), "rows": len(keep)}
+        return {"files_before": len(names), "rows_before": rows_before, "rows": rows_after}
 
     # ------------------------------------------------------------------ HistoricalStore-compatible interface
     def append(self, ev: AccessEvent) -> None:

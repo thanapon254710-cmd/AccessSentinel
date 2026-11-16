@@ -80,9 +80,11 @@ def path_b(s, args):
         c = httpx.Client(base_url=args.gateway, timeout=10)
         assert c.post("/auth/login", json={"username": u, "password": pw}).status_code == 200, u
         statuses[u] = c.get("/apps/finance/audit-reports").status_code
-    got = wait_escalations(s, ESCALATIONS_REALTIME, set(users), args.timeout, t0,
-                           lambda r: "resource" in r["paths"] and r["evidence"]["resource"]["resource"] == "finance:audit-reports")
-    res = [r for r in got if "resource" in r["paths"] and r["evidence"]["resource"]["resource"] == "finance:audit-reports"]
+    # v3 (Phase 5): Path B comes from the FINAL event-time resource window (Delta_res = 15 min + grace), keyed by the
+    # namespaced r* = tenant/app:resource, so the trigger can arrive up to ~16 min after the accesses.
+    is_res = lambda r: "resource" in r["paths"] and str(r["evidence"]["resource"]["resource"]).endswith("finance:audit-reports")
+    got = wait_escalations(s, ESCALATIONS_REALTIME, set(users), max(args.timeout, 1200.0), t0, is_res)
+    res = [r for r in got if is_res(r)]
     parts = set(res[0]["evidence"]["resource"]["participants"]) if res else set()
     return report([(all(v == 200 for v in statuses.values()), "4 permitted users read finance/audit-reports via the gateway", str(statuses)),
                    (bool(res), "Path B: realtime escalation with resource evidence",

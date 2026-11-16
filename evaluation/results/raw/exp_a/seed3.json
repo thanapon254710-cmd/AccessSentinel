@@ -1,0 +1,3188 @@
+{
+ "experiment": "A",
+ "seed": 3,
+ "quick": false,
+ "started_at": "2026-11-15T15:03:56.595126+00:00",
+ "finished_at": "2026-11-15T15:55:57.484362+00:00",
+ "wall_seconds": 3120.8912377357483,
+ "data": {
+  "source": "synthetic",
+  "fingerprint": "b345b11e45d03d26",
+  "events": 497405,
+  "users": 400,
+  "synth_config": {
+   "n_users": 400,
+   "days": 70,
+   "start": "2026-09-07",
+   "split_days": [
+    36,
+    14,
+    20
+   ],
+   "seed": 26,
+   "role_mix": {
+    "staff": 0.34,
+    "hr_manager": 0.1,
+    "finance_analyst": 0.13,
+    "legal": 0.1,
+    "executive": 0.07,
+    "auditor": 0.12,
+    "it_admin": 0.14
+   },
+   "attacks": {
+    "compromised_account": [
+     6,
+     3,
+     5
+    ],
+    "insider_exfiltration": [
+     6,
+     3,
+     5
+    ],
+    "bac_probe": [
+     6,
+     3,
+     5
+    ],
+    "low_and_slow": [
+     5,
+     2,
+     4
+    ],
+    "horizontal_abuse": [
+     5,
+     2,
+     4
+    ],
+    "unusual_sequence": [
+     5,
+     2,
+     4
+    ],
+    "unusual_time": [
+     5,
+     2,
+     4
+    ]
+   },
+   "collusion_groups": {
+    "coordinated_collection": [
+     3,
+     1,
+     2
+    ],
+    "split_exfiltration": [
+     2,
+     1,
+     2
+    ]
+   },
+   "group_size": 3,
+   "max_attacker_share_per_role": 0.25,
+   "collusion_v2": false,
+   "benign_teams": false,
+   "attack_margin_days": [
+    0,
+    10,
+    10
+   ],
+   "collusion_group_sizes": [],
+   "benign_projects": false,
+   "events_per_day_median": 22.0,
+   "office_subnets": 5
+  },
+  "timer_context": "simulated",
+  "windows": {
+   "train": 258529,
+   "val": 49600,
+   "test": 88910
+  },
+  "test_attack_events": 1797,
+  "nominal_val_windows": 37157
+ },
+ "tcn_v3_config": {
+  "window_len": 128,
+  "feature_dim": 43,
+  "kernel_size": 2,
+  "dilations": [
+   1,
+   2,
+   4,
+   8,
+   16,
+   32
+  ],
+  "filters": [
+   256,
+   256,
+   128,
+   128,
+   64,
+   64
+  ],
+  "dropout": 0.2,
+  "head_hidden": 32,
+  "lambdas": [
+   1.0,
+   1.0,
+   0.5,
+   1.0
+  ],
+  "focal_gamma": 2.0,
+  "focal_alpha": 0.25,
+  "lr": 0.001,
+  "batch_size": 256,
+  "pretrain_epochs": 3,
+  "finetune_epochs": 8,
+  "alpha_low": 0.05,
+  "alpha_high": 0.01,
+  "alpha_block": 0.001
+ },
+ "device": "cuda",
+ "models": {
+  "tcn-v3": {
+   "model": "tcn-v3",
+   "thresholds": {
+    "theta_low": 0.0904650270938873,
+    "theta_high": 0.11892220407724388,
+    "theta_B": 0.16442317271232398
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9062678656057811,
+    "pr_auc": 0.7623974635809051,
+    "at_theta_low": {
+     "threshold": 0.0904650270938873,
+     "tp": 1409,
+     "fp": 5276,
+     "tn": 81837,
+     "fn": 388,
+     "precision": 0.21077038145100974,
+     "recall": 0.7840845854201447,
+     "f1": 0.3322329639236029,
+     "fpr": 0.060565013258641075
+    },
+    "at_theta_high": {
+     "threshold": 0.11892220407724388,
+     "tp": 1349,
+     "fp": 1194,
+     "tn": 85919,
+     "fn": 448,
+     "precision": 0.5304758159653952,
+     "recall": 0.7506956037840846,
+     "f1": 0.6216589861751152,
+     "fpr": 0.013706335449358878
+    },
+    "at_theta_B": {
+     "threshold": 0.16442317271232398,
+     "tp": 1306,
+     "fp": 181,
+     "tn": 86932,
+     "fn": 491,
+     "precision": 0.8782784129119031,
+     "recall": 0.7267668336115748,
+     "f1": 0.7953714981729597,
+     "fpr": 0.002077761068956413
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.9487179487179487
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.0
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.04597701149425287
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.0025906735751295338
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.014912726656498898
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.0026362038664323375
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 0.9939393939393939
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.6745762711864407
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.7329700272479565
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.4444444444444444
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.013958290842341424
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.3767123287671233
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.2785714285714286
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 28,
+    "median_minutes_to_detect": 0.6217613776524862,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.4961467186609904,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.8616025964419047,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 1.4327298204104106,
+      "events_before_detection": 4
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 4.453322728474935,
+      "events_before_detection": 2
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 0.7473760366439819,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.15750616788864136,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.3887296199798584,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.24438125292460125,
+      "events_before_detection": 3
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.9624980012575786,
+      "events_before_detection": 8
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.2622653762499491,
+      "events_before_detection": 5
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 1.8513796965281168,
+      "events_before_detection": 7
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 3.588681224981944,
+      "events_before_detection": 20
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.8429240187009176,
+      "events_before_detection": 3
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 134.57655923763912,
+      "events_before_detection": 1
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 182.66394212245942,
+      "events_before_detection": 2
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 2.4306568543116254,
+      "events_before_detection": 6
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 2.4640217185020448,
+      "events_before_detection": 5
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 9943.351374272506,
+      "events_before_detection": 19
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 8.536358006795247,
+      "events_before_detection": 8
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 287,
+    "rate": 0.11652456354039789
+   },
+   "calibration": {
+    "theta_low": 0.0904650270938873,
+    "theta_high": 0.11892220407724388,
+    "theta_B": 0.16442317271232398,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "Revised v3 TCN (Eqs. 3-8)",
+   "train_seconds": 878.6056714057922,
+   "history": [
+    {
+     "stage": "pretrain",
+     "epoch": 0,
+     "loss": 2.246355964995847,
+     "next_res": 1.488055170644628,
+     "next_op": 0.19476538709558472,
+     "time_gap": 1.1270708189152254,
+     "seconds": 74.43438410758972
+    },
+    {
+     "stage": "pretrain",
+     "epoch": 1,
+     "loss": 2.036253128311422,
+     "next_res": 1.3179428284711177,
+     "next_op": 0.1705674137772605,
+     "time_gap": 1.0954857682827677,
+     "seconds": 74.24495911598206
+    },
+    {
+     "stage": "pretrain",
+     "epoch": 2,
+     "loss": 2.004873154186966,
+     "next_res": 1.2947466341575773,
+     "next_op": 0.1649468095438315,
+     "time_gap": 1.0903594155122738,
+     "seconds": 76.15984511375427
+    },
+    {
+     "stage": "finetune",
+     "epoch": 0,
+     "loss": 1.9919644759433104,
+     "next_res": 1.2828856409186185,
+     "next_op": 0.1628406846803604,
+     "time_gap": 1.0858542817653996,
+     "sup": 0.003311004227466448,
+     "val_pr_auc": 0.6679478697636846,
+     "seconds": 82.36918449401855
+    },
+    {
+     "stage": "finetune",
+     "epoch": 1,
+     "loss": 1.9775583376978885,
+     "next_res": 1.272511892035456,
+     "next_op": 0.16166927424987945,
+     "time_gap": 1.0830228845671852,
+     "sup": 0.0018657293840799029,
+     "val_pr_auc": 0.6746507736359373,
+     "seconds": 81.51479721069336
+    },
+    {
+     "stage": "finetune",
+     "epoch": 2,
+     "loss": 1.9671918780496804,
+     "next_res": 1.2638199193642872,
+     "next_op": 0.160768978412051,
+     "time_gap": 1.0818593631286433,
+     "sup": 0.0016732962511878664,
+     "val_pr_auc": 0.6791839660660429,
+     "seconds": 81.80262851715088
+    },
+    {
+     "stage": "finetune",
+     "epoch": 3,
+     "loss": 1.9590802906763436,
+     "next_res": 1.2573235330015127,
+     "next_op": 0.16011711202635623,
+     "time_gap": 1.080422195172546,
+     "sup": 0.0014285462471601176,
+     "val_pr_auc": 0.6884007792875316,
+     "seconds": 82.22218132019043
+    },
+    {
+     "stage": "finetune",
+     "epoch": 4,
+     "loss": 1.9536003129317028,
+     "next_res": 1.2533609623956208,
+     "next_op": 0.1593375336526349,
+     "time_gap": 1.0791359683664719,
+     "sup": 0.0013338365650702368,
+     "val_pr_auc": 0.6643651580421334,
+     "seconds": 81.92976784706116
+    },
+    {
+     "stage": "finetune",
+     "epoch": 5,
+     "loss": 1.9469245830384811,
+     "next_res": 1.2479398095961844,
+     "next_op": 0.1588785502211292,
+     "time_gap": 1.0777064139890198,
+     "sup": 0.001253013522630744,
+     "val_pr_auc": 0.7093766835189881,
+     "seconds": 81.97065162658691
+    },
+    {
+     "stage": "finetune",
+     "epoch": 6,
+     "loss": 1.9423312620361253,
+     "next_res": 1.244306494811974,
+     "next_op": 0.1585427091042004,
+     "time_gap": 1.0767084128195696,
+     "sup": 0.0011278522268779365,
+     "val_pr_auc": 0.6868891235229516,
+     "seconds": 81.31925845146179
+    },
+    {
+     "stage": "finetune",
+     "epoch": 7,
+     "loss": 1.9367838828870565,
+     "next_res": 1.2396355823715135,
+     "next_op": 0.15820832267993748,
+     "time_gap": 1.0757907175781702,
+     "sup": 0.0010446157698469965,
+     "val_pr_auc": 0.6888500849943069,
+     "seconds": 80.47402334213257
+    }
+   ],
+   "best_val_pr_auc": 0.7093766835189881,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 7.0760499947937205,
+     "batch_1_ms_p95": 9.13284498383291,
+     "batch_64_ms_median": 49.25994999939576,
+     "batch_64_ms_p95": 53.767860008520074,
+     "device": "cpu",
+     "torch_threads": 14
+    },
+    "cuda": {
+     "batch_1_ms_median": 2.6897999923676252,
+     "batch_1_ms_p95": 5.506295016675722,
+     "batch_64_ms_median": 4.534349995083176,
+     "batch_64_ms_p95": 14.72216998517979,
+     "device": "cuda",
+     "torch_threads": 14
+    }
+   },
+   "parameters": 681212
+  },
+  "tcn-sup": {
+   "model": "tcn-sup",
+   "thresholds": {
+    "theta_low": 0.0053773180581629275,
+    "theta_high": 0.02610955581069008,
+    "theta_B": 0.20523121625182839
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9876912985066677,
+    "pr_auc": 0.9084190333361531,
+    "at_theta_low": {
+     "threshold": 0.0053773180581629275,
+     "tp": 1694,
+     "fp": 3411,
+     "tn": 83702,
+     "fn": 103,
+     "precision": 0.3318315377081293,
+     "recall": 0.9426822481914302,
+     "f1": 0.49087221095334693,
+     "fpr": 0.03915603870834433
+    },
+    "at_theta_high": {
+     "threshold": 0.02610955581069008,
+     "tp": 1598,
+     "fp": 790,
+     "tn": 86323,
+     "fn": 199,
+     "precision": 0.669179229480737,
+     "recall": 0.889259877573734,
+     "f1": 0.7636798088410993,
+     "fpr": 0.009068680908704786
+    },
+    "at_theta_B": {
+     "threshold": 0.20523121625182839,
+     "tp": 1492,
+     "fp": 70,
+     "tn": 87043,
+     "fn": 305,
+     "precision": 0.9551856594110115,
+     "recall": 0.8302726766833611,
+     "f1": 0.8883596308425127,
+     "fpr": 0.0008035540045687785
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.9743589743589743
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.13333333333333333
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.05747126436781609
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.023316062176165803
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.01609896627690222
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.004393673110720563
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 1.0
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.6915254237288135
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.9128065395095368
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.6049382716049383
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.008527942076279828
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.7945205479452054
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.95
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 30,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.7605849901835123,
+      "events_before_detection": 2
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 4.016859185695648,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 2.0959068735440574,
+      "events_before_detection": 3
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.23133647044499714,
+      "events_before_detection": 2
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.2622653762499491,
+      "events_before_detection": 5
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.9362754623095194,
+      "events_before_detection": 4
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 3.134303891658783,
+      "events_before_detection": 16
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 1.1135722120602927,
+      "events_before_detection": 4
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": true,
+      "minutes_to_detect": 7064.437317510446,
+      "events_before_detection": 26
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": true,
+      "minutes_to_detect": 2.766372001171112,
+      "events_before_detection": 5
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": true,
+      "minutes_to_detect": 2.025346024831136,
+      "events_before_detection": 4
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 302,
+    "rate": 0.12261469752334551
+   },
+   "calibration": {
+    "theta_low": 0.0053773180581629275,
+    "theta_high": 0.02610955581069008,
+    "theta_B": 0.20523121625182839,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "generic supervised TCN: same body, focal loss only, no z_u (reference-style TCN)",
+   "train_seconds": 570.582759141922,
+   "history": [
+    {
+     "stage": "finetune",
+     "epoch": 0,
+     "loss": 0.0018336346892405039,
+     "next_res": 5.951828266134356,
+     "next_op": 2.1089886190277514,
+     "time_gap": 1.7040151054316228,
+     "sup": 0.0018336346892405039,
+     "val_pr_auc": 0.9135345205145501,
+     "seconds": 80.77842330932617
+    },
+    {
+     "stage": "finetune",
+     "epoch": 1,
+     "loss": 0.0006856883153303817,
+     "next_res": 7.312690035659488,
+     "next_op": 3.1539745437036646,
+     "time_gap": 1.815282639300469,
+     "sup": 0.0006856883153303817,
+     "val_pr_auc": 0.9166277895521129,
+     "seconds": 81.45669865608215
+    },
+    {
+     "stage": "finetune",
+     "epoch": 2,
+     "loss": 0.0004576401695108203,
+     "next_res": 10.03993656092351,
+     "next_op": 3.8736610641573916,
+     "time_gap": 2.738335405717982,
+     "sup": 0.0004576401695108203,
+     "val_pr_auc": 0.8680891206630746,
+     "seconds": 80.90220403671265
+    },
+    {
+     "stage": "finetune",
+     "epoch": 3,
+     "loss": 0.00043125672413414504,
+     "next_res": 9.902386502936334,
+     "next_op": 4.737536110028182,
+     "time_gap": 2.26949117573181,
+     "sup": 0.00043125672413414504,
+     "val_pr_auc": 0.9199611526216585,
+     "seconds": 79.82665205001831
+    },
+    {
+     "stage": "finetune",
+     "epoch": 4,
+     "loss": 0.00051380493805619,
+     "next_res": 13.12561980615748,
+     "next_op": 4.290008096175619,
+     "time_gap": 2.2256239562931626,
+     "sup": 0.00051380493805619,
+     "val_pr_auc": 0.8502987954774625,
+     "seconds": 80.74031639099121
+    },
+    {
+     "stage": "finetune",
+     "epoch": 5,
+     "loss": 0.0003613602029527911,
+     "next_res": 24.05220182437708,
+     "next_op": 8.09822049518623,
+     "time_gap": 4.151340738499519,
+     "sup": 0.0003613602029527911,
+     "val_pr_auc": 0.891605958089692,
+     "seconds": 84.37342977523804
+    },
+    {
+     "stage": "finetune",
+     "epoch": 6,
+     "loss": 0.0002675695883926782,
+     "next_res": 22.625164767539147,
+     "next_op": 6.315975188972926,
+     "time_gap": 3.3944766122515837,
+     "sup": 0.0002675695883926782,
+     "val_pr_auc": 0.8195755108022703,
+     "seconds": 82.41506552696228
+    }
+   ],
+   "best_val_pr_auc": 0.9199611526216585,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 6.228050013305619,
+     "batch_1_ms_p95": 8.43405501509551,
+     "batch_64_ms_median": 57.92674999975134,
+     "batch_64_ms_p95": 71.64028001425322,
+     "device": "cpu",
+     "torch_threads": 14
+    },
+    "cuda": {
+     "batch_1_ms_median": 2.6414499880047515,
+     "batch_1_ms_p95": 5.381134980416391,
+     "batch_64_ms_median": 8.870550009305589,
+     "batch_64_ms_p95": 14.217425000970254,
+     "device": "cuda",
+     "torch_threads": 14
+    }
+   },
+   "parameters": 681212
+  },
+  "lstm": {
+   "model": "lstm",
+   "thresholds": {
+    "theta_low": 0.03379508405923841,
+    "theta_high": 0.0881256669759754,
+    "theta_B": 0.21670198315381925
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9429921553160079,
+    "pr_auc": 0.8522714896733377,
+    "at_theta_low": {
+     "threshold": 0.03379508405923841,
+     "tp": 1573,
+     "fp": 4040,
+     "tn": 83073,
+     "fn": 224,
+     "precision": 0.28024229467308037,
+     "recall": 0.8753478018920423,
+     "f1": 0.4245614035087719,
+     "fpr": 0.04637654540654093
+    },
+    "at_theta_high": {
+     "threshold": 0.0881256669759754,
+     "tp": 1512,
+     "fp": 827,
+     "tn": 86286,
+     "fn": 285,
+     "precision": 0.6464300983326208,
+     "recall": 0.8414023372287145,
+     "f1": 0.7311411992263056,
+     "fpr": 0.009493416596833996
+    },
+    "at_theta_B": {
+     "threshold": 0.21670198315381925,
+     "tp": 1414,
+     "fp": 153,
+     "tn": 86960,
+     "fn": 383,
+     "precision": 0.9023611997447352,
+     "recall": 0.7868670005564831,
+     "f1": 0.8406658739595719,
+     "fpr": 0.0017563394671289015
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.989010989010989
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.2
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.11494252873563218
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.023316062176165803
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.005761735299101847
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.0035149384885764497
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 1.0
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.6677966101694915
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.8555858310626703
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.7037037037037037
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.009726188048133796
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.3561643835616438
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.9071428571428571
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 27,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.0545572559038798,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 1.6397656162579854,
+      "events_before_detection": 2
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.23133647044499714,
+      "events_before_detection": 2
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 1.507919704914093,
+      "events_before_detection": 13
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.1608054240544637,
+      "events_before_detection": 4
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 1.8018038551012674,
+      "events_before_detection": 6
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 3.134303891658783,
+      "events_before_detection": 16
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": true,
+      "minutes_to_detect": 169.83291926781337,
+      "events_before_detection": 4
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 2.1026614745457968,
+      "events_before_detection": 4
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 348,
+    "rate": 0.14129110840438489
+   },
+   "calibration": {
+    "theta_low": 0.03379508405923841,
+    "theta_high": 0.0881256669759754,
+    "theta_B": 0.21670198315381925,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "LSTM 2 x 128, same input layer, focal loss only, no z_u",
+   "train_seconds": 151.28038811683655,
+   "history": [
+    {
+     "stage": "finetune",
+     "epoch": 0,
+     "loss": 0.0024086826317252057,
+     "next_res": 3.9833147950691754,
+     "next_op": 2.215711752967079,
+     "time_gap": 3.9522008808532565,
+     "sup": 0.0024086826317252057,
+     "val_pr_auc": 0.7282150712902256,
+     "seconds": 29.920787811279297
+    },
+    {
+     "stage": "finetune",
+     "epoch": 1,
+     "loss": 0.00047890102142752436,
+     "next_res": 3.993017363312221,
+     "next_op": 2.198928062042387,
+     "time_gap": 3.9878861321081027,
+     "sup": 0.00047890102142752436,
+     "val_pr_auc": 0.8041500560447872,
+     "seconds": 30.98585557937622
+    },
+    {
+     "stage": "finetune",
+     "epoch": 2,
+     "loss": 0.000345083788707735,
+     "next_res": 3.9924586194576603,
+     "next_op": 2.2200559849786288,
+     "time_gap": 4.007122338408291,
+     "sup": 0.000345083788707735,
+     "val_pr_auc": 0.7996826969376899,
+     "seconds": 30.13788080215454
+    },
+    {
+     "stage": "finetune",
+     "epoch": 3,
+     "loss": 0.00026712661527874176,
+     "next_res": 3.9993545421279304,
+     "next_op": 2.161608042103229,
+     "time_gap": 4.023360258989995,
+     "sup": 0.00026712661527874176,
+     "val_pr_auc": 0.7649562601620852,
+     "seconds": 30.155165910720825
+    },
+    {
+     "stage": "finetune",
+     "epoch": 4,
+     "loss": 0.0003035111136941817,
+     "next_res": 3.9908459207799174,
+     "next_op": 2.096132776524761,
+     "time_gap": 4.096833102773912,
+     "sup": 0.0003035111136941817,
+     "val_pr_auc": 0.7926525309127266,
+     "seconds": 30.016358375549316
+    }
+   ],
+   "best_val_pr_auc": 0.8041500560447872,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 3.020249991095625,
+     "batch_1_ms_p95": 4.366799992567394,
+     "batch_64_ms_median": 20.407399992109276,
+     "batch_64_ms_p95": 22.633825005323164,
+     "device": "cpu",
+     "torch_threads": 14
+    },
+    "cuda": {
+     "batch_1_ms_median": 1.0184500133618712,
+     "batch_1_ms_p95": 1.5494300168938933,
+     "batch_64_ms_median": 2.730450010858476,
+     "batch_64_ms_p95": 3.0929400061722845,
+     "device": "cuda",
+     "torch_threads": 14
+    }
+   },
+   "parameters": 233340
+  },
+  "iforest": {
+   "model": "iforest",
+   "thresholds": {
+    "theta_low": 0.5057896643830729,
+    "theta_high": 0.5315315169745196,
+    "theta_B": 0.5581890131666319
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.8891016389518471,
+    "pr_auc": 0.4532649140617117,
+    "at_theta_low": {
+     "threshold": 0.5057896643830729,
+     "tp": 1183,
+     "fp": 6591,
+     "tn": 80522,
+     "fn": 614,
+     "precision": 0.15217391304347827,
+     "recall": 0.6583194212576516,
+     "f1": 0.2472050987357643,
+     "fpr": 0.0756603492016117
+    },
+    "at_theta_high": {
+     "threshold": 0.5315315169745196,
+     "tp": 1019,
+     "fp": 2140,
+     "tn": 84973,
+     "fn": 778,
+     "precision": 0.3225704336815448,
+     "recall": 0.567056204785754,
+     "f1": 0.41121872477804683,
+     "fpr": 0.024565793853959798
+    },
+    "at_theta_B": {
+     "threshold": 0.5581890131666319,
+     "tp": 857,
+     "fp": 792,
+     "tn": 86321,
+     "fn": 940,
+     "precision": 0.5197089144936325,
+     "recall": 0.4769059543683918,
+     "f1": 0.4973882762623332,
+     "fpr": 0.009091639594549608
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.8864468864468864
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.2
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.10344827586206896
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.012953367875647668
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.031011692933401117
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.10852372583479789
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 1.0
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.288135593220339
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.38419618528610355
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.5308641975308642
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.02158117479094432
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.0
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.09285714285714286
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 22,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 1.6605310996373495,
+      "events_before_detection": 6
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 2.651500924428304,
+      "events_before_detection": 6
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 7.192184662818908,
+      "events_before_detection": 44
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 5.593292915821076,
+      "events_before_detection": 39
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 16.4051579674085,
+      "events_before_detection": 73
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 16.444571789105733,
+      "events_before_detection": 73
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.5471734682718913,
+      "events_before_detection": 7
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 9926.223237228394,
+      "events_before_detection": 24
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 220,
+    "rate": 0.08932196508323183
+   },
+   "calibration": {
+    "theta_low": 0.5057896643830729,
+    "theta_high": 0.5315315169745196,
+    "theta_B": 0.5581890131666319,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "Isolation Forest (200 trees) on window summaries, fitted on nominal training windows (unsupervised)",
+   "train_seconds": 3.450166702270508,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 11.345849998178892,
+     "batch_1_ms_p95": 19.94176498847082,
+     "device": "cpu"
+    }
+   }
+  },
+  "rule": {
+   "model": "rule",
+   "thresholds": {
+    "theta_low": 0.07585818002124355,
+    "theta_high": 0.07585818002124355,
+    "theta_B": 0.18242552380635635
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9209706169640887,
+    "pr_auc": 0.5538726366308383,
+    "at_theta_low": {
+     "threshold": 0.07585818002124355,
+     "tp": 1363,
+     "fp": 9351,
+     "tn": 77762,
+     "fn": 434,
+     "precision": 0.1272167257793541,
+     "recall": 0.758486366165832,
+     "f1": 0.21788825833266726,
+     "fpr": 0.1073433356674664
+    },
+    "at_theta_high": {
+     "threshold": 0.07585818002124355,
+     "tp": 1363,
+     "fp": 9351,
+     "tn": 77762,
+     "fn": 434,
+     "precision": 0.1272167257793541,
+     "recall": 0.758486366165832,
+     "f1": 0.21788825833266726,
+     "fpr": 0.1073433356674664
+    },
+    "at_theta_B": {
+     "threshold": 0.18242552380635635,
+     "tp": 976,
+     "fp": 406,
+     "tn": 86707,
+     "fn": 821,
+     "precision": 0.7062228654124457,
+     "recall": 0.5431274346132443,
+     "f1": 0.61402956904687,
+     "fpr": 0.004660613226498915
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.9084249084249084
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.0
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.0
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.13730569948186527
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.0979495000847314
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.11335676625659051
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 0.9676767676767677
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.9898305084745763
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.7929155313351499
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.5679012345679012
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.10786763206200285
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.0
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.05
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 24,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.0545572559038798,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 0.7473760366439819,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": true,
+      "minutes_to_detect": 0.1884747306505839,
+      "events_before_detection": 1
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.09298252662022909,
+      "events_before_detection": 1
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.24069599310557047,
+      "events_before_detection": 1
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.06413296063741049,
+      "events_before_detection": 2
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.9362754623095194,
+      "events_before_detection": 4
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 0.0038358330726623534,
+      "events_before_detection": 1
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.16568211317062378,
+      "events_before_detection": 1
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": true,
+      "minutes_to_detect": 5582.7917850891745,
+      "events_before_detection": 23
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 13.761084230740865,
+      "events_before_detection": 13
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 2126,
+    "rate": 0.8631749898497767
+   },
+   "calibration": {
+    "theta_low": 0.07585818002124355,
+    "theta_high": 0.07585818002124355,
+    "theta_B": 0.18242552380635635,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "D3 hand-written heuristic over the newest event (untrained)",
+   "train_seconds": 0.0
+  },
+  "tcn-d3": {
+   "model": "tcn-d3",
+   "thresholds": {
+    "theta_low": 0.00018239926430396717,
+    "theta_high": 0.001040045563131577,
+    "theta_B": 0.006881636731325995
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9963821959645721,
+    "pr_auc": 0.9480041874284703,
+    "at_theta_low": {
+     "threshold": 0.00018239926430396717,
+     "tp": 1753,
+     "fp": 2844,
+     "tn": 84269,
+     "fn": 44,
+     "precision": 0.3813356536871873,
+     "recall": 0.9755147468002225,
+     "f1": 0.5483265561463873,
+     "fpr": 0.032647251271337226
+    },
+    "at_theta_high": {
+     "threshold": 0.001040045563131577,
+     "tp": 1696,
+     "fp": 640,
+     "tn": 86473,
+     "fn": 101,
+     "precision": 0.726027397260274,
+     "recall": 0.9437952142459655,
+     "f1": 0.8207113476893299,
+     "fpr": 0.007346779470343117
+    },
+    "at_theta_B": {
+     "threshold": 0.006881636731325995,
+     "tp": 1649,
+     "fp": 129,
+     "tn": 86984,
+     "fn": 148,
+     "precision": 0.9274465691788526,
+     "recall": 0.9176405119643851,
+     "f1": 0.9225174825174824,
+     "fpr": 0.0014808352369910347
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.9926739926739927
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.06666666666666667
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.022988505747126436
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.012953367875647668
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.006100660904931368
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.005272407732864675
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 1.0
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.9050847457627119
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.8937329700272479
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.8024691358024691
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.0074444217825820926
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.8972602739726028
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.9928571428571429
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 31,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.0545572559038798,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 0.7473760366439819,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": true,
+      "minutes_to_detect": 2.5437415599823,
+      "events_before_detection": 24
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.09298252662022909,
+      "events_before_detection": 1
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.24658629496892293,
+      "events_before_detection": 2
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 2.5478337089220684,
+      "events_before_detection": 19
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.8301874001820883,
+      "events_before_detection": 3
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 0.0038358330726623534,
+      "events_before_detection": 1
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": true,
+      "minutes_to_detect": 169.83291926781337,
+      "events_before_detection": 4
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": true,
+      "minutes_to_detect": 2.766372001171112,
+      "events_before_detection": 5
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 1.0154975175857544,
+      "events_before_detection": 3
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 188,
+    "rate": 0.07632967925294357
+   },
+   "calibration": {
+    "theta_low": 0.00018239926430396717,
+    "theta_high": 0.001040045563131577,
+    "theta_B": 0.006881636731325995,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "Deliverable 3 TCN (L = 20, d = 50, 10 blocks), retrained on this data, focal loss, early stop on val PR-AUC",
+   "train_seconds": 155.87576532363892,
+   "best_epoch": 4,
+   "best_val_pr_auc": 0.9845778996644451,
+   "parameters": 616057
+  },
+  "tcn-noz": {
+   "model": "tcn-noz",
+   "thresholds": {
+    "theta_low": 0.04504462257027624,
+    "theta_high": 0.07446006834506994,
+    "theta_B": 0.12881227713823024
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.9088138235256784,
+    "pr_auc": 0.7768801026937868,
+    "at_theta_low": {
+     "threshold": 0.04504462257027624,
+     "tp": 1455,
+     "fp": 5823,
+     "tn": 81290,
+     "fn": 342,
+     "precision": 0.19991755976916736,
+     "recall": 0.8096828046744574,
+     "f1": 0.32066115702479336,
+     "fpr": 0.06684421383719996
+    },
+    "at_theta_high": {
+     "threshold": 0.07446006834506994,
+     "tp": 1390,
+     "fp": 1512,
+     "tn": 85601,
+     "fn": 407,
+     "precision": 0.4789800137835975,
+     "recall": 0.773511407902059,
+     "f1": 0.5916152372845286,
+     "fpr": 0.017356766498685616
+    },
+    "at_theta_B": {
+     "threshold": 0.12881227713823024,
+     "tp": 1315,
+     "fp": 177,
+     "tn": 86936,
+     "fn": 482,
+     "precision": 0.881367292225201,
+     "recall": 0.7317751808569839,
+     "f1": 0.7996351474612344,
+     "fpr": 0.0020318436972667684
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.9633699633699634
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.0
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.7011494252873564
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.04922279792746114
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.02389425521098119
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.0057117750439367315
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 0.9959595959595959
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.6847457627118644
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.7356948228882834
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.345679012345679
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.016291046298184786
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.410958904109589
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.5285714285714286
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 27,
+    "median_minutes_to_detect": 0.3887296199798584,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.4961467186609904,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.8616025964419047,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.7605849901835123,
+      "events_before_detection": 2
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 4.453322728474935,
+      "events_before_detection": 2
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 1.6397656162579854,
+      "events_before_detection": 2
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.3887296199798584,
+      "events_before_detection": 1
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.2759699543317159,
+      "events_before_detection": 1
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.9624980012575786,
+      "events_before_detection": 8
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.2622653762499491,
+      "events_before_detection": 5
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 2.7783315618832907,
+      "events_before_detection": 10
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 8.222034335136414,
+      "events_before_detection": 40
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.27877042690912884,
+      "events_before_detection": 2
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 1563.0292539318402,
+      "events_before_detection": 4
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.1722468376159668,
+      "events_before_detection": 1
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 2.1026614745457968,
+      "events_before_detection": 4
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 1.0245057980219523,
+      "events_before_detection": 2
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 1.2141998728116354,
+      "events_before_detection": 3
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 8.536358006795247,
+      "events_before_detection": 8
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 247,
+    "rate": 0.10028420625253756
+   },
+   "calibration": {
+    "theta_low": 0.04504462257027624,
+    "theta_high": 0.07446006834506994,
+    "theta_B": 0.12881227713823024,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "ablation: v3 TCN without the timer context z_u",
+   "train_seconds": 867.3825216293335,
+   "history": [
+    {
+     "stage": "pretrain",
+     "epoch": 0,
+     "loss": 2.246151582557376,
+     "next_res": 1.4881969948806384,
+     "next_op": 0.19438640909029706,
+     "time_gap": 1.127136350563257,
+     "seconds": 75.41252422332764
+    },
+    {
+     "stage": "pretrain",
+     "epoch": 1,
+     "loss": 2.0386295120314797,
+     "next_res": 1.3204642553140622,
+     "next_op": 0.1704221789273295,
+     "time_gap": 1.0954861548867556,
+     "seconds": 73.67460179328918
+    },
+    {
+     "stage": "pretrain",
+     "epoch": 2,
+     "loss": 2.0052293533145793,
+     "next_res": 1.2956610458912237,
+     "next_op": 0.16484101453039907,
+     "time_gap": 1.0894545933987834,
+     "seconds": 73.81561017036438
+    },
+    {
+     "stage": "finetune",
+     "epoch": 0,
+     "loss": 1.9919888708851126,
+     "next_res": 1.2829894434107412,
+     "next_op": 0.1627504925474082,
+     "time_gap": 1.0855005317985422,
+     "sup": 0.003498668179632335,
+     "val_pr_auc": 0.6787895257959564,
+     "seconds": 80.68058514595032
+    },
+    {
+     "stage": "finetune",
+     "epoch": 1,
+     "loss": 1.9772319719342901,
+     "next_res": 1.2723272026175318,
+     "next_op": 0.1615969296876747,
+     "time_gap": 1.0829550115778894,
+     "sup": 0.0018303373033505873,
+     "val_pr_auc": 0.679655744795193,
+     "seconds": 80.39032554626465
+    },
+    {
+     "stage": "finetune",
+     "epoch": 2,
+     "loss": 1.966949149169544,
+     "next_res": 1.2642596130323882,
+     "next_op": 0.16050643377227358,
+     "time_gap": 1.0810815327238328,
+     "sup": 0.0016423385454376925,
+     "val_pr_auc": 0.6715442833525713,
+     "seconds": 80.3007800579071
+    },
+    {
+     "stage": "finetune",
+     "epoch": 3,
+     "loss": 1.960060449992076,
+     "next_res": 1.2585533511520612,
+     "next_op": 0.1597842513334633,
+     "time_gap": 1.0805138248618287,
+     "sup": 0.001465936476547135,
+     "val_pr_auc": 0.7167095912701327,
+     "seconds": 80.66731071472168
+    },
+    {
+     "stage": "finetune",
+     "epoch": 4,
+     "loss": 1.9540855140969304,
+     "next_res": 1.254392165358704,
+     "next_op": 0.15911801192577524,
+     "time_gap": 1.0785561281265599,
+     "sup": 0.0012972692538517883,
+     "val_pr_auc": 0.7016637041099096,
+     "seconds": 80.17781853675842
+    },
+    {
+     "stage": "finetune",
+     "epoch": 5,
+     "loss": 1.94685748284406,
+     "next_res": 1.2485560489172982,
+     "next_op": 0.15865128026297776,
+     "time_gap": 1.076889055259157,
+     "sup": 0.0012056256802337668,
+     "val_pr_auc": 0.720183473957013,
+     "seconds": 80.62044835090637
+    },
+    {
+     "stage": "finetune",
+     "epoch": 6,
+     "loss": 1.9419631734933003,
+     "next_res": 1.2443315478834776,
+     "next_op": 0.1582072658040146,
+     "time_gap": 1.0767624900482669,
+     "sup": 0.0010431150090844672,
+     "val_pr_auc": 0.6728473622984229,
+     "seconds": 80.84768176078796
+    },
+    {
+     "stage": "finetune",
+     "epoch": 7,
+     "loss": 1.9359979070059143,
+     "next_res": 1.2395165301785611,
+     "next_op": 0.1579088595834109,
+     "time_gap": 1.07524557461833,
+     "sup": 0.0009497355600687304,
+     "val_pr_auc": 0.7202858144184019,
+     "seconds": 80.68990850448608
+    }
+   ],
+   "best_val_pr_auc": 0.7202858144184019,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 6.875900013255887,
+     "batch_1_ms_p95": 8.692664999398401,
+     "batch_64_ms_median": 59.08389999240171,
+     "batch_64_ms_p95": 77.47886501892935,
+     "device": "cpu",
+     "torch_threads": 14
+    },
+    "cuda": {
+     "batch_1_ms_median": 3.7909999809926376,
+     "batch_1_ms_p95": 6.436624981870408,
+     "batch_64_ms_median": 5.958549998467788,
+     "batch_64_ms_p95": 15.984165018016938,
+     "device": "cuda",
+     "torch_threads": 14
+    }
+   },
+   "parameters": 681212
+  },
+  "tcn-noaux": {
+   "model": "tcn-noaux",
+   "thresholds": {
+    "theta_low": 0.020909684896469116,
+    "theta_high": 0.05582576483488097,
+    "theta_B": 0.16145381540059758
+   },
+   "event_level": {
+    "n": 88910,
+    "positives": 1797,
+    "roc_auc": 0.984783990419035,
+    "pr_auc": 0.8955740553986667,
+    "at_theta_low": {
+     "threshold": 0.020909684896469116,
+     "tp": 1662,
+     "fp": 3028,
+     "tn": 84085,
+     "fn": 135,
+     "precision": 0.3543710021321962,
+     "recall": 0.9248747913188647,
+     "f1": 0.5124094342531217,
+     "fpr": 0.034759450369060876
+    },
+    "at_theta_high": {
+     "threshold": 0.05582576483488097,
+     "tp": 1549,
+     "fp": 625,
+     "tn": 86488,
+     "fn": 248,
+     "precision": 0.7125114995400184,
+     "recall": 0.8619922092376182,
+     "f1": 0.780156131956686,
+     "fpr": 0.007174589326506951
+    },
+    "at_theta_B": {
+     "threshold": 0.16145381540059758,
+     "tp": 1436,
+     "fp": 77,
+     "tn": 87036,
+     "fn": 361,
+     "precision": 0.9491077329808327,
+     "recall": 0.7991096271563717,
+     "f1": 0.8676737160120847,
+     "fpr": 0.0008839094050256563
+    }
+   },
+   "by_scenario_at_theta_high": {
+    "bac_probe": {
+     "events": 273,
+     "recall": 0.978021978021978
+    },
+    "benign_flash_crowd": {
+     "events": 15,
+     "flag_rate": 0.06666666666666667
+    },
+    "benign_month_end": {
+     "events": 87,
+     "flag_rate": 0.19540229885057472
+    },
+    "benign_new_device": {
+     "events": 386,
+     "flag_rate": 0.0051813471502590676
+    },
+    "benign_overtime": {
+     "events": 5901,
+     "flag_rate": 0.013048635824436536
+    },
+    "benign_travel": {
+     "events": 2276,
+     "flag_rate": 0.0057117750439367315
+    },
+    "compromised_account": {
+     "events": 495,
+     "recall": 1.0
+    },
+    "horizontal_abuse": {
+     "events": 295,
+     "recall": 0.7050847457627119
+    },
+    "insider_exfiltration": {
+     "events": 367,
+     "recall": 0.8610354223433242
+    },
+    "low_and_slow": {
+     "events": 81,
+     "recall": 0.5432098765432098
+    },
+    "normal": {
+     "events": 78448,
+     "flag_rate": 0.006564858250050989
+    },
+    "unusual_sequence": {
+     "events": 146,
+     "recall": 0.7397260273972602
+    },
+    "unusual_time": {
+     "events": 140,
+     "recall": 0.7928571428571428
+    }
+   },
+   "attack_instances_at_theta_high": {
+    "instances": 31,
+    "detected": 30,
+    "median_minutes_to_detect": 0.0,
+    "per_instance": {
+     "bac_probe-test-0": {
+      "events": 69,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-1": {
+      "events": 43,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-2": {
+      "events": 51,
+      "detected": true,
+      "minutes_to_detect": 0.0545572559038798,
+      "events_before_detection": 1
+     },
+     "bac_probe-test-3": {
+      "events": 45,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "bac_probe-test-4": {
+      "events": 65,
+      "detected": true,
+      "minutes_to_detect": 1.6397656162579854,
+      "events_before_detection": 2
+     },
+     "compromised_account-test-0": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-1": {
+      "events": 124,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-2": {
+      "events": 104,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-3": {
+      "events": 80,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "compromised_account-test-4": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "horizontal_abuse-test-1": {
+      "events": 83,
+      "detected": false,
+      "minutes_to_detect": null,
+      "events_before_detection": null
+     },
+     "horizontal_abuse-test-2": {
+      "events": 79,
+      "detected": true,
+      "minutes_to_detect": 0.23133647044499714,
+      "events_before_detection": 2
+     },
+     "horizontal_abuse-test-3": {
+      "events": 44,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-0": {
+      "events": 89,
+      "detected": true,
+      "minutes_to_detect": 0.127640167872111,
+      "events_before_detection": 3
+     },
+     "insider_exfiltration-test-1": {
+      "events": 108,
+      "detected": true,
+      "minutes_to_detect": 0.8301874001820883,
+      "events_before_detection": 3
+     },
+     "insider_exfiltration-test-2": {
+      "events": 82,
+      "detected": true,
+      "minutes_to_detect": 3.134303891658783,
+      "events_before_detection": 16
+     },
+     "insider_exfiltration-test-3": {
+      "events": 25,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "insider_exfiltration-test-4": {
+      "events": 63,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-0": {
+      "events": 36,
+      "detected": true,
+      "minutes_to_detect": 181.98345350027085,
+      "events_before_detection": 5
+     },
+     "low_and_slow-test-1": {
+      "events": 24,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-2": {
+      "events": 3,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "low_and_slow-test-3": {
+      "events": 18,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-0": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_sequence-test-1": {
+      "events": 42,
+      "detected": true,
+      "minutes_to_detect": 2.973682475090027,
+      "events_before_detection": 6
+     },
+     "unusual_sequence-test-2": {
+      "events": 28,
+      "detected": true,
+      "minutes_to_detect": 2.031187347571055,
+      "events_before_detection": 5
+     },
+     "unusual_sequence-test-3": {
+      "events": 56,
+      "detected": true,
+      "minutes_to_detect": 1.0154975175857544,
+      "events_before_detection": 3
+     },
+     "unusual_time-test-0": {
+      "events": 33,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-1": {
+      "events": 49,
+      "detected": true,
+      "minutes_to_detect": 0.6449978033701579,
+      "events_before_detection": 1
+     },
+     "unusual_time-test-2": {
+      "events": 38,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     },
+     "unusual_time-test-3": {
+      "events": 20,
+      "detected": true,
+      "minutes_to_detect": 0.0,
+      "events_before_detection": 0
+     }
+    }
+   },
+   "normal_user_days_flagged_at_theta_high": {
+    "normal_user_days": 2463,
+    "flagged": 284,
+    "rate": 0.11530653674380836
+   },
+   "calibration": {
+    "theta_low": 0.020909684896469116,
+    "theta_high": 0.05582576483488097,
+    "theta_B": 0.16145381540059758,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 37157
+   },
+   "desc": "ablation: v3 TCN without the self-supervised heads",
+   "train_seconds": 320.6621398925781,
+   "history": [
+    {
+     "stage": "finetune",
+     "epoch": 0,
+     "loss": 0.001726599611988424,
+     "next_res": 5.639446036650403,
+     "next_op": 1.455318725286144,
+     "time_gap": 1.9797274358201735,
+     "sup": 0.001726599611988424,
+     "val_pr_auc": 0.9145979799234317,
+     "seconds": 80.51278805732727
+    },
+    {
+     "stage": "finetune",
+     "epoch": 1,
+     "loss": 0.0005939747421665358,
+     "next_res": 6.529723102739542,
+     "next_op": 1.6614820708142648,
+     "time_gap": 1.8063525962357474,
+     "sup": 0.0005939747421665358,
+     "val_pr_auc": 0.9029843194375379,
+     "seconds": 79.9580717086792
+    },
+    {
+     "stage": "finetune",
+     "epoch": 2,
+     "loss": 0.00041570564955785774,
+     "next_res": 6.972248286067849,
+     "next_op": 2.0855899761218835,
+     "time_gap": 1.7690308194349307,
+     "sup": 0.00041570564955785774,
+     "val_pr_auc": 0.8840043310558844,
+     "seconds": 79.81790924072266
+    },
+    {
+     "stage": "finetune",
+     "epoch": 3,
+     "loss": 0.000421337030693237,
+     "next_res": 8.499950825341857,
+     "next_op": 2.9794669147765283,
+     "time_gap": 1.7173326096912422,
+     "sup": 0.000421337030693237,
+     "val_pr_auc": 0.9073067176633938,
+     "seconds": 80.30674576759338
+    }
+   ],
+   "best_val_pr_auc": 0.9145979799234317,
+   "latency": {
+    "cpu": {
+     "batch_1_ms_median": 6.655499993939884,
+     "batch_1_ms_p95": 8.78814997849986,
+     "batch_64_ms_median": 46.171800000593066,
+     "batch_64_ms_p95": 55.23353497846984,
+     "device": "cpu",
+     "torch_threads": 14
+    },
+    "cuda": {
+     "batch_1_ms_median": 2.0291499968152493,
+     "batch_1_ms_p95": 2.4862900201696903,
+     "batch_64_ms_median": 7.4212999898009,
+     "batch_64_ms_p95": 10.493060022417922,
+     "device": "cuda",
+     "torch_threads": 14
+    }
+   },
+   "parameters": 681212
+  }
+ },
+ "git_commit": "282ca82",
+ "git_dirty": true,
+ "environment": {
+  "recorded_at": "2026-11-15T15:56:00.298100+00:00",
+  "unix_time": 1794758160.2981007,
+  "host_os": "Windows-10-10.0.26300-SP0",
+  "python": "3.11.0",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 16886128640,
+   "available": 567668736
+  },
+  "gpu": [
+   "NVIDIA GeForce RTX 4050 Laptop GPU, 6141 MiB, 610.47"
+  ],
+  "libraries": {
+   "torch": "2.14.1+cu130",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": null,
+   "matplotlib": "3.11.2"
+  },
+  "torch_cuda_available": true,
+  "torch_threads": 14,
+  "git_commit": "282ca8262eb9350fc7ed9eef532f9b3c38ccc770",
+  "git_dirty": true,
+  "docker": {
+   "server_version": "28.3.3",
+   "vm_cpus": 20,
+   "vm_memory_bytes": 8178016256
+  }
+ }
+}

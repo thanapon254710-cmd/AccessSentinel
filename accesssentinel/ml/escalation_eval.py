@@ -280,3 +280,117 @@ def write_sensitivity(rows, results_dir: str) -> str:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# ============================================================================================================
+# Revised v3 (Experiments E and F): replay with final resource windows, Eq. 26 costs and Algorithm 1
+# ============================================================================================================
+def offline_size_fn(index, window: float = 3600.0, k: int = 10, cache: dict = None):
+    """Offline twin of streaming.escalation_service.neighbourhood_size_fn (same neighbourhood as the SGE):
+    the seed's window edges + up to k most recent users per touched resource and all of their window edges."""
+    cache = {} if cache is None else cache
+
+    def size(u: str, now: float):
+        key = (u, int(now // 60))
+        if key in cache:
+            return cache[key]
+        seed = index.user_edges(u, now - window, now)
+        res = sorted({e["r"] for e in seed})
+        users = {u}
+        for rk in res:
+            recent = []
+            for e in reversed(index.resource_edges(rk, now - window, now)):
+                if e["u"] not in recent:
+                    recent.append(e["u"])
+                if len(recent) >= k:
+                    break
+            users |= set(recent)
+        n_other = sum(len(index.user_edges(v, now - window, now)) for v in users - {u})
+        cache[key] = (len(seed) + n_other, len(users) + len(res))
+        return cache[key]
+    return size
+
+
+def final_windows(events, delta_res: float, grace: float = 5.0, tenant: str = "default"):
+    """Event-time resource windows b = floor(t / delta_res) of sensitive resources, emitted when final
+    (window end + grace), as the resource-windows stage does: [(emit_t, record), ...] sorted by emit time."""
+    win = defaultdict(set)
+    for e in events:
+        if int(e.s) == 1:
+            win[(f"{tenant}/{e.a}:{e.r}", int(e.t // delta_res))].add(e.u)
+    out = [((b + 1) * delta_res + grace, {"kind": "final", "s": 1, "rstar": r, "window": b, "users": sorted(us),
+                                          "window_start": b * delta_res, "window_end": (b + 1) * delta_res})
+           for (r, b), us in win.items()]
+    return sorted(out, key=lambda x: x[0])
+
+
+def replay_v3(ds, events, scores, thresholds: dict, cfg: EscalationConfig, size_fn, paths=PATHS, t_from=None,
+              sim_seed: int = 0, log=print) -> dict:
+    """Event-time replay of the v3 escalation engine. paths: the enabled paths (Experiment F ablation).
+    Returns the emitted (admitted) escalations with their costs and the engine's overflow counters."""
+    import fakeredis
+    from ..escalation_engine import K_STATS
+    rc = replace(RiskConfig(), theta_low=thresholds["theta_low"], theta_high=thresholds["theta_high"])
+    tier = lambda x: "high" if x >= rc.theta_high else ("medium" if x >= rc.theta_low else "low")
+    times = np.array([e.t for e in events])
+    t_from = events[0].t if t_from is None else t_from
+    start = int(np.searchsorted(times, t_from))
+    if "sample" not in paths:
+        cfg = replace(cfg, gamma=0.0)
+    recs = [{"u": e.u, "t": e.t, "s_ind": float(v), "tier": tier(v), "score_id": e.event_id, "trigger": "event",
+             "theta_high": rc.theta_high, "theta_low": rc.theta_low} for e, v in zip(events, scores)]
+
+    def load(now):
+        lb0 = now - cfg.sweep_lookback
+        a, b = bisect.bisect_right(times, lb0), bisect.bisect_right(times, now)
+        b0, b1 = baseline_range(lb0, cfg)
+        c, d = bisect.bisect_right(times, b0), bisect.bisect_right(times, b1)
+        return {"lookback_events": events[a:b], "baseline_events": events[c:d], "lookback_scores": recs[a:b]}
+
+    clock = [events[start].t]
+    esc = Escalator(fakeredis.FakeRedis(), cfg, rc, rng=random.Random(sim_seed), clock=lambda: clock[0])
+    esc.cost_fn = size_fn
+    if "high" not in paths:
+        esc.theta_high_override = 2.0                       # Path A never fires
+    wins = final_windows(events[start:], cfg.delta_res) if "resource" in paths else []
+    wi, out, sweeps = 0, [], 0
+    for i in range(start, len(events)):
+        e = events[i]
+        clock[0] = e.t
+        while wi < len(wins) and wins[wi][0] <= e.t:
+            esc.on_resource_window(wins[wi][1]); wi += 1
+        esc.on_score(recs[i])
+        out += esc.flush_realtime()
+        if esc.background_due():
+            if "sweep" in paths and esc.sweep_due():
+                sweeps += bool(esc.run_sweep(load))
+            out += esc.flush_background()
+    clock[0] = events[-1].t + cfg.realtime_window + 1
+    out += esc.flush_realtime(force=True)
+    stats = {k.decode(): int(v) for k, v in esc.r.hgetall(K_STATS).items()}
+    return {"escalations": out, "stats": stats, "sweeps": sweeps}
+
+
+def coverage_v3(ds, escalations, kinds, split: str = "test", slack: float = 3600.0) -> dict:
+    """Admission coverage: an instance is covered if >= 1 of its users was ADMITTED to graph analysis between its
+    first event and its last event + slack. (A necessary condition for graph detection, not detection itself.)"""
+    span = {}
+    for e in ds.events:
+        inst = ds.labels[e.event_id].instance
+        if inst:
+            a, b = span.get(inst, (e.t, e.t)); span[inst] = (min(a, e.t), max(b, e.t))
+    by_u = defaultdict(list)
+    for x in escalations:
+        by_u[x["u"]].append(x)
+    rows = {}
+    for k, info in ds.instances.items():
+        if info.get("split") != split or info.get("kind") not in kinds or k not in span:
+            continue
+        users = [info["user"]] if "user" in info else info["members"]
+        a, b = span[k]
+        hit = [x for u in users for x in by_u[u] if a <= x["t"] <= b + slack]
+        rows[k] = {"kind": info["kind"], "size": len(users), "covered": bool(hit),
+                   "members_admitted": len({x["u"] for x in hit}),
+                   "minutes_to_admission": (min(x["t"] for x in hit) - a) / 60.0 if hit else None,
+                   "paths": sorted({p for x in hit for p in x.get("paths", [])})}
+    return rows

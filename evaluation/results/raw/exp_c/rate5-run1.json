@@ -1,0 +1,673 @@
+{
+ "experiment": "C/D",
+ "rate": 5.0,
+ "run": 1,
+ "started_at": "2026-11-16T09:24:36.357913+00:00",
+ "duration_s": 120.0,
+ "valid": true,
+ "failed_requests": 0,
+ "requests": 653,
+ "bg_users": 40,
+ "attackers": 5,
+ "attack_rate_per_s": 5.0,
+ "records": 661,
+ "result": {
+  "stages_ms": {
+   "gw": {
+    "p50": 1.9307136535644531,
+    "p95": 5.340003967285155,
+    "p99": 9.33123111724855,
+    "mean": 2.55051000307359,
+    "n": 643,
+    "max": 17.05193519592285
+   },
+   "kafka": {
+    "p50": 6.697416305541992,
+    "p95": 10.157418251037598,
+    "p99": 35.17598628997807,
+    "mean": 7.87527639053843,
+    "n": 643,
+    "max": 103.17134857177734
+   },
+   "reorder": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0,
+    "mean": 0.0,
+    "n": 643,
+    "max": 0.0
+   },
+   "tcn_q": {
+    "p50": 6.4239501953125,
+    "p95": 21.48830890655517,
+    "p99": 72.92064666748183,
+    "mean": 9.412689119994548,
+    "n": 643,
+    "max": 143.42880249023438
+   },
+   "tcn": {
+    "p50": 7.71331787109375,
+    "p95": 26.925158500671383,
+    "p99": 59.90533351898202,
+    "mean": 11.38586686521444,
+    "n": 643,
+    "max": 85.7388973236084
+   },
+   "gw_to_score": {
+    "p50": 24.513959884643555,
+    "p95": 63.38732242584224,
+    "p99": 131.6954851150516,
+    "mean": 31.22434237882101,
+    "n": 643,
+    "max": 177.22511291503906
+   }
+  },
+  "per_attacker": {
+   "syn-att-3df5e-0": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09320143610239029,
+    "first_action": "Terminate",
+    "first_action_after_ms": 25.74443817138672,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 4.582643508911133,
+    "lat_ind_decision_ms": 25.74443817138672,
+    "lat_enf_ms": 176.42569541931152,
+    "lat_ind_observed_ms": 202.17013359069824,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5309.219121932983,
+    "lat_tgn_total_ms": 174.79681968688965,
+    "tgn_inference_ms": 19.411,
+    "lat_coll_to_group_score_ms": 5505.177736282349,
+    "trigger_stages_ms": {
+     "gw": 1.2288093566894531,
+     "kafka": 6.528377532958984,
+     "tcn_q": 5.955934524536133,
+     "tcn": 7.448673248291016
+    }
+   },
+   "syn-att-3df5e-1": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09304186701774597,
+    "first_action": "Terminate",
+    "first_action_after_ms": 23.932695388793945,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 1.880645751953125,
+    "lat_ind_decision_ms": 23.932695388793945,
+    "lat_enf_ms": 182.51633644104004,
+    "lat_ind_observed_ms": 206.44903182983398,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 694.9350833892822,
+    "lat_tgn_total_ms": 24.222135543823242,
+    "tgn_inference_ms": 13.086,
+    "lat_coll_to_group_score_ms": 741.2092685699463,
+    "trigger_stages_ms": {
+     "gw": 4.655599594116211,
+     "kafka": 6.381511688232422,
+     "tcn_q": 5.210399627685547,
+     "tcn": 5.804538726806641
+    }
+   },
+   "syn-att-3df5e-2": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09306058287620544,
+    "first_action": "Terminate",
+    "first_action_after_ms": 20.71833610534668,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 1.7974376678466797,
+    "lat_ind_decision_ms": 20.71833610534668,
+    "lat_enf_ms": 183.55107307434082,
+    "lat_ind_observed_ms": 204.2694091796875,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5220.25203704834,
+    "lat_tgn_total_ms": 38.182973861694336,
+    "tgn_inference_ms": 10.929,
+    "lat_coll_to_group_score_ms": 5277.355909347534,
+    "trigger_stages_ms": {
+     "gw": 2.8743743896484375,
+     "kafka": 6.572246551513672,
+     "tcn_q": 4.655599594116211,
+     "tcn": 4.81867790222168
+    }
+   },
+   "syn-att-3df5e-3": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09317449480295181,
+    "first_action": "Terminate",
+    "first_action_after_ms": 25.933265686035156,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 1.9371509552001953,
+    "lat_ind_decision_ms": 25.933265686035156,
+    "lat_enf_ms": 178.83968353271484,
+    "lat_ind_observed_ms": 204.77294921875,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5008.3067417144775,
+    "lat_tgn_total_ms": 14.198541641235352,
+    "tgn_inference_ms": 7.806,
+    "lat_coll_to_group_score_ms": 5046.501398086548,
+    "trigger_stages_ms": {
+     "gw": 3.0944347381591797,
+     "kafka": 7.249116897583008,
+     "tcn_q": 7.66754150390625,
+     "tcn": 5.985021591186523
+    }
+   },
+   "syn-att-3df5e-4": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09312056005001068,
+    "first_action": "Terminate",
+    "first_action_after_ms": 24.0020751953125,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 4.222631454467773,
+    "lat_ind_decision_ms": 24.0020751953125,
+    "lat_enf_ms": 178.7722110748291,
+    "lat_ind_observed_ms": 202.7742862701416,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5153.004884719849,
+    "lat_tgn_total_ms": 22.88055419921875,
+    "tgn_inference_ms": 16.697,
+    "lat_coll_to_group_score_ms": 5195.664882659912,
+    "trigger_stages_ms": {
+     "gw": 1.5954971313476562,
+     "kafka": 6.806135177612305,
+     "tcn_q": 5.708932876586914,
+     "tcn": 5.668878555297852
+    }
+   }
+  },
+  "lat_ind_decision_ms": {
+   "p50": 24.0020751953125,
+   "p95": 25.89550018310547,
+   "p99": 25.92571258544922,
+   "mean": 24.066162109375,
+   "n": 5,
+   "max": 25.933265686035156
+  },
+  "lat_ind_observed_ms": {
+   "p50": 204.2694091796875,
+   "p95": 206.1138153076172,
+   "p99": 206.38198852539062,
+   "mean": 204.08716201782227,
+   "n": 5,
+   "max": 206.44903182983398
+  },
+  "slo_fraction": {
+   "le_0.5s": 1.0,
+   "le_1s": 1.0,
+   "le_2s": 1.0,
+   "le_5s": 1.0
+  },
+  "n_exposed": {
+   "p50": 0.0,
+   "p95": 0.0,
+   "p99": 0.0,
+   "mean": 0.0,
+   "n": 5,
+   "max": 0.0
+  },
+  "throughput": {
+   "scores_per_s": 4.210627290282528,
+   "gateway_requests_per_s": 4.184392852336843,
+   "gateway_status_mix": {
+    "200": 638
+   },
+   "gateway_response_ms": {
+    "p50": 8.14199447631836,
+    "p95": 20.253300666809068,
+    "p99": 34.01390314102171,
+    "mean": 10.268706513049088,
+    "n": 638,
+    "max": 63.73405456542969
+   }
+  }
+ },
+ "lag_samples": [
+  [
+   1794821080.4059036,
+   {
+    "hdfs-sink": 2,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 0,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 0,
+    "cmu-resource": 0,
+    "escalation": 0,
+    "graph-index": 0,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821086.7815974,
+   {
+    "hdfs-sink": 56,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 7,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 7,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821092.7311535,
+   {
+    "hdfs-sink": 41,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821098.673897,
+   {
+    "hdfs-sink": 94,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821104.5476773,
+   {
+    "hdfs-sink": 174,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821110.4769022,
+   {
+    "hdfs-sink": 221,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 5,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821116.5706444,
+   {
+    "hdfs-sink": 312,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821122.3801153,
+   {
+    "hdfs-sink": 17,
+    "repartitioner": 1,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821128.343474,
+   {
+    "hdfs-sink": 78,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821134.2765455,
+   {
+    "hdfs-sink": 146,
+    "repartitioner": 0,
+    "sequencer": 1,
+    "tcn-v3": 5,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821140.2847042,
+   {
+    "hdfs-sink": 215,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821146.3192477,
+   {
+    "hdfs-sink": 275,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821152.179931,
+   {
+    "hdfs-sink": 347,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821158.0894103,
+   {
+    "hdfs-sink": 65,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 4,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 5,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821164.0029237,
+   {
+    "hdfs-sink": 111,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 5,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 6,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821169.9172974,
+   {
+    "hdfs-sink": 163,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 7,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 5,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821175.9312775,
+   {
+    "hdfs-sink": 231,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 2,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821181.8641446,
+   {
+    "hdfs-sink": 288,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821187.8279638,
+   {
+    "hdfs-sink": 37,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821193.8472688,
+   {
+    "hdfs-sink": 109,
+    "repartitioner": 1,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821199.9441159,
+   {
+    "hdfs-sink": 173,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 10,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 1,
+    "incidents": 0
+   }
+  ]
+ ],
+ "environment": {
+  "recorded_at": "2026-11-16T09:27:33.654245+00:00",
+  "unix_time": 1794821253.654278,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178008064,
+   "available": 214683648
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

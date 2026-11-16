@@ -1,0 +1,2078 @@
+{
+ "experiment": "G",
+ "cmd": "eq21",
+ "started_at": "2026-11-15T18:35:15.446341+00:00",
+ "finished_at": "2026-11-15T18:38:49.423469+00:00",
+ "thresholds": {
+  "theta_high": 0.0482,
+  "theta_B": 0.0849,
+  "theta_low": 0.0284,
+  "theta_coll": 0.8609,
+  "theta_A": 0.3643
+ },
+ "result": {
+  "cases": 200,
+  "match": 200,
+  "by_expected_action": {
+   "Terminate": {
+    "cases": 70,
+    "match": 70
+   },
+   "Restrict": {
+    "cases": 30,
+    "match": 30
+   },
+   "Throttle": {
+    "cases": 42,
+    "match": 42
+   },
+   "StepUp": {
+    "cases": 15,
+    "match": 15
+   },
+   "Allow": {
+    "cases": 43,
+    "match": 43
+   }
+  },
+  "propagation_ms": {
+   "p50": 12.619495391845703,
+   "p95": 103.49206924438475,
+   "p99": 793.4094429016101,
+   "mean": 48.857778500599466,
+   "n": 157,
+   "max": 2085.6008529663086
+  },
+  "rows": [
+   {
+    "u": "syn-eq21-03e5ff13",
+    "s_ind": 0.0849,
+    "s_coll": 0.9763325388989657,
+    "A_u": 0.13043738720138426,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 1099.8363494873047
+   },
+   {
+    "u": "syn-eq21-d4e58484",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 2085.6008529663086
+   },
+   {
+    "u": "syn-eq21-70bd3532",
+    "s_ind": 0.08130949038113269,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 131.22940063476562
+   },
+   {
+    "u": "syn-eq21-49e3154f",
+    "s_ind": 0.23929412533456124,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.991189956665039
+   },
+   {
+    "u": "syn-eq21-f7772754",
+    "s_ind": 0.07272122248520893,
+    "s_coll": 0.6170735705890604,
+    "A_u": 0.33407001044857626,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 143.5546875
+   },
+   {
+    "u": "syn-eq21-8a67d5e1",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.23444938659668
+   },
+   {
+    "u": "syn-eq21-8ae950f5",
+    "s_ind": 0.0482,
+    "s_coll": 0.8609,
+    "A_u": 0.19935592779792022,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 88.6075496673584
+   },
+   {
+    "u": "syn-eq21-45a03fb3",
+    "s_ind": 0.02385147446332425,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 18.78046989440918
+   },
+   {
+    "u": "syn-eq21-eb2af964",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 17.88163185119629
+   },
+   {
+    "u": "syn-eq21-43ec4368",
+    "s_ind": 0.03351460924902063,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-986a6601",
+    "s_ind": 0.38350090003506165,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.680011749267578
+   },
+   {
+    "u": "syn-eq21-d026f145",
+    "s_ind": 0.08185174269867164,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 90.12484550476074
+   },
+   {
+    "u": "syn-eq21-840a24ad",
+    "s_ind": 0.07028057592511079,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.495475769042969
+   },
+   {
+    "u": "syn-eq21-795905d0",
+    "s_ind": 0.5131935717061339,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.444734573364258
+   },
+   {
+    "u": "syn-eq21-89cbdd1e",
+    "s_ind": null,
+    "s_coll": 0.5678674240282314,
+    "A_u": 0.14251758781630583,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-ea33fb68",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.008299692316092247,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 6.078004837036133
+   },
+   {
+    "u": "syn-eq21-da5602ba",
+    "s_ind": 0.05076915784406985,
+    "s_coll": 0.8609,
+    "A_u": 0.03676560816514054,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 12.430906295776367
+   },
+   {
+    "u": "syn-eq21-ba724eac",
+    "s_ind": 0.010405330168770339,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-6c9112f1",
+    "s_ind": 0.0849,
+    "s_coll": 0.714844901648988,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.836175918579102
+   },
+   {
+    "u": "syn-eq21-27e88bfc",
+    "s_ind": 0.08187265820525638,
+    "s_coll": 0.7486961928343555,
+    "A_u": 0.39334926096144246,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 93.99890899658203
+   },
+   {
+    "u": "syn-eq21-ac81f079",
+    "s_ind": 0.07617151628270631,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 11.843681335449219
+   },
+   {
+    "u": "syn-eq21-ae7e29c2",
+    "s_ind": 0.15307053916614893,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.188154220581055
+   },
+   {
+    "u": "syn-eq21-0b01c7de",
+    "s_ind": 0.033156110838303825,
+    "s_coll": 0.8609,
+    "A_u": 0.6277381463717927,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 104.44879531860352
+   },
+   {
+    "u": "syn-eq21-0f48b054",
+    "s_ind": 0.03486752769405532,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 7.374763488769531
+   },
+   {
+    "u": "syn-eq21-27a56a45",
+    "s_ind": 0.3396595335103102,
+    "s_coll": 0.996408004327915,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.361526489257812
+   },
+   {
+    "u": "syn-eq21-18c189b2",
+    "s_ind": 0.15213175437384652,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 103.25288772583008
+   },
+   {
+    "u": "syn-eq21-c88acb80",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 71.11549377441406
+   },
+   {
+    "u": "syn-eq21-db9003b3",
+    "s_ind": 0.07052679877749116,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.150245666503906
+   },
+   {
+    "u": "syn-eq21-6084623c",
+    "s_ind": null,
+    "s_coll": 0.9711147069879242,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 11.335372924804688
+   },
+   {
+    "u": "syn-eq21-fb89b071",
+    "s_ind": null,
+    "s_coll": 0.9385672828910993,
+    "A_u": 0.3418732547434309,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 6.239652633666992
+   },
+   {
+    "u": "syn-eq21-9eeeb05b",
+    "s_ind": 0.3978729567071564,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 11.791706085205078
+   },
+   {
+    "u": "syn-eq21-263599ef",
+    "s_ind": null,
+    "s_coll": 0.9078477896290763,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 83.41836929321289
+   },
+   {
+    "u": "syn-eq21-55f095db",
+    "s_ind": 0.05809513256932558,
+    "s_coll": 0.9017129139027155,
+    "A_u": 0.9578874682767433,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 18.538236618041992
+   },
+   {
+    "u": "syn-eq21-25e3b859",
+    "s_ind": 0.0673959435033936,
+    "s_coll": 0.9389114514603784,
+    "A_u": 0.8988272850514107,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 13.010263442993164
+   },
+   {
+    "u": "syn-eq21-75a6c626",
+    "s_ind": 0.05245749592688044,
+    "s_coll": 0.7473597765116685,
+    "A_u": 0.3643,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 7.050752639770508
+   },
+   {
+    "u": "syn-eq21-c91a5e0e",
+    "s_ind": null,
+    "s_coll": 0.9383056179142998,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.287097930908203
+   },
+   {
+    "u": "syn-eq21-32cc0e91",
+    "s_ind": 0.056173205159794515,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.175041198730469
+   },
+   {
+    "u": "syn-eq21-79f82bbd",
+    "s_ind": 0.0482,
+    "s_coll": 0.8774404208596414,
+    "A_u": 0.0934355454682902,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 12.01009750366211
+   },
+   {
+    "u": "syn-eq21-1486fb82",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.136417388916016
+   },
+   {
+    "u": "syn-eq21-562c4006",
+    "s_ind": 0.3362180140274903,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.21493148803711
+   },
+   {
+    "u": "syn-eq21-89c91395",
+    "s_ind": 0.25099930819536076,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.599138259887695
+   },
+   {
+    "u": "syn-eq21-2725c55b",
+    "s_ind": 0.06812109300478236,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 27.989864349365234
+   },
+   {
+    "u": "syn-eq21-380c44b4",
+    "s_ind": 0.059880121411569,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.566762924194336
+   },
+   {
+    "u": "syn-eq21-8fa923b7",
+    "s_ind": 0.3099166804651706,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 13.248682022094727
+   },
+   {
+    "u": "syn-eq21-7da7c0eb",
+    "s_ind": 0.26915345786777595,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.5543155670166
+   },
+   {
+    "u": "syn-eq21-9d879aed",
+    "s_ind": 0.07758368799210844,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 28.24258804321289
+   },
+   {
+    "u": "syn-eq21-d33fcc97",
+    "s_ind": 0.380501713155897,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 11.492013931274414
+   },
+   {
+    "u": "syn-eq21-fa58a487",
+    "s_ind": 0.3932462072151133,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 27.901411056518555
+   },
+   {
+    "u": "syn-eq21-230984db",
+    "s_ind": 0.00934284384587902,
+    "s_coll": 0.9071765966991175,
+    "A_u": 0.9637314214487778,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 23.59938621520996
+   },
+   {
+    "u": "syn-eq21-03f1cc9e",
+    "s_ind": 0.030899206223509657,
+    "s_coll": 0.7626022390930254,
+    "A_u": 0.3643,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-cbf356e0",
+    "s_ind": 0.16287263016313017,
+    "s_coll": 0.6678604249597033,
+    "A_u": 0.17154493885621017,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.236480712890625
+   },
+   {
+    "u": "syn-eq21-60150a94",
+    "s_ind": 0.02393201041740192,
+    "s_coll": 0.7795111635318841,
+    "A_u": 0.3643,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-7144fccc",
+    "s_ind": 0.0373566208296613,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-401e4132",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.404399871826172
+   },
+   {
+    "u": "syn-eq21-02ea718c",
+    "s_ind": 0.0398336452809356,
+    "s_coll": 0.784241142180002,
+    "A_u": 0.38971571568366253,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-e5561e12",
+    "s_ind": 0.03604285598595619,
+    "s_coll": 0.8609,
+    "A_u": 0.6313646364887635,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.77490234375
+   },
+   {
+    "u": "syn-eq21-9b758bb7",
+    "s_ind": 0.24938471792454786,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.734609603881836
+   },
+   {
+    "u": "syn-eq21-6ff28199",
+    "s_ind": 0.46312728888758037,
+    "s_coll": 0.9299805061509623,
+    "A_u": 0.2632223318719644,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 34.23595428466797
+   },
+   {
+    "u": "syn-eq21-cac7abd7",
+    "s_ind": 0.13829612203988445,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.75649452209473
+   },
+   {
+    "u": "syn-eq21-c2ca41ff",
+    "s_ind": 0.014632098993813276,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-c1cee8e7",
+    "s_ind": 0.08126317463905366,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.173849105834961
+   },
+   {
+    "u": "syn-eq21-a8c0dcee",
+    "s_ind": null,
+    "s_coll": 0.7546929736830424,
+    "A_u": 0.5945758853239407,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-730f10b8",
+    "s_ind": 0.03843628415245771,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-94d53843",
+    "s_ind": 0.003232360512787231,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-9f8229f4",
+    "s_ind": 0.05979321506512017,
+    "s_coll": 0.8609,
+    "A_u": 0.007486226799799244,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 11.929988861083984
+   },
+   {
+    "u": "syn-eq21-0425d3d1",
+    "s_ind": 0.0482,
+    "s_coll": 0.8726616971493135,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.684303283691406
+   },
+   {
+    "u": "syn-eq21-090ddc2a",
+    "s_ind": 0.29981284464302527,
+    "s_coll": 0.6055921958598698,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.920814514160156
+   },
+   {
+    "u": "syn-eq21-9be97f50",
+    "s_ind": 0.024221834447443573,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-525c3caa",
+    "s_ind": 0.05730004644852009,
+    "s_coll": 0.7294292687709614,
+    "A_u": 0.8920414629574791,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.953239440917969
+   },
+   {
+    "u": "syn-eq21-4458e294",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.692409515380859
+   },
+   {
+    "u": "syn-eq21-7766e3fa",
+    "s_ind": 0.01696836283990563,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-0d052a27",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.4291615696339491,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.900310516357422
+   },
+   {
+    "u": "syn-eq21-956d2575",
+    "s_ind": 0.0482,
+    "s_coll": 0.8609,
+    "A_u": 0.1238220750574375,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 13.782262802124023
+   },
+   {
+    "u": "syn-eq21-684e01de",
+    "s_ind": 0.07616542035119578,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 14.711618423461914
+   },
+   {
+    "u": "syn-eq21-ab531536",
+    "s_ind": 0.0849,
+    "s_coll": 0.9705354798529692,
+    "A_u": 0.16115342869869106,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 13.447999954223633
+   },
+   {
+    "u": "syn-eq21-c007828e",
+    "s_ind": 0.006282798684626285,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-02a34fee",
+    "s_ind": 0.4672821517528729,
+    "s_coll": 0.6805641766977791,
+    "A_u": 0.45508522642128013,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.853818893432617
+   },
+   {
+    "u": "syn-eq21-fb2c9d02",
+    "s_ind": 0.09805915630286363,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 29.10590171813965
+   },
+   {
+    "u": "syn-eq21-21d16c95",
+    "s_ind": 0.11913191295728034,
+    "s_coll": 0.9472639634394667,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 41.9161319732666
+   },
+   {
+    "u": "syn-eq21-5f4b465f",
+    "s_ind": null,
+    "s_coll": 0.9143325040504658,
+    "A_u": 0.9346506610559355,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 46.87762260437012
+   },
+   {
+    "u": "syn-eq21-73a44a43",
+    "s_ind": 0.005920771493700707,
+    "s_coll": 0.9094691590882605,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 7.910490036010742
+   },
+   {
+    "u": "syn-eq21-0dd3ce38",
+    "s_ind": 0.5691118452982517,
+    "s_coll": 0.9820574038630556,
+    "A_u": 0.020761631863819113,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 14.126777648925781
+   },
+   {
+    "u": "syn-eq21-c6256dd1",
+    "s_ind": 0.05911924736782162,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 48.08473587036133
+   },
+   {
+    "u": "syn-eq21-7ac5c151",
+    "s_ind": 0.03736305398661032,
+    "s_coll": 0.868210165727537,
+    "A_u": 0.0014114985427086777,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 12.91656494140625
+   },
+   {
+    "u": "syn-eq21-3f479380",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.035970687866211
+   },
+   {
+    "u": "syn-eq21-7bffc051",
+    "s_ind": 0.0606597872519888,
+    "s_coll": 0.6640679785732264,
+    "A_u": 0.19016106884224432,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 41.54562950134277
+   },
+   {
+    "u": "syn-eq21-a186a6b1",
+    "s_ind": 0.06744968593782874,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 12.571334838867188
+   },
+   {
+    "u": "syn-eq21-c9ce09f7",
+    "s_ind": 0.5278831151481302,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 13.161897659301758
+   },
+   {
+    "u": "syn-eq21-0eaaf9a4",
+    "s_ind": 0.2971831114584801,
+    "s_coll": 0.5308216663400211,
+    "A_u": 0.9486571543671241,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 42.74272918701172
+   },
+   {
+    "u": "syn-eq21-13ae589f",
+    "s_ind": 0.14983691494172863,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 47.50180244445801
+   },
+   {
+    "u": "syn-eq21-e5226c6d",
+    "s_ind": 0.0790448456866227,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 41.07856750488281
+   },
+   {
+    "u": "syn-eq21-00840539",
+    "s_ind": 0.08121626066921697,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 12.80665397644043
+   },
+   {
+    "u": "syn-eq21-1751e3c7",
+    "s_ind": 0.020561418713530868,
+    "s_coll": 0.7213537964378126,
+    "A_u": 0.5224454383330325,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-7d72c7af",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.177425384521484
+   },
+   {
+    "u": "syn-eq21-541c6718",
+    "s_ind": 0.40478745249201076,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 17.61770248413086
+   },
+   {
+    "u": "syn-eq21-76dd1b3b",
+    "s_ind": 0.009344126991390263,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-7b25b278",
+    "s_ind": 0.02212491080309442,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-4a301be7",
+    "s_ind": 0.006209725432323387,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-c4dc7a12",
+    "s_ind": 0.03099208697579425,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-b76e5565",
+    "s_ind": 0.26696848357199043,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.358861923217773
+   },
+   {
+    "u": "syn-eq21-8bd6d621",
+    "s_ind": 0.35606695616740214,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 29.42371368408203
+   },
+   {
+    "u": "syn-eq21-b96e92fb",
+    "s_ind": 0.01923660354197885,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-6e3e55b2",
+    "s_ind": null,
+    "s_coll": 0.6134566332513521,
+    "A_u": 0.3643,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-e2265576",
+    "s_ind": 0.05649116040874952,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 13.505697250366211
+   },
+   {
+    "u": "syn-eq21-7a77a8e4",
+    "s_ind": 0.20695710616749483,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.236833572387695
+   },
+   {
+    "u": "syn-eq21-4f1e76fc",
+    "s_ind": 0.5598137184771274,
+    "s_coll": 0.8609,
+    "A_u": 0.8393643375267574,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 35.59994697570801
+   },
+   {
+    "u": "syn-eq21-183a6639",
+    "s_ind": 0.07355727736175263,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 40.753841400146484
+   },
+   {
+    "u": "syn-eq21-4e153f8d",
+    "s_ind": null,
+    "s_coll": 0.802449160353631,
+    "A_u": 0.3446125441268504,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-41ba4c45",
+    "s_ind": 0.3740816634893338,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.995201110839844
+   },
+   {
+    "u": "syn-eq21-ad9fc383",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 34.0883731842041
+   },
+   {
+    "u": "syn-eq21-4bbfbfb2",
+    "s_ind": null,
+    "s_coll": 0.9543258808827217,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 7.101535797119141
+   },
+   {
+    "u": "syn-eq21-084d1362",
+    "s_ind": null,
+    "s_coll": 0.8241949968320279,
+    "A_u": 0.7269664034967651,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-f69fa5f8",
+    "s_ind": 0.28839811969538637,
+    "s_coll": 0.518414869661973,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.792306900024414
+   },
+   {
+    "u": "syn-eq21-3223f07c",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 28.124570846557617
+   },
+   {
+    "u": "syn-eq21-0648c274",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.219387054443359
+   },
+   {
+    "u": "syn-eq21-2d535f23",
+    "s_ind": 0.032191977491539174,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-23d5e3fb",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.165742874145508
+   },
+   {
+    "u": "syn-eq21-cc8cb773",
+    "s_ind": 0.08314965635795987,
+    "s_coll": 0.6453169844765445,
+    "A_u": 0.0003689605250380187,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.829738616943359
+   },
+   {
+    "u": "syn-eq21-17eff4ca",
+    "s_ind": 0.06072740403718084,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.21795654296875
+   },
+   {
+    "u": "syn-eq21-a54976b3",
+    "s_ind": 0.0482,
+    "s_coll": 0.7371902313096854,
+    "A_u": 0.3643,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 7.953882217407227
+   },
+   {
+    "u": "syn-eq21-7002d17c",
+    "s_ind": null,
+    "s_coll": 0.9607624294825592,
+    "A_u": 0.7168336976439369,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.64067268371582
+   },
+   {
+    "u": "syn-eq21-c8cab6f1",
+    "s_ind": 0.0482,
+    "s_coll": 0.8609,
+    "A_u": 0.13994386400648198,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 6.965160369873047
+   },
+   {
+    "u": "syn-eq21-d2bcec43",
+    "s_ind": null,
+    "s_coll": 0.8533583621597935,
+    "A_u": 0.763402089259376,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-d31d8cdc",
+    "s_ind": 0.07518397598151443,
+    "s_coll": 0.8609,
+    "A_u": 0.8372838663345032,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 13.036489486694336
+   },
+   {
+    "u": "syn-eq21-c16aba06",
+    "s_ind": 0.03455050990250678,
+    "s_coll": 0.8609,
+    "A_u": 0.5371167922141569,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.90007209777832
+   },
+   {
+    "u": "syn-eq21-3c853e19",
+    "s_ind": 0.07658669005163898,
+    "s_coll": 0.8957526257910413,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 12.249231338500977
+   },
+   {
+    "u": "syn-eq21-1172f2ae",
+    "s_ind": 0.07378353874386387,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 11.803150177001953
+   },
+   {
+    "u": "syn-eq21-b4fcb6f2",
+    "s_ind": 0.25391247016798607,
+    "s_coll": 0.8609,
+    "A_u": 0.31510082768701125,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.353067398071289
+   },
+   {
+    "u": "syn-eq21-8e49c325",
+    "s_ind": 0.05226675167262737,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 40.10796546936035
+   },
+   {
+    "u": "syn-eq21-b5c276b8",
+    "s_ind": 0.08289242352494444,
+    "s_coll": 0.8814157913262001,
+    "A_u": 0.186336540837606,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 13.502836227416992
+   },
+   {
+    "u": "syn-eq21-248ec25c",
+    "s_ind": 0.0482,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 14.029502868652344
+   },
+   {
+    "u": "syn-eq21-3addeeeb",
+    "s_ind": 0.03251997681939574,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-8b476011",
+    "s_ind": 0.013117526382328756,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-09dd4f08",
+    "s_ind": 0.0482,
+    "s_coll": 0.7727690919770962,
+    "A_u": 0.3643,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 33.68210792541504
+   },
+   {
+    "u": "syn-eq21-094e7a8d",
+    "s_ind": 0.009548851493676845,
+    "s_coll": 0.8609,
+    "A_u": 0.12509435336736108,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 7.797718048095703
+   },
+   {
+    "u": "syn-eq21-6b36f4f7",
+    "s_ind": 0.3786482365459888,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.608486175537109
+   },
+   {
+    "u": "syn-eq21-5f0e9f7d",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.07043480566203611,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 29.84166145324707
+   },
+   {
+    "u": "syn-eq21-f46ef0cb",
+    "s_ind": 0.07744132781919241,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 12.235879898071289
+   },
+   {
+    "u": "syn-eq21-2105a601",
+    "s_ind": 0.0631818982532772,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 7.12132453918457
+   },
+   {
+    "u": "syn-eq21-483f2771",
+    "s_ind": 0.0321506215493792,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-c78fc6ed",
+    "s_ind": 0.002563709723236962,
+    "s_coll": 0.985672591178106,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 272.6318836212158
+   },
+   {
+    "u": "syn-eq21-bd5272f4",
+    "s_ind": 0.05115253103440808,
+    "s_coll": 0.6857114103023596,
+    "A_u": 0.9714870987639388,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 13.094425201416016
+   },
+   {
+    "u": "syn-eq21-d67426c0",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.05350972286158332,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 6.710052490234375
+   },
+   {
+    "u": "syn-eq21-34d42d95",
+    "s_ind": null,
+    "s_coll": 0.8196443002320944,
+    "A_u": 0.768396542097614,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-3ead7692",
+    "s_ind": 0.20133328047380858,
+    "s_coll": 0.7035370791679564,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.104158401489258
+   },
+   {
+    "u": "syn-eq21-592c860b",
+    "s_ind": 0.3060527756975448,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 209.94901657104492
+   },
+   {
+    "u": "syn-eq21-4c9ffbc5",
+    "s_ind": 0.0015272808215633883,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-754ea8a9",
+    "s_ind": 0.015194972988278543,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-ca0c46d6",
+    "s_ind": 0.2911397029647763,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.726503372192383
+   },
+   {
+    "u": "syn-eq21-4f05bfc3",
+    "s_ind": 0.5462772938728466,
+    "s_coll": 0.894291612102511,
+    "A_u": 0.7338805632790516,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 54.453372955322266
+   },
+   {
+    "u": "syn-eq21-9b9fb8b4",
+    "s_ind": 0.0482,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 41.41879081726074
+   },
+   {
+    "u": "syn-eq21-aee6112a",
+    "s_ind": 0.10566064144901088,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.455940246582031
+   },
+   {
+    "u": "syn-eq21-6ce58123",
+    "s_ind": 0.43860147835417457,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 43.021202087402344
+   },
+   {
+    "u": "syn-eq21-d1974fab",
+    "s_ind": 0.0849,
+    "s_coll": 0.561059164126057,
+    "A_u": 0.9974814584450473,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 47.75047302246094
+   },
+   {
+    "u": "syn-eq21-1bac3823",
+    "s_ind": 0.05232932436211063,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 54.502248764038086
+   },
+   {
+    "u": "syn-eq21-79a88702",
+    "s_ind": 0.025210789000605725,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-960adde1",
+    "s_ind": 0.16144125033242573,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.63304328918457
+   },
+   {
+    "u": "syn-eq21-bff69bce",
+    "s_ind": 0.02911503529792273,
+    "s_coll": 0.8609,
+    "A_u": 0.7970995403399568,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 30.147075653076172
+   },
+   {
+    "u": "syn-eq21-1afe4f51",
+    "s_ind": 0.021796525635185814,
+    "s_coll": 0.9748204772240083,
+    "A_u": 0.7605639927908614,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 12.619495391845703
+   },
+   {
+    "u": "syn-eq21-721cd4b4",
+    "s_ind": 0.06050081714548073,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.747722625732422
+   },
+   {
+    "u": "syn-eq21-4d5d4831",
+    "s_ind": 0.255804946717739,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.464958190917969
+   },
+   {
+    "u": "syn-eq21-55fe2754",
+    "s_ind": 0.05940239438941693,
+    "s_coll": 0.9034866501344799,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 34.81698036193848
+   },
+   {
+    "u": "syn-eq21-be07dcb4",
+    "s_ind": 0.03892875765383675,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-7d0b23bd",
+    "s_ind": 0.22226649951613411,
+    "s_coll": 0.8769519328090135,
+    "A_u": 0.2977656880825267,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.436037063598633
+   },
+   {
+    "u": "syn-eq21-2f527d64",
+    "s_ind": 0.027038984135576653,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-c1e03330",
+    "s_ind": 0.5097397021955928,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.359338760375977
+   },
+   {
+    "u": "syn-eq21-1fe8949d",
+    "s_ind": 0.3982117610253405,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.86950492858887
+   },
+   {
+    "u": "syn-eq21-c2c6a9be",
+    "s_ind": 0.016200692136325707,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-56856a75",
+    "s_ind": 0.0482,
+    "s_coll": 0.583914399016248,
+    "A_u": 0.3643,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 6.69550895690918
+   },
+   {
+    "u": "syn-eq21-0d53b161",
+    "s_ind": 0.019611198470232544,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-88d7c562",
+    "s_ind": 0.5132592336062084,
+    "s_coll": 0.9156002438578555,
+    "A_u": 0.20260195356982608,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.942510604858398
+   },
+   {
+    "u": "syn-eq21-1e6971ba",
+    "s_ind": 0.032578882012031435,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-057c735c",
+    "s_ind": null,
+    "s_coll": 0.8609,
+    "A_u": 0.8032012649539724,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 6.159782409667969
+   },
+   {
+    "u": "syn-eq21-020430aa",
+    "s_ind": null,
+    "s_coll": 0.9978075370366053,
+    "A_u": 0.3643,
+    "expected": "Restrict",
+    "live": "Restrict",
+    "match": true,
+    "propagation_ms": 11.66844367980957
+   },
+   {
+    "u": "syn-eq21-934672fa",
+    "s_ind": 0.03706066827203979,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-fff2c84b",
+    "s_ind": 0.038542884999860035,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-82742d77",
+    "s_ind": 0.0849,
+    "s_coll": 0.8609,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.345676422119141
+   },
+   {
+    "u": "syn-eq21-af75532e",
+    "s_ind": 0.30738315561782453,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.70094299316406
+   },
+   {
+    "u": "syn-eq21-2bceecdb",
+    "s_ind": null,
+    "s_coll": 0.6238455991136831,
+    "A_u": 0.3386720110343808,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-034d6c77",
+    "s_ind": 0.0849,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.650209426879883
+   },
+   {
+    "u": "syn-eq21-d5154c57",
+    "s_ind": 0.06285387734496262,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 33.95557403564453
+   },
+   {
+    "u": "syn-eq21-2ad972aa",
+    "s_ind": 0.2879876567575563,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 7.129907608032227
+   },
+   {
+    "u": "syn-eq21-8b082f30",
+    "s_ind": 0.04968400047733377,
+    "s_coll": 0.5650963646694711,
+    "A_u": 0.39207619339186217,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 42.05799102783203
+   },
+   {
+    "u": "syn-eq21-0c40b378",
+    "s_ind": 0.11862331262722345,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.40396499633789
+   },
+   {
+    "u": "syn-eq21-fc500fd7",
+    "s_ind": 0.0482,
+    "s_coll": 0.9900295018209936,
+    "A_u": 0.17292771182081976,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 48.162221908569336
+   },
+   {
+    "u": "syn-eq21-8be9a7ef",
+    "s_ind": 0.42231170997380957,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.253999710083008
+   },
+   {
+    "u": "syn-eq21-b21e9017",
+    "s_ind": 0.07305247220515146,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Throttle",
+    "live": "Throttle",
+    "match": true,
+    "propagation_ms": 29.07252311706543
+   },
+   {
+    "u": "syn-eq21-e8cb8ba2",
+    "s_ind": 0.441529842533106,
+    "s_coll": 0.905347586387771,
+    "A_u": 0.18506883148614198,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 12.460708618164062
+   },
+   {
+    "u": "syn-eq21-ea8d4250",
+    "s_ind": 0.3470842932739989,
+    "s_coll": 0.8788274532392314,
+    "A_u": 0.7234596594095832,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.555870056152344
+   },
+   {
+    "u": "syn-eq21-29ef1187",
+    "s_ind": 0.3186532522617799,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 33.57553482055664
+   },
+   {
+    "u": "syn-eq21-d3315996",
+    "s_ind": 0.5423229098110943,
+    "s_coll": 0.5867814115521167,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.638362884521484
+   },
+   {
+    "u": "syn-eq21-4887279c",
+    "s_ind": 0.019447416245772554,
+    "s_coll": 0.6864097624057921,
+    "A_u": 0.3643,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-71af1f19",
+    "s_ind": 0.32627625548275513,
+    "s_coll": 0.8674562548270686,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 6.57963752746582
+   },
+   {
+    "u": "syn-eq21-e897ecf0",
+    "s_ind": 0.007505726433970636,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   },
+   {
+    "u": "syn-eq21-086c03de",
+    "s_ind": 0.0482,
+    "s_coll": 0.9867785684742929,
+    "A_u": 0.2024849034230403,
+    "expected": "StepUp",
+    "live": "StepUp",
+    "match": true,
+    "propagation_ms": 552.6454448699951
+   },
+   {
+    "u": "syn-eq21-249b3aae",
+    "s_ind": 0.45434464893812765,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.19204330444336
+   },
+   {
+    "u": "syn-eq21-984422df",
+    "s_ind": 0.5940080647380706,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.067588806152344
+   },
+   {
+    "u": "syn-eq21-bc8b6978",
+    "s_ind": 0.2685506452961809,
+    "s_coll": 0.9785780446102189,
+    "A_u": 0.024525847733772064,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 28.87105941772461
+   },
+   {
+    "u": "syn-eq21-ecc6d6a3",
+    "s_ind": 0.0849,
+    "s_coll": 0.8673824941341562,
+    "A_u": 0.3643,
+    "expected": "Terminate",
+    "live": "Terminate",
+    "match": true,
+    "propagation_ms": 35.4158878326416
+   },
+   {
+    "u": "syn-eq21-5be7816d",
+    "s_ind": 0.022784467599960702,
+    "s_coll": null,
+    "A_u": null,
+    "expected": "Allow",
+    "live": "Allow",
+    "match": true,
+    "propagation_ms": null
+   }
+  ]
+ },
+ "environment": {
+  "recorded_at": "2026-11-15T18:38:49.423522+00:00",
+  "unix_time": 1794767929.4235275,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178016256,
+   "available": 1034387456
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

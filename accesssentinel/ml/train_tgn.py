@@ -185,6 +185,7 @@ def markdown(r: dict) -> str:
 # Revised v3 TGN:  python -m accesssentinel.ml.train_tgn --arch v3 [--device cuda] [--promote]
 # ============================================================================================================
 from ..config import TGNv3Config  # noqa: E402
+from ..datasets.synth import COLLUSION_V3  # noqa: E402
 from .tgn_train import StreamV3, anchor_replay_v3, train_tgn_v3  # noqa: E402
 
 
@@ -194,16 +195,13 @@ def _anchor_labels(rec, true_members):
     return coll_users
 
 
-def run_v3(model_dir, results_dir, data_seed=11, seed=0, device="cpu", epochs=None, promote=False, log=print) -> dict:
+def evaluate_v3(ds, seed=0, device="cpu", cfg=None, log=print) -> dict:
+    """Train the v3 TGN on ds, replay the stream with memory at escalation-like anchors, fit Eq. 19 on train,
+    calibrate theta_C / theta_A on nominal validation members, evaluate on test. Shared by run_v3 and
+    Experiment B (evaluation/exp_b.py)."""
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import average_precision_score, roc_auc_score
-    t_start = time.time(); started = datetime.now(timezone.utc).isoformat()
-    cfg = TGNv3Config()
-    if epochs is not None:
-        cfg.epochs = epochs
-    synth = SynthConfig.collusion_study(seed=data_seed)
-    log(f"generating synthetic collusion-study data (seed {data_seed}) ...")
-    ds = generate(synth)
+    cfg = cfg or TGNv3Config()
     st = StreamV3(ds)
     log(f"stream: {len(st.t)} events, {st.n_nodes} nodes ({st.U} users, {st.R} resources)")
     model, hist, best_ap = train_tgn_v3(st, cfg, device, seed, log)
@@ -214,7 +212,8 @@ def run_v3(model_dir, results_dir, data_seed=11, seed=0, device="cpu", epochs=No
         for it in corpus.evaluation_set(split, random.Random(seed + k), anchors_per_burst=2, n_random=150 if split != "test" else 300,
                                         n_resource=150 if split != "test" else 300):
             anchors.append({"t": float(it.sample.t1), "seed": it.sample.seeds[0], "kind": it.kind, "split": split,
-                            "seed_label": it.seed_label, "true": it.true_members})
+                            "seed_label": it.seed_label, "true": it.true_members,
+                            "instance": getattr(it, "instance", None)})
     log(f"anchors: {len(anchors)}; replaying the stream with memory ...")
     t_rep = time.time()
     recs = anchor_replay_v3(model, st, cfg, device, [(a["t"], a["seed"]) for a in anchors])
@@ -268,7 +267,8 @@ def run_v3(model_dir, results_dir, data_seed=11, seed=0, device="cpu", epochs=No
         coll_users = _anchor_labels(a["rec"], a["true"])
         flagged_members = {m for m, ft in a["rec"]["features"].items() if s_of(ft) >= th["theta_C"]}
         att_tp += len(flagged_members & coll_users); att_fp += len(flagged_members - coll_users); att_fn += len(coll_users - flagged_members)
-    groups_total = {i for i, inst in ds.instances.items() if inst.get("split") == "test" and "members" in inst and inst.get("kind") in ("coordinated_collection", "split_exfiltration")}
+    groups_total = {i for i, inst in ds.instances.items() if inst.get("split") == "test" and "members" in inst
+                    and inst.get("kind") in COLLUSION_V3}
     groups_hit = set()
     for a, f in zip(test, flag):
         if f and a["seed_label"]:
@@ -288,11 +288,47 @@ def run_v3(model_dir, results_dir, data_seed=11, seed=0, device="cpu", epochs=No
            "groups_detected": {"test_groups": len(groups_total), "detected": len(groups_hit)},
            "neighbourhood_size": {"edges_median": float(np.median([s[0] for s in sizes])), "nodes_median": float(np.median([s[1] for s in sizes]))},
            "replay_seconds_all_events": replay_s}
+    # ---- per group (Experiment B: recall and time-to-detect vs group size and kind)
+    first_ev = {}
+    for e in ds.events:
+        inst = ds.labels[e.event_id].instance
+        if inst in groups_total and inst not in first_ev:
+            first_ev[inst] = e.t
+    per_group = {}
+    for i in sorted(groups_total):
+        g = ds.instances[i]
+        hits = sorted(a["t"] for a, f in zip(test, flag) if f and a.get("instance") == i)
+        n_anch = sum(1 for a in test if a.get("instance") == i)
+        per_group[i] = {"kind": g["kind"], "size": len(g["members"]), "familiar": bool(g.get("familiar")),
+                        "apps": g.get("apps"), "anchors": n_anch, "anchors_flagged": len(hits),
+                        "detected": i in groups_hit,
+                        "minutes_to_detect": (hits[0] - first_ev[i]) / 60.0 if hits and i in first_ev else None}
+    res["per_group"] = per_group
+    res["anchors"] = [{"t": a["t"], "seed": a["seed"], "kind": a["kind"], "instance": a.get("instance"),
+                       "seed_label": int(a["seed_label"]), "s_coll": float(sc), "flagged": bool(f),
+                       "A_u": (a["rec"].get("features", {}).get(a["seed"]) or [None, None])[1]}
+                      for a, sc, f in zip(test, ss, flag)]
     log(f"test: seed PR-AUC {res['seed_level']['pr_auc']}, at theta_C {res['seed_level']['at_theta_C']}; groups {len(groups_hit)}/{len(groups_total)}")
+    return {"model": model, "history": hist, "best_ap": best_ap, "cal": cal, "th": th, "res": res, "cfg": cfg,
+            "stream_events": int(len(st.t))}
+
+
+def run_v3(model_dir, results_dir, data_seed=11, seed=0, device="cpu", epochs=None, promote=False, log=print) -> dict:
+    t_start = time.time(); started = datetime.now(timezone.utc).isoformat()
+    cfg = TGNv3Config()
+    if epochs is not None:
+        cfg.epochs = epochs
+    synth = SynthConfig.collusion_study(seed=data_seed)
+    log(f"generating synthetic collusion-study data (seed {data_seed}) ...")
+    ds = generate(synth)
+    ev3 = evaluate_v3(ds, seed, device, cfg, log)
+    model, hist, best_ap, cal, th, res = (ev3[k] for k in ("model", "history", "best_ap", "cal", "th", "res"))
+    st_events = ev3["stream_events"]
     version = f"tgn3-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{ds.fingerprint()[:6]}"
     manifest = {"tgn_config": asdict(cfg), "data": {"source": "synthetic", "synth_config": asdict(synth), "fingerprint": ds.fingerprint(),
-                "events": int(len(st.t))}, "training": {"history": hist, "best_val_edge_pr_auc": best_ap, "seed": seed, "device": device},
+                "events": st_events}, "training": {"history": hist, "best_val_edge_pr_auc": best_ap, "seed": seed, "device": device},
                 "test_summary": res["seed_level"], "git_commit": _git(), "torch": torch.__version__}
+    res = {k: v for k, v in res.items() if k != "anchors"}               # per-anchor rows: Experiment B only
     tgn_registry.save_v3(model_dir, version, model.cpu(), cfg, cal, th, manifest)
     if promote:
         tgn_registry.promote(model_dir, version)

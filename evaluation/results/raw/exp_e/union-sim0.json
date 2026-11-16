@@ -1,0 +1,362 @@
+{
+ "data": {
+  "fingerprint": "74191023dccc78fb",
+  "events": 703361,
+  "synth": "collusion_v3_eval(seed=11)"
+ },
+ "tcn": "tcn3-20261115T091825Z-0c7a4e",
+ "thresholds": {
+  "theta_low": 0.028383921831846237,
+  "theta_high": 0.048195429146289825
+ },
+ "escalation_config": {
+  "analysis_window": 60.0,
+  "kappa": 3,
+  "delta_res": 900.0,
+  "t_sweep": 7200.0,
+  "sweep_min_users": 4,
+  "sweep_batch": 50,
+  "gamma": 0.02,
+  "realtime_window": 5.0,
+  "realtime_cooldown": 300.0,
+  "background_cooldown": 3600.0,
+  "max_realtime_per_window": 100,
+  "max_background_per_window": 50,
+  "sweep_lookback": 86400.0,
+  "sweep_baseline_days": 14,
+  "sweep_baseline_gap_days": 7,
+  "sweep_rare_max": 1,
+  "sweep_min_rare": 3,
+  "sweep_min_baseline_events": 20,
+  "sweep_min_medium": 5,
+  "cost_c0": 35.59,
+  "cost_c1": 0.0889,
+  "cost_c2": 0.8212,
+  "rho_graph": 0.7,
+  "tgn_workers": 2,
+  "mu_graph": 1000.0,
+  "res_deadline": 900.0,
+  "use_resource_windows": true
+ },
+ "deployed_budget_per_window": 84000.0,
+ "git_commit": "282ca82",
+ "git_dirty": true,
+ "environment": {
+  "recorded_at": "2026-11-15T15:02:02.138326+00:00",
+  "unix_time": 1794754922.1388574,
+  "host_os": "Windows-10-10.0.26300-SP0",
+  "python": "3.11.0",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 16886128640,
+   "available": 1761456128
+  },
+  "gpu": [
+   "NVIDIA GeForce RTX 4050 Laptop GPU, 6141 MiB, 610.47"
+  ],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.0.2",
+   "pandas": "2.2.3",
+   "sklearn": "1.5.2",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": "3.9.2"
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 14,
+  "git_commit": "282ca8262eb9350fc7ed9eef532f9b3c38ccc770",
+  "git_dirty": true,
+  "docker": {
+   "server_version": "28.3.3",
+   "vm_cpus": 20,
+   "vm_memory_bytes": 8178016256
+  }
+ },
+ "started_at": "2026-11-15T14:44:29.771600+00:00",
+ "config": "union",
+ "paths": [
+  "high",
+  "resource",
+  "sweep",
+  "sample"
+ ],
+ "budget_scale": 1000000000.0,
+ "sim_seed": 0,
+ "result": {
+  "admitted": 21451,
+  "admitted_benign": 17105,
+  "work_ms_total": 1722451.1360000002,
+  "work_ms_per_window_mean": 170.8780888888889,
+  "work_ms_per_window_p99": 7311.097549999984,
+  "work_ms_per_window_max": 12397.839000000002,
+  "budget_per_window": 84000000000000.0,
+  "windows_over_budget": 0,
+  "windows": 10080,
+  "group_coverage": 1.0,
+  "groups": {
+   "cross_app_collection-test-0": {
+    "kind": "cross_app_collection",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 1.700288720925649,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "cross_app_collection-test-1": {
+    "kind": "cross_app_collection",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 0.10624828735987345,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "cross_app_collection-test-2": {
+    "kind": "cross_app_collection",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 4.650972664356232,
+    "paths": [
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-0": {
+    "kind": "low_slow_group",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 2.552248251438141,
+    "paths": [
+     "resource",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-1": {
+    "kind": "low_slow_group",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 7.661925490697225,
+    "paths": [
+     "resource",
+     "sample"
+    ]
+   },
+   "low_slow_group-test-2": {
+    "kind": "low_slow_group",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 78.83591260910035,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-3": {
+    "kind": "low_slow_group",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 0.3478164990743001,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-0": {
+    "kind": "coordinated_collection",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 13.544827155272166,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-1": {
+    "kind": "coordinated_collection",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 8.220535496870676,
+    "paths": [
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-2": {
+    "kind": "coordinated_collection",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 9.406772522131602,
+    "paths": [
+     "resource",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-3": {
+    "kind": "coordinated_collection",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 5.324778600533803,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-0": {
+    "kind": "split_exfiltration",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 4.6254079302152,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-1": {
+    "kind": "split_exfiltration",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 7.219759905338288,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-2": {
+    "kind": "split_exfiltration",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 4.469407335917155,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-3": {
+    "kind": "split_exfiltration",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 1.626918888092041,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   }
+  },
+  "individual_coverage": 1.0,
+  "individual": {
+   "compromised_account-test-0": {
+    "kind": "compromised_account",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.1135120431582133,
+    "paths": [
+     "high"
+    ]
+   },
+   "insider_exfiltration-test-0": {
+    "kind": "insider_exfiltration",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.6911664485931397,
+    "paths": [
+     "high"
+    ]
+   },
+   "bac_probe-test-0": {
+    "kind": "bac_probe",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.13066999912261962,
+    "paths": [
+     "high",
+     "resource"
+    ]
+   },
+   "low_and_slow-test-0": {
+    "kind": "low_and_slow",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 3.898126025994619,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   }
+  },
+  "engine_stats": {
+   "sweeps": 69,
+   "escalated:background": 3533,
+   "escalated_by:sweep": 1906,
+   "demand:background": 183776,
+   "budget:background": 494424000000000000,
+   "used:background": 1398619,
+   "escalated_by:sample": 1627,
+   "candidates:high": 4779,
+   "escalated:realtime": 18052,
+   "escalated_by:high": 2255,
+   "demand:realtime": 1544486,
+   "budget:realtime": 332724000000000000,
+   "used:realtime": 3112878,
+   "candidates:resource": 22295,
+   "escalated_by:resource": 15815,
+   "suppressed:background": 1392,
+   "suppressed:realtime": 2778
+  },
+  "sweeps": 69,
+  "by_priority": {
+   "realtime": 17975,
+   "background": 3476
+  }
+ },
+ "wall_seconds": 77.40034079551697
+}

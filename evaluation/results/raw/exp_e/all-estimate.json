@@ -1,0 +1,89 @@
+{
+ "data": {
+  "fingerprint": "74191023dccc78fb",
+  "events": 703361,
+  "synth": "collusion_v3_eval(seed=11)"
+ },
+ "tcn": "tcn3-20261115T091825Z-0c7a4e",
+ "thresholds": {
+  "theta_low": 0.028383921831846237,
+  "theta_high": 0.048195429146289825
+ },
+ "escalation_config": {
+  "analysis_window": 60.0,
+  "kappa": 3,
+  "delta_res": 900.0,
+  "t_sweep": 7200.0,
+  "sweep_min_users": 4,
+  "sweep_batch": 50,
+  "gamma": 0.02,
+  "realtime_window": 5.0,
+  "realtime_cooldown": 300.0,
+  "background_cooldown": 3600.0,
+  "max_realtime_per_window": 100,
+  "max_background_per_window": 50,
+  "sweep_lookback": 86400.0,
+  "sweep_baseline_days": 14,
+  "sweep_baseline_gap_days": 7,
+  "sweep_rare_max": 1,
+  "sweep_min_rare": 3,
+  "sweep_min_baseline_events": 20,
+  "sweep_min_medium": 5,
+  "cost_c0": 35.59,
+  "cost_c1": 0.0889,
+  "cost_c2": 0.8212,
+  "rho_graph": 0.7,
+  "tgn_workers": 2,
+  "mu_graph": 1000.0,
+  "res_deadline": 900.0,
+  "use_resource_windows": true
+ },
+ "deployed_budget_per_window": 84000.0,
+ "git_commit": "282ca82",
+ "git_dirty": true,
+ "environment": {
+  "recorded_at": "2026-11-15T15:02:02.138326+00:00",
+  "unix_time": 1794754922.1388574,
+  "host_os": "Windows-10-10.0.26300-SP0",
+  "python": "3.11.0",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 16886128640,
+   "available": 1761456128
+  },
+  "gpu": [
+   "NVIDIA GeForce RTX 4050 Laptop GPU, 6141 MiB, 610.47"
+  ],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.0.2",
+   "pandas": "2.2.3",
+   "sklearn": "1.5.2",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": "3.9.2"
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 14,
+  "git_commit": "282ca8262eb9350fc7ed9eef532f9b3c38ccc770",
+  "git_dirty": true,
+  "docker": {
+   "server_version": "28.3.3",
+   "vm_cpus": 20,
+   "vm_memory_bytes": 8178016256
+  }
+ },
+ "started_at": "2026-11-15T14:44:29.771600+00:00",
+ "config": "all",
+ "result": {
+  "windows_sampled": 300,
+  "work_ms_per_window_mean": 965.1240589999999,
+  "work_ms_per_window_p99": 5107.729724,
+  "group_coverage": 1.0,
+  "individual_coverage": 1.0,
+  "note": "every active user is analysed, so coverage is 1 by construction (upper bound)"
+ }
+}

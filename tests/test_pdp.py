@@ -206,8 +206,31 @@ def test_failed_revocation_is_retried_and_the_block_still_holds():
     h.handle([rec("risk-scores", risk("x", 0.95))]); h.tick()
     assert p.r.hexists(K_REVOKE, "x") and p.status("x")["blocked"] and h.stats["revoke_failures"] == 1
     rev.fail = False
+    h.tick()                                                  # still inside the 1 s backoff: no attempt
+    assert rev.calls == [] and p.r.hexists(K_REVOKE, "x")
+    c.t += 1
     h.tick()
     assert rev.calls == [("x", "pdp-terminate:individual")] and not p.r.hexists(K_REVOKE, "x")
+
+
+def test_gateway_outage_costs_one_revocation_attempt_per_backoff_not_one_per_user():
+    c = Clock(); h, p, prod, pol, rev = handler(c)
+    rev.fail = True
+    tries = []
+    real = rev.revoke
+    rev.revoke = lambda u, reason: (tries.append(u), real(u, reason))[1]
+    h.handle([rec("risk-scores", risk(f"x{i}", 0.95), i) for i in range(10)]); h.tick()
+    assert len(tries) == 1 and p.r.hlen(K_REVOKE) == 10      # one failed attempt stops the round
+    for _ in range(5):
+        h.tick()
+    assert len(tries) == 1                                     # backing off; decisions keep flowing
+    h.handle([rec("risk-scores", risk("y", 0.95), 11)]); h.tick()
+    assert p.status("y")["blocked"]
+    c.t += 1; h.tick(); c.t += 1; h.tick()
+    assert len(tries) == 2                                     # 1 s, then 2 s backoff
+    rev.fail = False
+    c.t += 2; h.tick()
+    assert p.r.hlen(K_REVOKE) == 0 and len(tries) == 2 + 11
 
 
 def test_failed_publish_keeps_the_outbox():

@@ -235,3 +235,42 @@ def multitask_loss(out, batch, cfg: TCNv3Config, supervised: bool) -> Tuple[torc
         parts["sup"] = focal_loss(out["logit"], batch["y"], gamma=cfg.focal_gamma, alpha=cfg.focal_alpha)
         total = total + l4 * parts["sup"]
     return total, {k: float(v.detach()) for k, v in parts.items()}
+
+
+# ============================================================================================================
+# Revised v3 Phase 8: baselines and ablations for Experiment A / F (same input layer and heads as TCNv3)
+# ============================================================================================================
+class LSTMBaseline(nn.Module):
+    """Recurrent baseline: the Table III input embeddings of TCNv3, a 2-layer LSTM instead of the dilated causal
+    convolutions, the same four heads (the baseline protocol trains only the supervised one)."""
+
+    def __init__(self, cfg: "TCNv3Config", n_res: int, n_op: int, n_net: int, hidden: int = 128, layers: int = 2):
+        super().__init__()
+        self.cfg = cfg
+        self.emb_res = nn.Embedding(n_res, EMB_RES, padding_idx=0)
+        self.emb_op = nn.Embedding(n_op, EMB_OP, padding_idx=0)
+        self.emb_net = nn.Embedding(n_net, EMB_NET, padding_idx=0)
+        self.rnn = nn.LSTM(D_V3, hidden, num_layers=layers, batch_first=True, dropout=cfg.dropout)
+        self.next_res = nn.Linear(hidden, n_res)
+        self.next_op = nn.Linear(hidden, n_op)
+        self.time_gap = nn.Linear(hidden, 1)
+        self.score = nn.Sequential(nn.Linear(hidden + N_Z, cfg.head_hidden), nn.ReLU(), nn.Dropout(cfg.dropout),
+                                   nn.Linear(cfg.head_hidden, 1))
+
+    embed = TCNv3.embed
+
+    def forward(self, res, op, net, num, z) -> Dict[str, torch.Tensor]:
+        h = self.rnn(self.embed(res, op, net, num))[0][:, -1]                                 # last step
+        return {"logit": self.score(torch.cat([h, z], dim=-1)).squeeze(-1),
+                "next_res": self.next_res(h), "next_op": self.next_op(h), "time_gap": self.time_gap(h).squeeze(-1)}
+
+
+class ZeroZ(nn.Module):
+    """Runs a v3 model WITHOUT the timer context z_u(t) (zeros at the scoring head): baselines and the ablation."""
+
+    def __init__(self, inner: nn.Module):
+        super().__init__()
+        self.inner, self.cfg = inner, inner.cfg
+
+    def forward(self, res, op, net, num, z):
+        return self.inner(res, op, net, num, torch.zeros_like(z))

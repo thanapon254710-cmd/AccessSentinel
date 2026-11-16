@@ -379,6 +379,7 @@ services:
     volumes:                                                # rw: retraining writes candidates + reports
       - ../models:/app/models
       - ../experiments/results:/app/experiments/results
+      - ../evaluation:/app/evaluation                       # Deliverable 4 live experiments (C, D, G, H) + raw results
     command: ["python", "scripts/check_infra.py"]
     depends_on:
       kafka: {condition: service_healthy}

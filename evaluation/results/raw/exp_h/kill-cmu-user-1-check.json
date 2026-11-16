@@ -1,0 +1,32 @@
+{
+ "tag": "kill-cmu-user-1",
+ "burst": {
+  "rate": 100.0,
+  "t_first": 1794764778.7742877,
+  "t_last": 1794764808.7651057,
+  "undelivered": 0
+ },
+ "stages": {
+  "sequencer": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 0.21715831756591797,
+   "gap_p99_s": 0.10995888710021973,
+   "first_out": 1794764780.8807974,
+   "last_out": 1794764810.875356
+  },
+  "tcn": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 0.24747872352600098,
+   "gap_p99_s": 0.09308990955352782,
+   "first_out": 1794764780.8928995,
+   "last_out": 1794764810.9100003
+  },
+  "cmu_users_with_memory": "30/30"
+ }
+}

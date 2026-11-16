@@ -29,12 +29,26 @@ from .consumer import DecodeError, Record
 log = logging.getLogger("accesssentinel.escalation")
 
 
+class _SweepEvent:
+    """The four fields the Path C rules read (sweep_candidates); a full AccessEvent per row of a day of history
+    exhausted the escalation service's 384 MB (OOM-killed in Exp. C, 2026-11-15)."""
+    __slots__ = ("u", "rkey", "s", "t")
+
+    def __init__(self, row: dict):
+        self.u, self.rkey, self.s, self.t = row["u"], f"{row['a']}:{row['r']}", int(row["s"]), float(row["t"])
+
+
 def lake_loader(lake, cfg: EscalationConfig):
     def load(now: float) -> dict:
         lb0 = now - cfg.sweep_lookback
-        return {"lookback_events": lake.read_events(lb0, now),
-                "baseline_events": lake.read_events(*baseline_range(lb0, cfg)),
-                "lookback_scores": [r["payload"] for r in lake.read_records("risk-scores", lb0, now)]}
+        # the rules use only sensitive (s = 1) lookback events; the baseline only for (u, rkey) counts; the scores
+        # only for u and tier - so only that is kept, streamed from the lake file by file
+        cols = ("event_id", "u", "a", "r", "s", "t")
+        look = sorted((r for r in lake.iter_event_rows(lb0, now, columns=cols) if int(r["s"]) == 1),
+                      key=lambda r: (r["t"], r["event_id"]))
+        return {"lookback_events": [_SweepEvent(r) for r in look],               # time order, as read_events gave
+                "baseline_events": [_SweepEvent(r) for r in lake.iter_event_rows(*baseline_range(lb0, cfg), columns=cols)],
+                "lookback_scores": [r["payload"] for r in lake.read_records("risk-scores", lb0, now, fields=("u", "tier"))]}
     return load
 
 
