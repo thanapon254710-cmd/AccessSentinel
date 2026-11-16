@@ -67,7 +67,12 @@ class Settings(BaseSettings):
     sink_flush_rows: int = 2000                     # HDFS sink: write a file at this many buffered rows ...
     sink_flush_seconds: float = 30.0                # ... or when the oldest buffered row is this old
     sink_compact_max_files: int = 24                # compact a partition once it has more part files
-    dedup_ttl_seconds: int = 86400                  # how long written ids are remembered for redelivery dedup
+    # How long written ids are remembered for redelivery dedup. It only has to cover the gap between marking a
+    # flush and committing its offsets (plus a restart); later duplicates are removed by id on read and on
+    # compaction (streaming/dedup.py). Redis holds rate x TTL keys (~380 B each) under maxmemory 256 MB with
+    # noeviction: 86400 s reached 243 MB / 508 k keys after a day of experiments (2026-11-15), close to stopping
+    # every Redis write. 900 s at ~100 sink records/s (50 req/s) is ~90 k keys.
+    dedup_ttl_seconds: int = 900
     spool_replay_seconds: float = 60.0              # gateway: how often to replay spooled events
 
     # --- TCN individual detection (Phase 5) -----------------------------------------------------------

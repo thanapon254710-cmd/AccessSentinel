@@ -1,0 +1,17 @@
+{
+ "events": 200,
+ "copies": 3,
+ "produced": 600,
+ "stages": {
+  "sequencer": {
+   "unique": 200,
+   "records": 200,
+   "duplicates_out": 0
+  },
+  "tcn": {
+   "unique": 200,
+   "records": 200,
+   "duplicates_out": 0
+  }
+ }
+}

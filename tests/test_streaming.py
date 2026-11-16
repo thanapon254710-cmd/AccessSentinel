@@ -271,6 +271,30 @@ def test_lake_read_dedup_and_compaction(tmp_path):
     assert len(lk.read_events(0, 2e9, dedup=False)) == 2 and lk.partitions()[0]["files"] == 1
 
 
+def test_streaming_compaction_merges_different_schemas_and_drops_duplicates(tmp_path):
+    """compact() streams record batches (it materialised the whole partition and OOM-killed the sink): files with
+    different columns are merged under one schema, duplicates across files are dropped, nothing else changes."""
+    lk = lake(tmp_path)
+    lk.write_records("risk-scores", [{"record_id": f"r{i}", "ts": DAY1 + i, "payload": {"u": "a", "s": i}} for i in range(5000)])
+    lk.write_records("risk-scores", [{"record_id": f"r{i}", "ts": DAY1 + i, "key": "k", "payload": {"u": "b"}}
+                                     for i in range(4990, 6000)])                    # 10 duplicates, an extra column
+    before = {r["record_id"]: r["payload"] for r in lk.read_records("risk-scores", 0, 2e9)}
+    res = lk.compact("risk-scores", utc_date(DAY1))
+    assert res == {"files_before": 2, "rows_before": 6010, "rows": 6000}
+    after = lk.read_records("risk-scores", 0, 2e9, dedup=False)
+    assert len(after) == 6000 and {r["record_id"]: r["payload"] for r in after} == before
+    assert lk.partitions("risk-scores")[0]["files"] == 1
+
+
+def test_read_records_filters_by_kafka_key_before_parsing(tmp_path):
+    lk = lake(tmp_path)
+    lk.write_records("risk-scores", [{"record_id": f"r{i}", "ts": DAY1 + i, "key": f"u{i % 3}",
+                                      "payload": {"u": f"u{i % 3}", "s_ind": 0.1}} for i in range(30)])
+    got = lk.read_records("risk-scores", 0, 2e9, keys=["u1"])
+    assert len(got) == 10 and {r["payload"]["u"] for r in got} == {"u1"}
+    assert len(lk.read_records("risk-scores", 0, 2e9)) == 30                       # no filter: unchanged
+
+
 def test_lake_is_a_drop_in_history_store(tmp_path):
     lk = lake(tmp_path)
     for i in range(3):

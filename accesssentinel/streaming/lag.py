@@ -18,7 +18,7 @@ GROUP_TOPICS = {
     "resource-merge": ["resource-partials"],
     "cmu-user": ["access-events.ordered"],
     "cmu-resource": ["access-events-by-rstar"],
-    "escalation": ["risk-scores", "access-events-by-resource"],
+    "escalation": ["risk-scores", "resource-windows"],                 # v3 Phase 5: Path B from final windows
     "graph-index": ["access-events-by-resource"],
     "tgn-rt": ["escalations.realtime"],
     "tgn-bg": ["escalations.background"],

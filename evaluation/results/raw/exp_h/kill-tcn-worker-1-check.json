@@ -1,0 +1,32 @@
+{
+ "tag": "kill-tcn-worker-1",
+ "burst": {
+  "rate": 100.0,
+  "t_first": 1794764568.8476107,
+  "t_last": 1794764598.8383589,
+  "undelivered": 0
+ },
+ "stages": {
+  "sequencer": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 0.2160191535949707,
+   "gap_p99_s": 0.10984144687652588,
+   "first_out": 1794764570.953754,
+   "last_out": 1794764600.9483879
+  },
+  "tcn": {
+   "out_unique": 3000,
+   "sent": 3000,
+   "lost": 0,
+   "duplicates": 0,
+   "max_gap_s": 35.25598931312561,
+   "gap_p99_s": 0.10382815837860107,
+   "first_out": 1794764570.9667103,
+   "last_out": 1794764628.768142
+  },
+  "cmu_users_with_memory": "30/30"
+ }
+}

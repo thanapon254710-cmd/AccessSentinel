@@ -240,7 +240,7 @@ def create_app(settings, engine, aredis, redis, live, probe, lake_factory: Calla
             t1 = until or time.time()
             t0 = t1 - min(hours, 24 * 30) * 3600
             lake = lake_factory()
-            scores = [r["payload"] for r in lake.read_records("risk-scores", t0, t1 + 600) if r["payload"].get("u") == u]
+            scores = [r["payload"] for r in lake.read_records("risk-scores", t0, t1 + 600, keys=[u]) if r["payload"].get("u") == u]
             scores += [s for s in (live.recent("score", 1000, lambda s: s["u"] == u) if live else [])
                        if s.get("scored_at", 0) > t0 and s["score_id"] not in {x.get("score_id") for x in scores}]
             events = lake.user_history(u, t0, t1)
@@ -278,12 +278,24 @@ def create_app(settings, engine, aredis, redis, live, probe, lake_factory: Calla
             from ...streaming.graph_index import RedisEdgeIndex
             try:
                 scorer = TgnScorer.load(model_dir)
-                gp = scorer.gp
             except FileNotFoundError:
-                scorer, gp = None, GraphParams()
+                scorer = None
+            d3 = scorer is not None and hasattr(scorer, "gp")
+            # v3 model (CMU + SGE): no D3 per-edge scorer to call here; the view shows the live neighbourhood (v3 has
+            # no user-user edges through a shared application) and the user's latest v3 collective result (Eqs. 18-19)
+            gp = scorer.gp if d3 else GraphParams(app_coaccess_weight=0.0)
             s = build_sample([u], RedisEdgeIndex(redis), t or time.time(), gp)
-            scores = scorer.edge_scores(s) if (scorer and s.edges) else None
-            analysis = scorer.analyse(s).get(u) if (scorer and s.edges) else None
+            scores = scorer.edge_scores(s) if (d3 and s.edges) else None
+            if d3:
+                analysis = scorer.analyse(s).get(u) if s.edges else None
+            else:
+                rec = next((g for g in (live.recent("group", 1000) if live else [])
+                            if u in (g.get("members") or [g.get("u")])), None)
+                m = ((rec or {}).get("member_scores") or {}).get(u) or {}
+                analysis = rec and {"model_kind": rec.get("model_kind"), "group_id": rec.get("group_id"),
+                                    "members": rec.get("members"), "s_coll": m.get("s_coll", rec.get("s_coll")),
+                                    "A_u": m.get("A_u"), "theta_coll": rec.get("theta_coll"), "theta_A": rec.get("theta_A"),
+                                    "t": rec.get("t")}
             nodes = ([{"id": f"u:{x}", "label": x, "type": "user", "seed": x == u} for x in s.users]
                      + [{"id": f"r:{x}", "label": x, "type": "resource"} for x in s.resources]
                      + [{"id": f"a:{x}", "label": x, "type": "application"} for x in s.apps])
@@ -300,7 +312,7 @@ def create_app(settings, engine, aredis, redis, live, probe, lake_factory: Calla
             for (i, j), c in s.co_res.items():
                 edges.append({"source": f"u:{s.users[i]}", "target": f"u:{s.users[j]}", "type": "co-access", "count": c})
             return {"seed": u, "window": [s.t0, s.t1], "nodes": nodes, "edges": edges, "model_version": scorer.version if scorer else None,
-                    "tau_edge": scorer.tau_edge if scorer else None, "analysis": analysis, "source": _src(u)}
+                    "tau_edge": scorer.tau_edge if d3 else None, "analysis": analysis, "source": _src(u)}
         return await run_in_threadpool(compute)
 
     # ------------------------------------------------------------------ incidents + feedback

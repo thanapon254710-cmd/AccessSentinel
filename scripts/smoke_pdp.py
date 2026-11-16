@@ -177,15 +177,162 @@ def group(s, args):
                     ", ".join(f"{short(m)}:{'yes' if v else 'no'}" for m, v in coll.items()))])
 
 
+# ============================================================================================================
+# Revised v3 Phase 7: the six-action PDP end to end (score on Kafka -> PDP -> decision:<u> -> gateway)
+#     docker compose run --rm -T tools python scripts/smoke_pdp.py actions
+#     docker compose stop pdp && sleep 35 && docker compose run --rm -T tools python scripts/smoke_pdp.py fallback
+#     docker compose start pdp
+# ============================================================================================================
+def _accounts(s, args, n, role="hr_manager"):
+    """n fresh synthetic accounts (syn-act-*) through the admin API; passwords are generated, never printed."""
+    import httpx
+    adm = httpx.Client(base_url=args.api, headers={"X-Requested-With": "accesssentinel"}, timeout=30)
+    if adm.post("/api/auth/login", json={"username": "secadmin", "password": s.secret("analyst_password")}).status_code != 200:
+        raise SystemExit("cannot sign in as secadmin (AS_ANALYST_PASSWORD)")
+    tag, out = os.urandom(3).hex(), []
+    for i in range(n):
+        u = f"syn-act-{tag}-{i}"
+        r = adm.post("/api/accounts", json={"id": u, "name": f"Phase 7 {u}", "department": "Test", "role": role})
+        if r.status_code != 200:
+            raise SystemExit(f"account {u}: HTTP {r.status_code}")
+        out.append((u, r.json()["initial_password"]))
+    return out
+
+
+def _produce(s, topic, rec):
+    from confluent_kafka import Producer
+    from accesssentinel.topics import topic_name
+    pr = Producer({"bootstrap.servers": s.kafka_bootstrap, "enable.idempotence": True, "acks": "all"})
+    t0 = time.time()                                       # before produce: the PDP may consume before flush returns
+    pr.produce(topic_name(topic, s.kafka_topic_prefix), key=rec["u"].encode(), value=json.dumps(rec).encode())
+    assert pr.flush(10) == 0
+    return t0
+
+
+def _wait(fn, timeout=30.0, step=0.05):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        v = fn()
+        if v:
+            return v, time.time()
+        time.sleep(step)
+    return None, time.time()
+
+
+def actions(s, args):
+    import uuid
+    import redis as redis_lib
+    from accesssentinel.topics import GROUP_SCORES, RISK_SCORES
+    r = redis_lib.Redis(**s.redis_kwargs(), decode_responses=True)
+    gw = args.gateway
+    (ua, pa), (ub, pb), (uc, pc) = _accounts(s, args, 3)
+    res = []
+    ca, _ = login(gw, ua, pa); cb, _ = login(gw, ub, pb); cc, _ = login(gw, uc, pc)
+    base = [ca.get("/apps/hr/payroll").status_code, cb.get("/apps/hr/directory").status_code, cc.get("/apps/hr/directory").status_code]
+    res.append((base == [200, 200, 200], "three fresh hr_manager accounts work normally", f"{base}"))
+
+    # --- collective: Restrict (A_u >= theta_A) and StepUp (A_u < theta_A) from one v3 group score
+    now = time.time()
+    g = {"score_id": f"coll:smoke-{uuid.uuid4().hex[:8]}", "schema_version": 2, "u": ua, "t": now, "anchor_t": now,
+         "window": [now - 3600, now], "s_coll": 0.95, "above_theta_coll": True, "theta_coll": 0.8609, "theta_A": 0.3643,
+         "group_id": uuid.uuid4().hex[:16], "members": [ua, ub], "model_kind": "tgn-v3", "model_version": "smoke-phase7",
+         "member_scores": {ua: {"s_coll": 0.95, "A_u": 0.80}, ub: {"s_coll": 0.92, "A_u": 0.10}}, "source": "synthetic-replay"}
+    t_g = _produce(s, GROUP_SCORES, g)
+    # Poll the decision cache the gateway reads (no gateway traffic: repeated denied requests are themselves
+    # anomalous and the live TCN would rightly score them), then check enforcement with ONE request.
+    hit, t_hit = _wait(lambda: r.hget(f"decision:{ua}", "decision") == "Restrict", 30, 0.005)
+    res.append((bool(hit), "group score -> Restrict for the core member (A_u >= theta_A)",
+                f"{(t_hit - t_g) * 1000:.0f} ms from group score to the gateway's decision cache" if hit else "not decided in 30 s"))
+    r0 = ca.get("/apps/hr/directory")                                     # non-sensitive first ...
+    r1 = ca.get("/apps/hr/payroll")                                       # ... then ONE sensitive attempt
+    res.append((r0.status_code == 200 and r1.status_code == 403 and "restricted" in r1.text,
+                "Restrict at the gateway: s = 0 allowed, s = 1 refused", f"directory {r0.status_code}, payroll {r1.status_code}"))
+    time.sleep(3)
+    st_a = json.loads(admin("status", ua).stdout)
+    res.append((True, "observed: live TCN reaction to the refused sensitive attempt (reported, not asserted)",
+                f"action now {st_a.get('action')} (reason {st_a.get('reason')})"))
+    st_b, _ = _wait(lambda: r.hget(f"decision:{ub}", "decision") == "StepUp", 15, 0.02)
+    rb = cb.get("/apps/hr/directory")
+    step = rb.status_code == 401 and rb.json().get("step_up") is True
+    res.append((bool(st_b) and step, "StepUp for the peripheral member (A_u < theta_A): request needs re-authentication",
+                f"HTTP {rb.status_code}"))
+    cb2, stl = login(gw, ub, pb)
+    rb2 = cb2.get("/apps/hr/directory").status_code
+    res.append((stl == 200 and rb2 == 200, "signing in again satisfies the StepUp", f"login {stl}, directory {rb2}"))
+
+    # --- psi: an older decision written later is rejected by the gateway (no sensitive traffic needed)
+    key = f"decision:{ub}"
+    orig = r.hgetall(key)
+    r.hset(key, mapping={"decision": "Terminate", "reason": "stale-writer", "psi": int(orig["psi"]) - 1,
+                         "decided_at": time.time(), "expires_at": ""})
+    stale = cb2.get("/apps/hr/directory").status_code
+    r.delete(key); r.hset(key, mapping=orig)                              # restore the PDP's state
+    res.append((stale == 200, "stale decision (psi <= psi_cur) rejected: an older Terminate is not applied",
+                f"directory HTTP {stale}"))
+
+    # --- individual: Throttle band, then Terminate (on a user whose own traffic stays light)
+    def score(u, v):
+        t_ = time.time()
+        return {"score_id": f"smoke-{uuid.uuid4().hex[:8]}", "u": u, "s_ind": v, "theta_high": 0.0482, "theta_B": 0.0849,
+                "theta_low": 0.0284, "scored_at": t_, "t": t_, "trigger": "event", "model_version": "smoke-phase7",
+                "model_kind": "tcn-v3", "source": "synthetic-replay"}
+    t_s = _produce(s, RISK_SCORES, score(uc, 0.07))
+    st_c, t_c = _wait(lambda: r.hget(f"decision:{uc}", "decision") == "Throttle", 15, 0.005)
+    res.append((bool(st_c) and cc.get("/apps/hr/directory").status_code == 200, "theta_high <= S_ind < theta_B -> Throttle (requests within the rate pass)",
+                f"{(t_c - t_s) * 1000:.0f} ms to the decision cache"))
+    t_s2 = _produce(s, RISK_SCORES, score(uc, 0.40))
+    hit, t_hit = _wait(lambda: r.hget(f"decision:{uc}", "decision") == "Terminate", 15, 0.005)
+    rr = cc.get("/apps/hr/directory").status_code
+    res.append((bool(hit) and rr in (401, 403), "S_ind >= theta_B escalates Throttle -> Terminate",
+                f"{(t_hit - t_s2) * 1000:.0f} ms to the decision cache; next request HTTP {rr}"))
+    _, st_l = login(gw, uc, pc)
+    res.append((st_l == 403, "Terminate refuses new logins", f"HTTP {st_l}"))
+    a = audit(uc)
+    blocks = [x["decision"] for x in a if x["transition"] == "block"]   # later evidence (e.g. the TGN) may follow
+    res.append((blocks[:2] == ["Terminate", "Throttle"], "audit trail: Throttle then Terminate (psi ordered)",
+                str([(x["decision"], x["transition"], x["reason"]) for x in a[:4]])))
+    # --- Throttle rate limit (separate user: a burst of requests is itself anomalous for the TCN)
+    (ud, pd), = _accounts(s, args, 1)
+    cd, _ = login(gw, ud, pd)
+    _produce(s, RISK_SCORES, score(ud, 0.07))
+    _wait(lambda: r.hget(f"decision:{ud}", "decision") == "Throttle", 15, 0.005)
+    codes = [cd.get("/apps/hr/directory").status_code for _ in range(s.throttle_per_minute + 5)]
+    res.append((429 in codes and codes.count(200) <= s.throttle_per_minute, "Throttle: requests above the per-minute rate get HTTP 429",
+                f"{codes.count(200)} x 200, {codes.count(429)} x 429, other {[c for c in codes if c not in (200, 429)]} "
+                f"(limit {s.throttle_per_minute}/min)"))
+    for u in (ua, ub, uc, ud):
+        admin("release", u, "--by", "smoke-test", "--note", "Phase 7 smoke cleanup", "--grace", "0")
+    return report(res)
+
+
+def fallback(s, args):
+    """Run while the PDP is STOPPED for longer than the gateway's decision TTL."""
+    import httpx
+    (u, pw), = _accounts(s, args, 1)
+    rd = httpx.get(f"{args.gateway}/readyz", timeout=10).json()
+    res = [(str(rd["checks"].get("pdp", "")).startswith("unavailable"), "gateway sees the PDP as unavailable (heartbeat > TTL)",
+            str(rd["checks"].get("pdp")))]
+    c, st = login(gw := args.gateway, u, pw)
+    r1, r0 = c.get("/apps/hr/payroll"), c.get("/apps/hr/directory")
+    res.append((st == 200, "login still works (authentication does not need the PDP)", f"HTTP {st}"))
+    res.append((r1.status_code == 403 and "risk decision service is unavailable" in r1.text, "s = 1 fails closed (Restrict)",
+                f"payroll HTTP {r1.status_code}"))
+    res.append((r0.status_code == 200, "s = 0 fails open (Allow, first-line ACL still applies)", f"directory HTTP {r0.status_code}"))
+    return report(res)
+
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("scenario", choices=["individual", "expiry", "policy", "group"])
+    ap.add_argument("scenario", choices=["individual", "expiry", "policy", "group", "actions", "fallback"])
     ap.add_argument("--gateway", default=os.environ.get("AS_GATEWAY_URL", "http://gateway:8000"))
     ap.add_argument("--timeout", type=float, default=90)
     ap.add_argument("--pause", type=float, default=4.0)
     ap.add_argument("--index", type=int, default=5)
+    ap.add_argument("--api", default=os.environ.get("AS_API_URL", "http://api:8080"))
     args = ap.parse_args(argv)
-    return {"individual": individual, "expiry": expiry, "policy": policy, "group": group}[args.scenario](get_settings(), args)
+    return {"individual": individual, "expiry": expiry, "policy": policy, "group": group, "actions": actions,
+            "fallback": fallback}[args.scenario](get_settings(), args)
 
 
 if __name__ == "__main__":

@@ -393,3 +393,46 @@ def test_v3_encoder_is_robust_to_train_serve_skew():
     assert np.all(np.abs(num) <= CLIP) and num[NUM_FIELDS.index("schema_v")] == 0.0
     assert num[NUM_FIELDS.index("y")] == 0.0 and num[NUM_FIELDS.index("s")] == 1.0        # binary: as is
     assert EncoderV3.from_dict(enc.to_dict()).neutral == enc.neutral
+
+
+# ------------------------------------------------------------------------------------------ Revised v3 Phase 8 scenarios
+def _v3_small():
+    from accesssentinel.datasets.synth import SynthConfig as C
+    return generate(C(n_users=420, days=28, split_days=(16, 5, 7), seed=5, collusion_v2=True, benign_teams=True,
+                      benign_projects=True, collusion_group_sizes=(2, 5),
+                      attacks={"horizontal_abuse": (1, 0, 1), "unusual_sequence": (1, 0, 1), "unusual_time": (1, 0, 1)},
+                      collusion_groups={"cross_app_collection": (1, 0, 1), "low_slow_group": (2, 0, 2),
+                                        "coordinated_collection": (1, 0, 1)}))
+
+
+def test_v3_individual_scenarios_have_their_defining_signal():
+    from datetime import datetime, timezone
+    ds = _v3_small()
+    by = lambda kind: [i for i, v in ds.instances.items() if v["kind"] == kind]
+    for inst in by("horizontal_abuse"):                      # sequential enumeration of other people's records
+        evs = [e for e in ds.events if ds.labels[e.event_id].instance == inst]
+        objs = [int(e.meta["object_id"]) for e in evs]
+        assert len(evs) >= 40 and objs == list(range(objs[0], objs[0] + len(objs))) and all(e.y for e in evs)
+        assert objs[0] >= ds.users[ds.instances[inst]["user"]]["obj_pool"]           # beyond the user's usual records
+    for inst in by("unusual_time"):                          # own device, night
+        u = ds.instances[inst]["user"]
+        evs = [e for e in ds.events if ds.labels[e.event_id].instance == inst]
+        assert all(datetime.fromtimestamp(e.t, tz=timezone.utc).hour < 7 for e in evs)
+        assert {e.c["device"] for e in evs} <= set(ds.users[u]["managed_devices"])
+    for inst in by("unusual_sequence"):                      # permitted, but stronger operations than usual
+        evs = [e for e in ds.events if ds.labels[e.event_id].instance == inst]
+        assert {e.o for e in evs} - {"view"} and all(e.y for e in evs)
+
+
+def test_v3_group_scenarios_sizes_cross_app_and_benign_projects():
+    ds = _v3_small()
+    groups = {i: v for i, v in ds.instances.items() if "members" in v}
+    assert sorted({len(v["members"]) for v in groups.values()}) == [2, 5]               # collusion_group_sizes
+    for v in groups.values():
+        if v["kind"] == "cross_app_collection":
+            assert len(v["apps"]) >= 2 and len(v["targets"]) >= 2
+    slow = [v for v in groups.values() if v["kind"] == "low_slow_group"]
+    assert slow and all(len(v["bursts"]) >= 5 for v in slow)                            # spread over >= 5 days
+    assert ds.projects and {ds.labels[e.event_id].scenario for e in ds.events} >= {"benign_project", "benign_team_coaccess"}
+    members = {m for v in groups.values() for m in v["members"]}
+    assert not members & {m for p in ds.projects for m in p["team"]}                    # projects are benign users

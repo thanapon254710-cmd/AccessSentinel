@@ -16,6 +16,12 @@ Running record of completed work, test results and remaining work. Status labels
 | 8 PDP + enforcement | Done (2026-11-11) — sticky lifecycle, outbox audit, enforcement verified live |
 | 9 Feedback + dashboard | In progress — built and verified live; analyst confirmation in the UI pending (needs a sign-in) |
 | 10 Integration + experiments | Superseded by the Revised v3 / Deliverable 4 roadmap (`docs/V3_AUDIT.md`) |
+| v3 1 Audit + roadmap | Done (2026-11-15) |
+| v3 2 Event pipeline (ordering, exactly-once, resource windows) | Done (2026-11-15) — verified live incl. crash test |
+| v3 3 TCN v3 | Done (2026-11-15) — trained (GPU), calibrated, deployed, verified live |
+| v3 4–6 CMU + SGE + PriorityAdmit | Done (2026-11-15) — trained, deployed, verified live incl. CMU crash test; TGN v3 below D3 at seed level (reported) |
+| v3 7 PDP six actions, ψ, TTL fallback | Done (2026-11-15) — verified live |
+| v3 8–12 Scenarios, baselines, experiments A–H, comparison, D4 | Not started |
 
 ## Log
 
@@ -683,6 +689,302 @@ Not done / limits:
   `resource-windows` and Experiment C will measure the delay.
 - TCN keyed state stays in Redis (at-least-once, eid de-duplication), not in a changelog.
 - The trace uses wall clock on one host: no cross-host clock skew is measured.
+
+### 2026-11-15 — Revised v3 Phase 3 (TCN v3: architecture, features, objective, calibration)
+
+Implemented in the existing modules (D3 code kept alongside as the baseline; the registry serves either by
+manifest `arch`):
+- **Architecture** (`tcn.py` `TCNv3`, `config.TCNv3Config`): L = 128, d = 43 (Table III), 6 residual blocks of two
+  causal convolutions, dilations 1–32, filters [256, 256, 128, 128, 64, 64], receptive field 127, dropout 0.2.
+- **Features** (`ml/features.py` `EncoderV3`, `UserStateV3`): the 43 Table III features. The timer context
+  z_u(t) enters at the scoring head. ThreatFeed and DevPosture are **simulated**
+  (`SimulatedThreatFeed`, `SimulatedDevPosture`, MDM registry recorded by the generator, no extra RNG draw).
+- **Objective** (`tcn.multitask_loss`): next-resource, next-operation and time-gap self-supervised heads, plus a
+  focal loss on the supervised head (λ = 1, 1, 0.5, 1; γ 2, α 0.25). Self-supervised pre-training for 3 epochs,
+  then joint fine-tuning for 8.
+- **Split / calibration** (`ml/dataset.build_v3`, `ml/train_tcn.calibrate_v3`): chronological split with a gap of
+  L − 1 events per user (Eq. 7), rolling-origin validation, θ_low / θ_high / θ_B = quantiles of S_ind on nominal
+  validation windows (α = 0.05 / 0.01 / 0.001, Eq. 8). 0.4 / 0.6 are no longer used for v3 models.
+  - Calibrated thresholds travel with every v3 score; the PDP and escalation use them unless an operator set
+    `risk.theta_high` explicitly (`pdp_engine.theta_high_for`).
+- **Serving**: `tcn_worker` v3 path (state `tcn3:state:<u>`, re-check with the timer context at re-check time).
+- **Data**: `SynthConfig.tcn_v3_study()` (400 users, 70 days, split 36/14/20 days, attack margin, fingerprint
+  0c7a4e032ad5bd45). The default fingerprint beeb9bffdb1d7160 is unchanged.
+
+Result (synthetic only), `experiments/results/tcn3-20261115T091825Z-0c7a4e.md`, trained on the RTX 4050
+(`.venv-gpu`, 1529 s):
+
+| | value |
+|---|---|
+| test windows / attack events | 89,843 / 1,180 |
+| ROC-AUC / PR-AUC | 0.979 / 0.890 |
+| θ_low / θ_high / θ_B | 0.0284 / 0.0482 / 0.0849 |
+| at θ_high: precision / recall / FPR | 0.480 / 0.890 / 1.28 % |
+| at θ_B: precision / recall / FPR | 0.859 / 0.855 / 0.19 % |
+| attack instances detected at θ_high | 18 / 19 (median 0.7 min) |
+| normal user-days flagged at θ_high | 6.9 % |
+| rolling-origin PR-AUC (3 origins) | 0.729 / 0.794 / 0.956 (0.826 ± 0.095) |
+| inference, one window, batch 1 | CPU 9.7 ms, CUDA 5.7 ms (median) |
+
+Weak scenarios (reported as measured): split_exfiltration 0/19 events, coordinated_collection 0.125,
+low_and_slow 0.215 — these are what the graph path is for. The D3 TCN report
+(`tcn-20261110T194520Z-beeb9b`, PR-AUC 0.917) used a **different dataset** (beeb9b) and is not a like-for-like
+comparison; Phase 8 runs the baselines on the same data.
+
+Verified live: `demo_new_user` 8/8 ×2 (blocked after 2 attack requests, 0.4 s; normal work S_ind 0.004),
+`smoke_pdp individual` 9/9 (ivan stopped after 12 requests, 2.4 s).
+
+Found while verifying (fixed, with regression tests):
+- The first v3 model scored every live window 0.0. The version features (schema_v, policy_h) were constant in
+  synthetic training (std floor 1e-6), so live values scaled to ~500,000.
+  - EncoderV3 now neutralises features that are constant in training, leaves binary/cyclic features unscaled
+    and clips to ±8.
+  - The defective model was withdrawn (live rolled back to D3 first); its report is kept as
+    `tcn3-20261115T083751Z-0c7a4e-DEFECTIVE.md`.
+- Rolling-origin folds of 4 days were shorter than the gap and gave undefined PR-AUC. Now 12-day folds, and folds
+  without positives report None.
+- `smoke_pdp` counted a 401 (session revoked first) as "not blocked".
+
+### 2026-11-15 — Revised v3 Phases 4–6 (CMU on every event, SGE + coordination graph, PriorityAdmit)
+
+Implemented:
+- **TGN v3** (`tgn.py`, `config.TGNv3Config`; Rossi et al. defaults as written in v3): TimeEncode 100, message
+  MLP 100, GRU memory 100, 10 neighbours, 1 hop, Adam 1e-4, L2 1e-6, edge decoder ε_e.
+  - Coordination graph (Eqs. 15–17), A_u (Eq. 18) and S_coll = σ(ω·[TM_π(ε), A_u, Nov] + b) (Eq. 19), fitted by
+    logistic regression on train.
+  - θ_C and θ_A are quantiles of nominal validation members (α 0.01 / 0.05).
+  - Training: `ml/tgn_train.train_tgn_v3`; `ml/train_tgn --arch v3`; registry `tgn-v3`.
+- **CMU services** `cmu-user` / `cmu-resource` (`streaming/tgn_worker.CmuHandler`): every event updates its user
+  memory (ordered stream) and its resource memory (new `access-events-by-rstar` view, emitted by the
+  repartitioner in the same transaction). This also covers users who are never escalated.
+  - Counterpart memory is the latest published snapshot (bounded staleness, measured).
+  - Idempotency: per-node event-id ring plus Kafka (partition, offset).
+- **SGE** (`analyse_v3`): runs only for admitted users, on live memories and window edges; publishes per-member
+  S_coll_u and A_u (`group-scores`, `model_kind tgn-v3`).
+- **Algorithm 1 PriorityAdmit** (`escalation_engine.priority_admit`, `graph_budget`):
+  - Priority res > high > sweep > sample; Eq. 26 cost; budget B_W = ⌊ρ′·N·μ·W⌋ (Eq. 29) with a per-window ledger.
+  - Overflow: sample dropped, sweep deferred, resource queued with a deadline, high left to the PDP alone.
+  - Path B now comes from finalised `resource-windows`.
+
+TGN v3 result (synthetic, same dataset and the same 690 test anchors as the D3 TGN),
+`experiments/results/tgn3-20261115T094228Z-ccc61d.md`:
+
+| model | seed ROC-AUC | seed PR-AUC | precision / recall / FPR at threshold | groups | member P / R |
+|---|---|---|---|---|---|
+| TGN v3 (CMU + SGE) | 0.681 | 0.355 | 0.65 / 0.23 / 1.3 % (θ_C 0.861) | 7/8 | 0.65 / 0.84 |
+| D3 TGN (two-stage) | 0.843 | 0.568 | 0.64 / 0.42 / 2.4 % (θ 0.9) | 8/8 | 0.54 / 1.00 |
+
+**The v3 TGN is worse than the D3 TGN at seed level on this data.** It has higher member precision, flags 1 of 34
+benign team meetings, and its validation collusion-edge PR-AUC was 0.11. The v3 hyper-parameters were not tuned
+for access-control data (the paper says so too). This is reported as measured, not explained away.
+- Eq. 19 weights: TM 6.23, A_u 5.19, Nov −0.47, bias −3.09; θ_A 0.364.
+- h_min was calibrated on validation (h_min = 2 was worse than chance there: 18 % of collusion vs 27 % of benign
+  members kept); now 1.
+
+Cost model (Eq. 26), measured. `smoke_tgn.py cost-fit` seeds 20 neighbourhoods (|E| 22–3,520, |V| 12–177)
+through the real pipeline and times `analyse_v3` inside the tgn-worker container (5 runs, median):
+- C_u = 35.59 + 0.0889 |E| + 0.8212 |V| ms; R² 0.92, MAPE 33 % (noise at small sizes).
+- Now the `EscalationConfig` defaults (were illustrative 5 / 1 / 0.5).
+- Raw: `evaluation/results/raw/sge-cost-fit-20261115-run2.json`.
+- The first run is kept as `…run1-superseded.json`: its admission-time estimate counted one edge per neighbour
+  user and under-estimated |E| up to 7×. `neighbourhood_size_fn` now counts the neighbours' window edges
+  (ZCOUNT), and a test checks it against what the SGE gathers.
+
+Verified live:
+- `smoke_tgn.py cmu` 5/5: all 12 events of a never-escalated user applied to its memory (100-d, non-zero);
+  resource memory updated; both tasks counted; staleness measured.
+- `smoke_tgn.py admit` 4/4:
+  - a fresh attacker was blocked by the TCN path;
+  - the escalation was admitted with cost 64.5 (old coefficients);
+  - the SGE ran on live memories: 93 edges, 20 nodes, 668 ms, max memory staleness 3,518 s, S_coll 0.647 < θ_C;
+  - every window's used work ≤ B_W 84,000.
+- **CMU crash test**: cmu-user killed with SIGKILL during a 2,000-event burst, then restarted. All 2,000 records
+  are on the ordered stream (offsets 961–2961), and the CMU's last applied position is exactly [2, 2961]; the
+  offset check skips redelivered records (no double update).
+- `smoke_tgn.py collusion` / `team` (v3 path):
+  - Users and resources are renamed per run, so earlier CMU state cannot leak in. The offline reference uses the
+    same CmuHandler + analyse_v3 code on an in-process store.
+  - Both 5/5: live = offline (same members; S_coll None in both).
+  - Reported outcomes: coordinated_collection-test-0 → no coordination group around the seed (1 of 3 colluders);
+    the team meeting is not flagged.
+  - Offline screen of all 8 test groups at the smoke anchor: only split_exfiltration-test-1 is flagged
+    (S_coll 0.922, 3/3 colluders + 1 other). Consistent with the 0.23 seed recall.
+
+Found while verifying (fixed):
+- `cmu:stats` counters went backwards after a restart (per-process totals written with HSET); now HINCRBY deltas.
+- The CMU event-id ring (64) could not cover a 500-event redelivery; per-node Kafka offsets were added.
+- CMU round assignment was O(n²).
+- `anchor_replay_v3` skipped anchors after the last batch.
+- D3 `member_scores` floats broke the v3 writer.
+- The replay check's lag query failed on NOT_COORDINATOR after a restart; it now retries.
+
+Not done / limits:
+- Resource→application membership edges (v3 Step 7) are not modelled; only the node-type slot exists.
+- Provisioning from pre-admission demand (Eqs. 27–28) is measured in Experiment D, not yet.
+- TGN v3 hyper-parameters are the paper's untuned defaults; no search was run (it would be tuning on the test
+  design).
+
+### 2026-11-15 — Revised v3 Phase 7 (PDP: six actions, ψ, TTL fallback)
+
+Implemented:
+- **Action set and Eq. 21** (`pdp_engine.py`):
+  - Allow / Throttle / StepUp / Restrict / Terminate / Block, ranked in the top-down order of Eq. 21:
+    Block ← policy deny; Terminate ← S_ind ≥ θ_B; Restrict ← S_coll_u ≥ θ_C ∧ A_u ≥ θ_A;
+    StepUp ← S_coll_u ≥ θ_C ∧ A_u < θ_A; Throttle ← θ_high ≤ S_ind < θ_B.
+  - `decide()` is the pure mapping, for the tests and Experiment G.
+  - Per-member S_coll_u and A_u come from the v3 group score. θ_B and θ_C / θ_A are the calibrated values
+    carried in the records.
+  - D3 records: S_ind ≥ θ_high → Terminate, group ≥ θ_coll → Restrict for every member.
+- **Lifecycle** stays sticky: a more severe action replaces a milder one, and a milder one never downgrades.
+  - Different evidence that does not warrant more is recorded as "evidence" (audit).
+  - Per-action TTL [IMPL]: Terminate / Restrict 24 h, StepUp 1 h, Throttle 15 min.
+  - Analyst release and grace as before; a policy Block only ends when the policy is lifted.
+- **Version triple** (v_model, v_policy, ψ) on every decision.
+  - ψ is a global, strictly increasing counter (`pdp:psi`), seeded from the clock in ms, so a flushed store
+    cannot re-issue an old ψ.
+  - v_policy = hash of the policy-C snapshot.
+- **Gateway** (`services/gateway/decisions.DecisionView`, `app.py`):
+  - ψ ordering: a decision is applied only if ψ > ψ_cur(u); older ones are rejected and counted in `/internal/stats`.
+  - Terminate / Block → 403, session ended, logins refused.
+  - Restrict → 403 on s = 1 only.
+  - StepUp → 401 `step_up` and the session ends; a session created after the decision passes.
+  - Throttle → 429 above `AS_THROTTLE_PER_MINUTE` (20, [IMPL]).
+  - **Decision TTL**: the PDP writes a heartbeat (`pdp:alive`) each tick. When it is older than
+    `AS_PDP_DECISION_TTL` (30 s, [IMPL]), s = 0 fails open and s = 1 fails closed (Restrict), with a
+    per-application override `AS_PDP_FALLBACK_APPS` (open / closed). An applied Terminate / Block stays in force.
+    `/readyz` reports the PDP state. Redis down still fails closed (sessions live in Redis).
+- PDP service: sessions are revoked for Terminate / Block only (Restrict / StepUp / Throttle keep them).
+- Incidents and the dashboard show the action. Schema v4: `pdp_decisions.decision` VARCHAR(8) → (16), because
+  "Terminate" did not fit and the audit insert would have blocked the outbox. `init_db` now has idempotent
+  in-place upgrades; applied live.
+- Tests: Eq. 21 table (10 cases incl. boundaries), Throttle → Terminate escalation without downgrade, operator
+  θ_high > θ_B, per-member Restrict / StepUp, ψ monotonicity across a flushed counter, gateway Restrict /
+  StepUp / Throttle / Terminate / stale ψ / TTL fallback with overrides. Full suite: 214 passed, 4 skipped.
+
+Verified live (`smoke_pdp.py actions`, fresh `syn-act-*` hr_manager accounts, scores injected on Kafka):
+- 12/12 on three consecutive runs. The first run after a redeploy had one failed check that was not captured.
+- Group score → Restrict for the core member (A_u 0.80 ≥ θ_A) and StepUp for the peripheral one (A_u 0.10).
+  - s = 0 allowed, s = 1 refused.
+  - StepUp: 401, then signing in again passes.
+- A stale lower-ψ Terminate written into the cache is not applied.
+- Throttle (S_ind 0.07) → escalation to Terminate (0.40); logins refused; audit Throttle then Terminate.
+- Rate limit: 20 × 200 then 5 × 429.
+- The smoke reported score → decision cache ≈ 0.51 s in every run. **That was the measuring tool, not the PDP.**
+  The smoke created a new idempotent Kafka producer per injected score, so connection set-up and InitProducerId
+  were inside the timed interval. With one warmed producer (`evaluation/live.py`) the same path measured p50
+  12 ms / max 35 ms (20 cases, while Experiment A was training; not a reported result). Experiment G reports it.
+
+`smoke_pdp.py fallback` with the PDP container stopped 35 s: 4/4. The gateway reports the PDP unavailable,
+login works, payroll (s = 1) 403, directory (s = 0) 200. After restart `/readyz` shows the PDP ok.
+
+Regression after Phase 7 (demo state reset):
+- **Enforce mode:** `demo_new_user` 8/8; `smoke_pdp individual` 9/9, expiry 4/4, policy 3/3;
+  `smoke_v3_stream` order 7/7, windows 5/5; `smoke_tgn` cmu 5/5, admit 4/4.
+  - `smoke_pdp group --index 5` 3/3: the live v3 TGN flagged split_exfiltration-test-1, and each member got its
+    Eq. 21 action.
+- **PDP shadow mode**, because these scripts deliberately send suspicious traffic: `smoke_gateway` 29/29,
+  `smoke_streaming` verify 10/10, poison 3/3, `smoke_escalation` a 1/1, b 3/3, c 3/3.
+  - In enforce mode, the v3 TCN (θ_B 0.085, where D3 used 0.6) terminated alice, bob and carol during
+    `smoke_gateway`'s ACL-deny / unknown-resource probes, so those checks could not log in. That is the detector
+    working, not a regression.
+- `smoke_escalation b` was updated for v3: Path B arrives from the FINAL resource window, keyed by r*
+  (`default/finance:audit-reports`). The check now waits up to 20 min (Δres = 15 min + grace); the delay itself is measured in Experiment C.
+- Fixed: the lag monitor still measured the escalation group against `access-events-by-resource`, which it no
+  longer consumes since Phase 5 (a stale, ever-growing "lag" of 134 k). It now measures `resource-windows`.
+
+Findings (measured, not changed — team decision):
+- **A refused sensitive request under Restrict escalates to Terminate through the live TCN.**
+  - In every run, the core member's single refused payroll request scored S_ind 0.33–0.50 (≥ θ_B) a moment later.
+  - PDP-caused denials enter the event stream as y = 0 like ACL denials (v3 Eq. 1).
+  - So, in practice, Restrict becomes Terminate as soon as the user touches a sensitive resource. Excluding
+    PDP-caused denials (`meta.reason` = pdp-*) from the TCN's y would change that; v3 does not say.
+- A fresh hr_manager account reading payroll right after creation scored 0.051 (> θ_high 0.048) → Throttle.
+  This is cold-start behaviour of the calibrated thresholds.
+- An injected S_ind 0.40 also triggered a Path A escalation; the v3 TGN found a group around the account and its
+  StepUp evidence was recorded under the active Terminate (no downgrade), as designed.
+
+Not done / limits:
+- StepUp is a password re-authentication: the prototype has no second factor.
+- The Throttle rate, the per-action TTLs and the decision TTL are [IMPL] values; v3 gives none.
+- ψ_cur lives in each gateway process's memory, so a restarted gateway starts from the stored decision.
+
+### 2026-11-15/16 — Revised v3 Phase 8 (Deliverable 4 experiments A–H)
+
+All results are in `docs/D4_EVALUATION.md`, written from the generated tables in `evaluation/results/tables/`.
+- **Offline (synthetic):** A and B (5 seeds each), E/F.
+- **Live:** C/D, G and H on the running stack, with no training on the machine.
+
+Main measured findings (details and numbers in D4):
+- **A:** on this data the v3 TCN ranks below the D3 TCN, the LSTM and the supervised-only TCN. The auxiliary
+  self-supervised heads are what costs it (ablation: PR-AUC 0.714 → 0.872 without them).
+- **B:** the TGN and TCN together detect 61 of 75 test groups. The TGN has almost no false alarms on benign
+  collaboration.
+- **E/F:** the deployed budget B_W is never binding.
+- **G:** Eq. 21 is exact (200/200).
+- **H:** no loss and no duplicates under crashes. The TCN takes about 34 s to recover (dynamic group
+  membership).
+
+Defects found by the experiments and fixed (each with a test):
+- **Gateway OOM-killed by parallel password hashing.**
+  - Argon2id with argon2-cffi's defaults allocates 64 MiB per check, and the services ran up to 40 checks in
+    parallel. 45 test logins exhausted the gateway's 384 MB. About six concurrent unauthenticated logins could do
+    the same, so it was also a denial-of-service path.
+  - Fix: `security.py` bounds Argon2 operations per process (`AS_PASSWORD_HASH_CONCURRENCY`, default 2).
+  - Live check: 45 concurrent logins succeeded 45/45 in 4.7 s, with the gateway at 83 MiB.
+- **PDP decision path stalled by session-revocation retries while the gateway was down.**
+  - Fix: `pdp_service.retry_revocations` stops after the first failure and backs off (1 s doubling to 30 s).
+- **Escalation service OOM-killed by its background sweep.**
+  - The sweep loaded 24 h of events and scores from HDFS as full objects.
+  - Fix: `hdfs_lake` streams record batches and reads only the needed columns (`iter_event_rows`,
+    `read_records(fields=…)`), and `lake_loader` keeps only what the Path C rules read. The sweep candidates are
+    unchanged (test).
+  - A forced sweep over the same day peaks at 103.6 MiB instead of exhausting 384 MB.
+- **HDFS sink OOM-killed by compaction.**
+  - `HistoryLake.compact` concatenated a whole partition into Python dicts. The sink re-merges today's partition
+    whenever it passes 24 part files, so after a day of load it died.
+  - Fix: a streaming merge (record batches, a unified schema, dedup by id; test with mixed schemas and duplicates).
+  - Live check: the restarted sink compacted the 108,144-row risk-score partition at about 233 MiB and drained a
+    backlog of more than 44 k records.
+- **Redis close to its limit.**
+  - Redis used 243 of its `maxmemory` 256 MB under `noeviction`, where reaching the limit stops every Redis write
+    (gateway, PDP, pipeline).
+  - 508 k keys were the HDFS sink's dedup markers, kept for 24 h. They are only a first line of dedup: reads and
+    compaction remove duplicates by id.
+  - Fix: `dedup_ttl_seconds` reduced from 86,400 to 900 s (about 90 k keys at 50 req/s). The old markers were
+    deleted.
+- **Dashboard API OOM-killed by the per-user risk page.**
+  - The page parsed every risk score of the last 24 h, for all users, to keep one user's.
+  - Fix: `read_records(keys=…)` filters on the stored Kafka key (the user) before parsing (test).
+  - `smoke_dashboard` 30/30.
+- **Dashboard collusion graph broken under the v3 TGN.**
+  - The endpoint called the D3 scorer's `gp`, `edge_scores` and `analyse`, which the v3 scorer does not have.
+  - Fix: for a v3 model it shows the live neighbourhood (without user-user application edges) and the user's latest
+    v3 collective result (S_coll, A_u, θ_C, θ_A).
+  - Live: `demo_new_user` 8/8 (a new account is terminated after 2 attack requests, 0.4 s; incident opened).
+- **Test harness (evaluation/ only):**
+  - `run_live.sh` pre-flight and restart checks;
+  - INVALID marking of failed C runs;
+  - a retry for the test tool's Kafka watermark read;
+  - escalation latency paired with the escalation's own triggering score;
+  - the fallback probe's user put under an analyst grace.
+
+Discarded and archived (not reported):
+- the first live run of C and G (gateway down);
+- the C runs before the escalation fix;
+- one confounded fallback probe.
+
+The crashed first run left `pdp.block_ttl` at 60 s; it was restored to 86,400 s.
+
+Not changed (decisions for the team):
+- TCN workers use dynamic group membership (about 34 s takeover after a crash); static membership would remove it.
+- A paused (silent) Redis makes gateway requests hang until the client times out. Nothing is allowed meanwhile,
+  but the gateway does not answer 503 at once either.
+- No restart policy in `deploy/docker-compose.yml`: a crashed service stays down.
+- Per-user TCN state (`tcn3:state:<u>`) is about 22 KB per user and has no TTL, by design: it is the user's
+  history window. About 10,000 users would need more than Redis's 256 MB, so Redis has to be sized to the number of
+  users.
+- Compaction still re-reads today's whole partition each time it passes 24 files. Memory is now bounded, but the
+  I/O grows during the day; compacting closed days only would avoid it.
 
 ### Remaining
 

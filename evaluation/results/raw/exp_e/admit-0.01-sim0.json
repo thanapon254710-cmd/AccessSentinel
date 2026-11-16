@@ -1,0 +1,364 @@
+{
+ "data": {
+  "fingerprint": "74191023dccc78fb",
+  "events": 703361,
+  "synth": "collusion_v3_eval(seed=11)"
+ },
+ "tcn": "tcn3-20261115T091825Z-0c7a4e",
+ "thresholds": {
+  "theta_low": 0.028383921831846237,
+  "theta_high": 0.048195429146289825
+ },
+ "escalation_config": {
+  "analysis_window": 60.0,
+  "kappa": 3,
+  "delta_res": 900.0,
+  "t_sweep": 7200.0,
+  "sweep_min_users": 4,
+  "sweep_batch": 50,
+  "gamma": 0.02,
+  "realtime_window": 5.0,
+  "realtime_cooldown": 300.0,
+  "background_cooldown": 3600.0,
+  "max_realtime_per_window": 100,
+  "max_background_per_window": 50,
+  "sweep_lookback": 86400.0,
+  "sweep_baseline_days": 14,
+  "sweep_baseline_gap_days": 7,
+  "sweep_rare_max": 1,
+  "sweep_min_rare": 3,
+  "sweep_min_baseline_events": 20,
+  "sweep_min_medium": 5,
+  "cost_c0": 35.59,
+  "cost_c1": 0.0889,
+  "cost_c2": 0.8212,
+  "rho_graph": 0.7,
+  "tgn_workers": 2,
+  "mu_graph": 1000.0,
+  "res_deadline": 900.0,
+  "use_resource_windows": true
+ },
+ "deployed_budget_per_window": 84000.0,
+ "git_commit": "282ca82",
+ "git_dirty": true,
+ "environment": {
+  "recorded_at": "2026-11-15T15:02:02.138326+00:00",
+  "unix_time": 1794754922.1388574,
+  "host_os": "Windows-10-10.0.26300-SP0",
+  "python": "3.11.0",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 16886128640,
+   "available": 1761456128
+  },
+  "gpu": [
+   "NVIDIA GeForce RTX 4050 Laptop GPU, 6141 MiB, 610.47"
+  ],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.0.2",
+   "pandas": "2.2.3",
+   "sklearn": "1.5.2",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": "3.9.2"
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 14,
+  "git_commit": "282ca8262eb9350fc7ed9eef532f9b3c38ccc770",
+  "git_dirty": true,
+  "docker": {
+   "server_version": "28.3.3",
+   "vm_cpus": 20,
+   "vm_memory_bytes": 8178016256
+  }
+ },
+ "started_at": "2026-11-15T14:44:29.771600+00:00",
+ "config": "admit-0.01",
+ "paths": [
+  "high",
+  "resource",
+  "sweep",
+  "sample"
+ ],
+ "budget_scale": 0.01,
+ "sim_seed": 0,
+ "result": {
+  "admitted": 19469,
+  "admitted_benign": 15394,
+  "work_ms_total": 1607686.8460000001,
+  "work_ms_per_window_mean": 159.49274265873018,
+  "work_ms_per_window_p99": 837.8757800000001,
+  "work_ms_per_window_max": 838.966,
+  "budget_per_window": 839.0,
+  "windows_over_budget": 0,
+  "windows": 10080,
+  "group_coverage": 1.0,
+  "groups": {
+   "cross_app_collection-test-0": {
+    "kind": "cross_app_collection",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 9.512196067969004,
+    "paths": [
+     "high",
+     "resource",
+     "sweep"
+    ]
+   },
+   "cross_app_collection-test-1": {
+    "kind": "cross_app_collection",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 8.868679432074229,
+    "paths": [
+     "high",
+     "resource",
+     "sweep"
+    ]
+   },
+   "cross_app_collection-test-2": {
+    "kind": "cross_app_collection",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 4.650972664356232,
+    "paths": [
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-0": {
+    "kind": "low_slow_group",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 2.552248251438141,
+    "paths": [
+     "resource",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-1": {
+    "kind": "low_slow_group",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 13.45078763961792,
+    "paths": [
+     "resource",
+     "sample"
+    ]
+   },
+   "low_slow_group-test-2": {
+    "kind": "low_slow_group",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 83.67746698061624,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "low_slow_group-test-3": {
+    "kind": "low_slow_group",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 0.3478164990743001,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-0": {
+    "kind": "coordinated_collection",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 18.398346010843913,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-1": {
+    "kind": "coordinated_collection",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 9.089255968729654,
+    "paths": [
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-2": {
+    "kind": "coordinated_collection",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 12.218948956330618,
+    "paths": [
+     "resource",
+     "sweep"
+    ]
+   },
+   "coordinated_collection-test-3": {
+    "kind": "coordinated_collection",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 5.324778600533803,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-0": {
+    "kind": "split_exfiltration",
+    "size": 3,
+    "covered": true,
+    "members_admitted": 3,
+    "minutes_to_admission": 4.6254079302152,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-1": {
+    "kind": "split_exfiltration",
+    "size": 2,
+    "covered": true,
+    "members_admitted": 2,
+    "minutes_to_admission": 7.219759905338288,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-2": {
+    "kind": "split_exfiltration",
+    "size": 5,
+    "covered": true,
+    "members_admitted": 5,
+    "minutes_to_admission": 6.149962790807089,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   },
+   "split_exfiltration-test-3": {
+    "kind": "split_exfiltration",
+    "size": 8,
+    "covered": true,
+    "members_admitted": 8,
+    "minutes_to_admission": 1.421375322341919,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   }
+  },
+  "individual_coverage": 1.0,
+  "individual": {
+   "compromised_account-test-0": {
+    "kind": "compromised_account",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.1135120431582133,
+    "paths": [
+     "high"
+    ]
+   },
+   "insider_exfiltration-test-0": {
+    "kind": "insider_exfiltration",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.6911664485931397,
+    "paths": [
+     "high"
+    ]
+   },
+   "bac_probe-test-0": {
+    "kind": "bac_probe",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 0.13066999912261962,
+    "paths": [
+     "high",
+     "resource"
+    ]
+   },
+   "low_and_slow-test-0": {
+    "kind": "low_and_slow",
+    "size": 1,
+    "covered": true,
+    "members_admitted": 1,
+    "minutes_to_admission": 10.720548276106516,
+    "paths": [
+     "high",
+     "resource",
+     "sample",
+     "sweep"
+    ]
+   }
+  },
+  "engine_stats": {
+   "sweeps": 69,
+   "escalated:background": 2750,
+   "escalated_by:sweep": 1896,
+   "demand:background": 273876,
+   "budget:background": 4938354,
+   "used:background": 1508170,
+   "escalated_by:sample": 854,
+   "candidates:high": 4779,
+   "escalated:realtime": 16853,
+   "escalated_by:high": 1318,
+   "demand:realtime": 363080485,
+   "budget:realtime": 81078443,
+   "used:realtime": 77758143,
+   "candidates:resource": 22295,
+   "escalated_by:resource": 15694,
+   "suppressed:background": 1215,
+   "suppressed:realtime": 2069,
+   "deferred:realtime": 4097348,
+   "high_pdp_alone:realtime": 1793,
+   "sample_dropped:background": 957,
+   "sweep_deferred:background": 1799
+  },
+  "sweeps": 69,
+  "by_priority": {
+   "realtime": 16776,
+   "background": 2693
+  }
+ },
+ "wall_seconds": 662.2068846225739
+}

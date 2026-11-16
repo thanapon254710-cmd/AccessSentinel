@@ -40,20 +40,21 @@ from .dataset import build
 
 def _logits(model, idx, ids, batch=4096):
     model.eval()
+    dev = next(model.parameters()).device
     out = []
     with torch.no_grad():
         for i in range(0, len(ids), batch):
-            out.append(model(torch.from_numpy(idx.gather(ids[i:i + batch]))).numpy())
+            out.append(model(torch.from_numpy(idx.gather(ids[i:i + batch])).to(dev)).cpu().numpy())
     return np.concatenate(out) if out else np.zeros(0)
 
 
 def train_once(idx, train_ids, val_ids, cfg: TCNConfig, epochs: int, patience: int, seed: int, log=print,
-               fixed_epochs: bool = False):
+               fixed_epochs: bool = False, device: str = "cpu"):
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
-    model = TCN(cfg)
+    model = TCN(cfg).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=cfg.lr)
-    yt = torch.from_numpy(idx.y.astype(np.float32))
+    yt = torch.from_numpy(idx.y.astype(np.float32)).to(device)
     best, best_ap, best_ep, bad, history = None, -1.0, -1, 0, []
     for epoch in range(epochs):
         t0 = time.time()
@@ -62,13 +63,13 @@ def train_once(idx, train_ids, val_ids, cfg: TCNConfig, epochs: int, patience: i
         tot = 0.0
         for i in range(0, len(perm), cfg.batch_size):
             b = perm[i:i + cfg.batch_size]
-            loss = focal_loss(model(torch.from_numpy(idx.gather(b))), yt[b], cfg.focal_gamma, cfg.focal_alpha)
+            loss = focal_loss(model(torch.from_numpy(idx.gather(b)).to(device)), yt[b], cfg.focal_gamma, cfg.focal_alpha)
             opt.zero_grad(); loss.backward(); opt.step()
             tot += loss.item() * len(b)
         row = {"epoch": epoch, "train_loss": tot / len(perm), "seconds": round(time.time() - t0, 1)}
         if val_ids is not None and len(val_ids):
             z = _logits(model, idx, val_ids)
-            row["val_loss"] = float(focal_loss(torch.from_numpy(z), yt[val_ids], cfg.focal_gamma, cfg.focal_alpha))
+            row["val_loss"] = float(focal_loss(torch.from_numpy(z).to(device), yt[val_ids], cfg.focal_gamma, cfg.focal_alpha))
             row["val_pr_auc"] = float(average_precision_score(idx.y[val_ids], z))
             row["val_roc_auc"] = float(roc_auc_score(idx.y[val_ids], z))
             if row["val_pr_auc"] > best_ap:
@@ -82,7 +83,8 @@ def train_once(idx, train_ids, val_ids, cfg: TCNConfig, epochs: int, patience: i
             break
     if best is not None and not fixed_epochs:
         model.load_state_dict(best)
-    return model.eval(), {"best_epoch": best_ep, "best_val_pr_auc": best_ap, "history": history}
+    return model.cpu().eval() if device == "cpu" else model.eval(), {"best_epoch": best_ep, "best_val_pr_auc": best_ap,
+                                                                      "history": history}
 
 
 def cross_validate(idx, train_ids, cfg, folds, epochs, seed, log=print):
@@ -237,7 +239,7 @@ Protocol (Revised v3 Step 4-5):
   * test period scored once; latency measured on CPU (the deployed path) and on the GPU if present
 """
 from ..config import TCNv3Config  # noqa: E402
-from ..tcn import TCNv3, multitask_loss  # noqa: E402
+from ..tcn import LSTMBaseline, TCNv3, ZeroZ, multitask_loss  # noqa: E402
 from .dataset import build_v3  # noqa: E402
 from .features import SimulatedDevPosture, SimulatedThreatFeed  # noqa: E402
 
@@ -259,9 +261,11 @@ def scores_v3(model, idx, ids, device, batch: int = 1024) -> np.ndarray:
 
 
 def train_v3(idx, enc, cfg: TCNv3Config, train_ids, val_ids, device, seed: int, pre_epochs: int, ft_epochs: int,
-             patience: int = 3, log=print):
+             patience: int = 3, log=print, build=None, use_z: bool = True):
+    """build: model constructor (default TCNv3); use_z False runs the model without the timer context."""
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
-    model = TCNv3(cfg, enc.n_res, enc.n_op, enc.n_net).to(device)
+    model = (build or TCNv3)(cfg, enc.n_res, enc.n_op, enc.n_net)
+    model = (model if use_z else ZeroZ(model)).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=cfg.lr)
     hist = []
 
@@ -299,6 +303,53 @@ def train_v3(idx, enc, cfg: TCNv3Config, train_ids, val_ids, device, seed: int, 
                 break
     model.load_state_dict(best)
     return model, hist, best_ap
+
+
+# ============================================================================================================
+# Revised v3 Phase 8: baselines / ablations on the SAME index, split, calibration (Eq. 8) and metrics
+# ============================================================================================================
+VARIANTS = {
+    "tcn-v3": {"model": "tcn", "aux": True, "z": True, "desc": "Revised v3 TCN (Eqs. 3-8)"},
+    "tcn-sup": {"model": "tcn", "aux": False, "z": False,
+                "desc": "generic supervised TCN: same body, focal loss only, no z_u (reference-style TCN)"},
+    "lstm": {"model": "lstm", "aux": False, "z": False, "desc": "LSTM 2 x 128, same input layer, focal loss only, no z_u"},
+    "tcn-noz": {"model": "tcn", "aux": True, "z": False, "desc": "ablation: v3 TCN without the timer context z_u"},
+    "tcn-noaux": {"model": "tcn", "aux": False, "z": True, "desc": "ablation: v3 TCN without the self-supervised heads"},
+}
+
+
+def train_variant(idx, enc, cfg: TCNv3Config, variant: str, train_ids, val_ids, device, seed: int, log=print):
+    from dataclasses import replace as _replace
+    v = VARIANTS[variant]
+    c = cfg if v["aux"] else _replace(cfg, lambdas=(0.0, 0.0, 0.0, cfg.lambdas[3]))
+    pre = c.pretrain_epochs if v["aux"] else 0
+    build = TCNv3 if v["model"] == "tcn" else LSTMBaseline
+    return train_v3(idx, enc, c, train_ids, val_ids, device, seed, pre, c.finetune_epochs, log=log, build=build,
+                    use_z=v["z"])
+
+
+def window_aggregates(idx, ids, batch: int = 4096) -> np.ndarray:
+    """Per-window summary for the Isolation Forest baseline: mean / max / last of the 19 numeric features over the
+    window's real events, the timer context z_u, distinct-resource ratio and window fill."""
+    out = []
+    for i in range(0, len(ids), batch):
+        b = idx.gather(ids[i:i + batch])
+        valid = b["res"] > 0
+        n = valid.sum(1, keepdims=True).clip(1)
+        num = b["num"]
+        mean = (num * valid[..., None]).sum(1) / n
+        mx = np.where(valid[..., None], num, -np.inf).max(1)
+        mx[~np.isfinite(mx)] = 0.0
+        ures = np.array([len(np.unique(r[v])) for r, v in zip(b["res"], valid)], np.float32)[:, None] / n
+        out.append(np.hstack([mean, mx, num[:, -1], b["z"], ures, n / idx.L]).astype(np.float32))
+    return np.vstack(out) if out else np.zeros((0, 3 * num.shape[-1] + b["z"].shape[-1] + 2), np.float32)
+
+
+def fit_iforest(X_train_nominal: np.ndarray, seed: int, n_max: int = 60000):
+    from sklearn.ensemble import IsolationForest
+    rng = np.random.default_rng(seed)
+    X = X_train_nominal[rng.choice(len(X_train_nominal), min(n_max, len(X_train_nominal)), replace=False)]
+    return IsolationForest(n_estimators=200, random_state=seed, n_jobs=-1).fit(X)
 
 
 def calibrate_v3(scores_nominal: np.ndarray, cfg: TCNv3Config) -> dict:

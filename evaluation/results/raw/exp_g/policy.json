@@ -1,0 +1,74 @@
+{
+ "experiment": "G",
+ "cmd": "policy",
+ "started_at": "2026-11-15T18:39:11.929171+00:00",
+ "finished_at": "2026-11-15T18:39:30.666868+00:00",
+ "thresholds": {
+  "theta_high": 0.0482,
+  "theta_B": 0.0849,
+  "theta_low": 0.0284,
+  "theta_coll": 0.8609,
+  "theta_A": 0.3643
+ },
+ "result": {
+  "runs": [
+   {
+    "policy_block_rc": 0,
+    "policy_replaced_terminate": true,
+    "policy_apply_s": 1.5826325416564941,
+    "analyst_release_refused": true,
+    "low_score_kept_block": true,
+    "lift_restores": true,
+    "login_after_lift": 200
+   },
+   {
+    "policy_block_rc": 0,
+    "policy_replaced_terminate": true,
+    "policy_apply_s": 1.2053210735321045,
+    "analyst_release_refused": true,
+    "low_score_kept_block": true,
+    "lift_restores": true,
+    "login_after_lift": 200
+   },
+   {
+    "policy_block_rc": 0,
+    "policy_replaced_terminate": true,
+    "policy_apply_s": 1.492417812347412,
+    "analyst_release_refused": true,
+    "low_score_kept_block": true,
+    "lift_restores": true,
+    "login_after_lift": 200
+   }
+  ],
+  "all_ok": true
+ },
+ "environment": {
+  "recorded_at": "2026-11-15T18:39:30.666897+00:00",
+  "unix_time": 1794767970.6669002,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178016256,
+   "available": 1128103936
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

@@ -59,20 +59,20 @@ Legend: ✅ implemented and tested · 🟡 partial · ❌ missing · ⚠️ impl
 | Named stream-processing engine (Flink / Kafka Streams) | Own Python consumer framework (`streaming/consumer.py`) | ✅ D1 taken: Python stages with Kafka transactions (`streaming/transactional.py`) |
 | HDFS time/app-partitioned Parquet, compaction | `adapters/hdfs_lake.py`, `hdfs_sink.py` | ✅ |
 | Hourly feature aggregates + resource-participant summaries for the sweep | The sweep reads raw HDFS history | ✅ Phase 2: `history_aggregates.py` (sweep rewiring: Phase 5) |
-| Version stamps on scores and decisions (R5) | Scores carry `model_version`; decisions carry `version` | 🟡 Events carry `v_policy` (Phase 2); the decision triple `(vmodel, vpolicy, ψ)` comes in Phase 7 |
+| Version stamps on scores and decisions (R5) | Scores carry `model_version`; decisions carry `version` | ✅ Events carry `v_policy` (Phase 2); decision records carry `(v_model, v_policy, ψ)` (Phase 7, schema_version 2) |
 
 ### 3.2 Individual detection: TCN (Step 4–5, Eqs. 3–9, Table III)
 
 | v3 requirement | Current code (D3) | Status |
 |---|---|---|
-| L = 128 | L = 20 | ⚠️ |
-| d = 43 with Table III encoding (resource 12, perm/op 6, network 6, device 4, Δt 1, time 4, y 1, s 1, history 6, versions 2) | d = 50, one-hot layout of `ml/features.py` | ⚠️ |
-| 6 residual blocks, **two** dilated convs each, dilations 1–32, filters [256,256,128,128,64,64], R = 127 | 10 blocks, **one** conv each, dilations (1,2,4,6,…,18), filters (512 … 12) | ⚠️ |
-| Timer context `zu(t)` = (inactivity, session age, ThreatFeed, DevPosture) at the scoring head, not in Xu | Inactivity is folded into the event features; no session age / ThreatFeed / DevPosture | ❌ |
-| Objective `λ1 Lnext-res + λ2 Lnext-op + λ3 Ltime-gap + λ4 Lsup`, Focal only on Lsup (Eq. 6) | Supervised Focal loss only | ❌ |
-| Chronological split with gap g ≥ L, rolling-origin validation, incidents grouped per user, scalers fit on train only (Eq. 7) | Train/val by user, separate test **period**; scaler fit on train; 5-fold user-grouped CV | 🟡 No gap g, no rolling origin |
-| Thresholds θlow, θhigh, θB as quantiles of scores on held-out **nominal** data (Eq. 8) | Platt calibration + fixed 0.4 / 0.6 | ⚠️ v3 says 0.4/0.6 are illustrative only |
-| Medium tier re-scored every Trecheck with zu(t) (Eq. 9) | Recheck exists; z not used | 🟡 |
+| L = 128 | L = 20 | ✅ Phase 3 (`TCNv3Config.window_len`) |
+| d = 43 with Table III encoding (resource 12, perm/op 6, network 6, device 4, Δt 1, time 4, y 1, s 1, history 6, versions 2) | d = 50, one-hot layout of `ml/features.py` | ✅ Phase 3 (`EncoderV3`; ThreatFeed / DevPosture simulated) |
+| 6 residual blocks, **two** dilated convs each, dilations 1–32, filters [256,256,128,128,64,64], R = 127 | 10 blocks, **one** conv each, dilations (1,2,4,6,…,18), filters (512 … 12) | ✅ Phase 3 (`tcn.TCNv3`, R = 127) |
+| Timer context `zu(t)` = (inactivity, session age, ThreatFeed, DevPosture) at the scoring head, not in Xu | Inactivity is folded into the event features; no session age / ThreatFeed / DevPosture | ✅ Phase 3 (z_u at the scoring head; ThreatFeed / DevPosture simulated) |
+| Objective `λ1 Lnext-res + λ2 Lnext-op + λ3 Ltime-gap + λ4 Lsup`, Focal only on Lsup (Eq. 6) | Supervised Focal loss only | ✅ Phase 3 (`tcn.multitask_loss`) |
+| Chronological split with gap g ≥ L, rolling-origin validation, incidents grouped per user, scalers fit on train only (Eq. 7) | Train/val by user, separate test **period**; scaler fit on train; 5-fold user-grouped CV | ✅ Phase 3 (`build_v3` gap L − 1, rolling origin, 12-day folds) |
+| Thresholds θlow, θhigh, θB as quantiles of scores on held-out **nominal** data (Eq. 8) | Platt calibration + fixed 0.4 / 0.6 | ✅ Phase 3 (quantiles α 0.05 / 0.01 / 0.001 on nominal validation; carried in every score) |
+| Medium tier re-scored every Trecheck with zu(t) (Eq. 9) | Recheck exists; z not used | ✅ Phase 3 (`_recheck_v3` with z at re-check time) |
 | Stateless TCN replicas, keyed state in the stream tier, model pinned during replay | Workers keep per-user state in Redis; hot reload of CURRENT | 🟡 |
 
 ### 3.3 Escalation and compute admission (Step 6, Step 10, Algorithm 1, Eqs. 10, 25–30)
@@ -81,35 +81,35 @@ Legend: ✅ implemented and tested · 🟡 partial · ❌ missing · ⚠️ impl
 |---|---|---|
 | Four paths (high, resource, sweep, sample) | `escalation_engine.py` A–D, all verified live (Phase 6) | ✅ |
 | Set union, at most once per window | Union per user + cooldowns | ✅ |
-| Cost model `Cu = c0 + c1·|E(Nh(u))| + c2·|V(Nh(u))|` (Eq. 26) | — | ❌ |
-| Budget `BTGN_W = ⌊ρ′·N·µgraph·W⌋` (Eq. 29), provisioning from pre-admission demand (Eqs. 27–28) | Fixed count caps (`max_realtime_per_window = 100`, `max_background_per_window = 50`) | ⚠️ Counts, not work units |
-| PriorityAdmit order res > high > sweep > samp; overflow drop / defer / queue-with-deadline / PDP-acts-alone | Realtime overflow deferred, background shed | ❌ Algorithm 1 not implemented |
-| Property `Σ Cu ≤ BTGN_W` | — | ❌ (no test) |
-| Resource trigger exactly once per (resource, finalized window) | Cooldown-based | 🟡 Needs finalized event-time windows (depends on watermarks) |
+| Cost model `Cu = c0 + c1·|E(Nh(u))| + c2·|V(Nh(u))|` (Eq. 26) | — | ✅ Phase 5–6 (Eq. 26; c0..c2 fitted from measured SGE time, R² 0.92) |
+| Budget `BTGN_W = ⌊ρ′·N·µgraph·W⌋` (Eq. 29), provisioning from pre-admission demand (Eqs. 27–28) | Fixed count caps (`max_realtime_per_window = 100`, `max_background_per_window = 50`) | ✅ Phase 5 (`graph_budget`, per-window ledger); Exp. E: never over budget; 🟡 Eqs. 27–28 provisioning not evaluated (one host) |
+| PriorityAdmit order res > high > sweep > samp; overflow drop / defer / queue-with-deadline / PDP-acts-alone | Realtime overflow deferred, background shed | ✅ Phase 5 (`priority_admit`, Algorithm 1) |
+| Property `Σ Cu ≤ BTGN_W` | — | ✅ Phase 5 (200-case property test + live check) |
+| Resource trigger exactly once per (resource, finalized window) | Cooldown-based | ✅ Phase 2 + 5 (escalation consumes final `resource-windows`) |
 
 ### 3.4 Relational detection: TGN = CMU + SGE (Step 7, Eqs. 11–19)
 
 | v3 requirement | Current code (D3 / [14] style) | Status |
 |---|---|---|
-| **CMU** updates user and resource memory for **every** event (GRU, message dim 100, memory dim 100, time encoder 100) | No learned node memory. `graph_index` keeps edge statistics for every event, but the TGN embeds a neighbourhood **only when a user is escalated** | ❌ **The current design is exactly what the prompt forbids** |
-| Single-writer memory per node, snapshot reads, bounded staleness | — | ❌ |
-| **SGE**: temporal attention over node memories + bounded neighbours (10 per hop, 1 hop), time encoder Φ | Dense 2-layer GCN + GRU + attention over T = 10 time steps per neighbourhood | ⚠️ Different model |
-| Edge decoder `ϵe = Dec(hu, hr*)` (Eq. 14), edge-reconstruction objective | Edge scorer exists (supervised + self-supervised stage) | 🟡 |
-| Graph: access edges user→resource, membership edges resource→application; **no** user-user edges from shared application | `GraphParams.app_coaccess_weight = 0.25` adds user-user edges through a shared application | ⚠️ Conflicts with v3 |
-| Candidate coordination graph HW (Eq. 15: ≥ hmin shared resources within ∆c; dcap) | Group = component of users sharing ≥ 2 sensitive resources | 🟡 No ∆c, no dcap |
-| Popularity-discounted weights `wuv` (Eq. 16), group filter |g|, |Rsens|, density (Eq. 17) | — | ❌ |
-| Attribution `Au` (Eq. 18), per-member `Scoll = Cal(ω1·TMπ(ϵ) + ω2·Au + ω3·Nov)` (Eq. 19) | S_coll = mean of top-25 % edge scores for the whole group | ❌ |
-| Hyperparameters: Adam 1e-4, 50 epochs, L2 1e-6 | Adam, other values | 🟡 |
+| **CMU** updates user and resource memory for **every** event (GRU, message dim 100, memory dim 100, time encoder 100) | No learned node memory. `graph_index` keeps edge statistics for every event, but the TGN embeds a neighbourhood **only when a user is escalated** | ✅ Phase 4 (`cmu-user` / `cmu-resource`, every event; crash-tested) |
+| Single-writer memory per node, snapshot reads, bounded staleness | — | ✅ Phase 4 (one task per node side; counterpart = latest snapshot; staleness measured) |
+| **SGE**: temporal attention over node memories + bounded neighbours (10 per hop, 1 hop), time encoder Φ | Dense 2-layer GCN + GRU + attention over T = 10 time steps per neighbourhood | ✅ Phase 6 (`tgn.SGE`, 10 neighbours, 1 hop, admitted users only) |
+| Edge decoder `ϵe = Dec(hu, hr*)` (Eq. 14), edge-reconstruction objective | Edge scorer exists (supervised + self-supervised stage) | ✅ Phase 4 (`EdgeDecoder`; design marked unvalidated as in v3, D4) |
+| Graph: access edges user→resource, membership edges resource→application; **no** user-user edges from shared application | `GraphParams.app_coaccess_weight = 0.25` adds user-user edges through a shared application | 🟡 v3 graph has no user-user application edges ✅; resource→application membership edges are NOT modelled (node-type slot reserved only) |
+| Candidate coordination graph HW (Eq. 15: ≥ hmin shared resources within ∆c; dcap) | Group = component of users sharing ≥ 2 sensitive resources | ✅ Phase 6 (Eq. 15, Δc, d_cap; h_min = 1 calibrated on validation) |
+| Popularity-discounted weights `wuv` (Eq. 16), group filter |g|, |Rsens|, density (Eq. 17) | — | ✅ Phase 6 (Eqs. 16–17) |
+| Attribution `Au` (Eq. 18), per-member `Scoll = Cal(ω1·TMπ(ϵ) + ω2·Au + ω3·Nov)` (Eq. 19) | S_coll = mean of top-25 % edge scores for the whole group | ✅ Phase 6 (Eqs. 18–19, ω fitted by logistic regression); per-member scores published |
+| Hyperparameters: Adam 1e-4, 50 epochs, L2 1e-6 | Adam, other values | ✅ Phase 4 (as written in v3; not tuned) |
 
 ### 3.5 PDP, enforcement, feedback (Step 8–9, Eqs. 20–21)
 
 | v3 requirement | Current code | Status |
 |---|---|---|
-| Six actions Allow / StepUp / Throttle / Restrict / Terminate / Block | Allow / Block | ❌ |
-| Ordered mapping Eq. 21 (policy deny → Block; S_ind ≥ θB → Terminate; S_coll ≥ θC ∧ Au ≥ θA → Restrict; … → StepUp; θhigh ≤ S_ind < θB → Throttle) | Block if S_ind ≥ 0.6 or S_coll ≥ θcoll or policy deny | ⚠️ |
-| Policy denial cannot be overridden by ML | Policy blocks are locked against analyst release (Phase 8) | ✅ (to re-test with six actions) |
-| Decision version ψ; gateway rejects ψ ≤ ψcur | PDP writes increasing `version`; gateway reads the latest value but does not compare | 🟡 |
-| Decision TTL + **sensitivity-based fallback** (s = 0 fail-open, s = 1 fail-closed Restrict) | Gateway fails **closed for everything** (HTTP 503) when Redis is down | ⚠️ |
+| Six actions Allow / StepUp / Throttle / Restrict / Terminate / Block | Allow / Block | ✅ Phase 7 |
+| Ordered mapping Eq. 21 (policy deny → Block; S_ind ≥ θB → Terminate; S_coll ≥ θC ∧ Au ≥ θA → Restrict; … → StepUp; θhigh ≤ S_ind < θB → Throttle) | Block if S_ind ≥ 0.6 or S_coll ≥ θcoll or policy deny | ✅ Phase 7 (`decide`, sticky most-severe action, calibrated θB / θC / θA) |
+| Policy denial cannot be overridden by ML | Policy blocks are locked against analyst release (Phase 8) | ✅ (re-tested with six actions, Phase 7) |
+| Decision version ψ; gateway rejects ψ ≤ ψcur | PDP writes increasing `version`; gateway reads the latest value but does not compare | ✅ Phase 7 (global ψ, gateway rejects ψ ≤ ψcur; verified live) |
+| Decision TTL + **sensitivity-based fallback** (s = 0 fail-open, s = 1 fail-closed Restrict) | Gateway fails **closed for everything** (HTTP 503) when Redis is down | ✅ Phase 7 (PDP heartbeat TTL, s=0 open / s=1 Restrict, per-app override; verified live) |
 | Request-time and session-time enforcement | Cached decision + session revocation | ✅ |
 | Feedback: only analyst-verified outcomes become labels | `ml/feedback_data.py`, verified live in Phase 9 | ✅ |
 
@@ -117,15 +117,17 @@ Legend: ✅ implemented and tested · 🟡 partial · ❌ missing · ⚠️ impl
 
 | Property / failure mode | Test today | Status |
 |---|---|---|
-| Per-user ordering after watermark | — | ❌ |
+| Per-user ordering after watermark | — | ✅ Phase 2 (property tests + live) |
 | No duplicate graph inference per window | Union + cooldown tests | 🟡 |
-| Compute bound | — | ❌ |
-| Eventual enforcement within LatSLO with p ≥ 0.99 | One live run (1.4 s exposure) | 🟡 No distribution |
-| No stale overwrite (ψ) | — | ❌ |
-| State recovery consistent with committed offsets | Phase 4 crash tests (`AS_FAULT_INJECT`) | 🟡 |
-| Resource-trigger exactly once per (r*, window) | — | ❌ |
-| Duplicate delivery, consumer restart, HDFS outage, ML outage | Phase 4/8 tests | ✅ / 🟡 |
-| Model-version mismatch, hot partitions, CMU staleness, gateway/PDP outage fallback | — | ❌ |
+| Compute bound | — | ✅ Phase 5 (property test + live ledger check) |
+| Eventual enforcement within LatSLO with p ≥ 0.99 | Exp. C: 45 / 45 attacks decided within 0.5 s at 5–50 req/s | 🟡 Distribution measured; v3 gives no numeric Lat_SLO, and n = 45 cannot establish p ≥ 0.99 |
+| No stale overwrite (ψ) | — | ✅ Phase 7 (unit + live); Exp. G 20 / 20 |
+| State recovery consistent with committed offsets | Exp. H: SIGKILL of sequencer, TCN worker, CMU (3 × each) | ✅ 0 lost, 0 duplicates; 🟡 TCN takeover ≈ 34 s (dynamic group membership) |
+| Resource-trigger exactly once per (r*, window) | — | ✅ Phase 2 (live `smoke_v3_stream windows`) |
+| Duplicate delivery, consumer restart, HDFS outage, ML outage | Phase 4/8 tests; Exp. H (200 events × 3 copies → 200 out) | ✅ |
+| Gateway / PDP outage fallback | Exp. G (PDP stopped 60 s) | ✅ onset 31.0 s (TTL 30 s), s = 1 refused, s = 0 allowed |
+| CMU staleness | Phase 4 (measured) | 🟡 measured, not an experiment |
+| Model-version mismatch, hot partitions | — | ❌ not tested |
 
 ### 3.7 Summary
 
@@ -257,6 +259,15 @@ Each phase ends with:
 | 10 Systems evaluation | Experiments C, D, E, F, G, H | Raw traces + figures + reports |
 | 11 Reference comparison | Retrieve papers; Method A / B tables with page citations | `evaluation/references/` |
 | 12 Deliverable 4 | §V Experimental Evaluation draft, figure set, limitations, untested-requirements list | `evaluation/reports/DELIVERABLE4_EVALUATION.md` |
+
+**Status (2026-11-16): Phases 8–12 done** (`docs/PROGRESS.md`, v3 Phase 8). Deviations from the plan:
+- The report is `docs/D4_EVALUATION.md`, not `evaluation/reports/`.
+- Figures and tables are in `evaluation/results/{figures,tables}/`.
+- There is no `run_all.py`: `evaluation/run_live.sh` runs the live parts, and D4 §M lists every command.
+- CERT r4.2 was not used (decision D3 is still open), so all model results are synthetic.
+- The static GCN and the D3 TGN were compared only on the D3 collusion dataset.
+- Phase 11: no reference paper's numbers were verified, so every quantitative comparison cell is Not Reported or
+  Not Comparable (`evaluation/references/REFERENCES.md`).
 
 Planned layout (adapted to the repo; `experiments/results/` keeps the D3 results):
 

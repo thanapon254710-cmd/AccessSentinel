@@ -1,0 +1,654 @@
+{
+ "experiment": "C/D",
+ "rate": 5.0,
+ "run": 2,
+ "started_at": "2026-11-16T09:28:57.066606+00:00",
+ "duration_s": 120.0,
+ "valid": true,
+ "failed_requests": 0,
+ "requests": 674,
+ "bg_users": 40,
+ "attackers": 5,
+ "attack_rate_per_s": 5.0,
+ "records": 679,
+ "result": {
+  "stages_ms": {
+   "gw": {
+    "p50": 2.0357370376586914,
+    "p95": 4.76747751235962,
+    "p99": 13.226752281188984,
+    "mean": 2.549621714166848,
+    "n": 664,
+    "max": 36.04578971862793
+   },
+   "kafka": {
+    "p50": 6.6536664962768555,
+    "p95": 9.997642040252689,
+    "p99": 23.48992586135865,
+    "mean": 7.660854652703526,
+    "n": 664,
+    "max": 131.80899620056152
+   },
+   "reorder": {
+    "p50": 0.0,
+    "p95": 0.0,
+    "p99": 0.0,
+    "mean": 0.0,
+    "n": 664,
+    "max": 0.0
+   },
+   "tcn_q": {
+    "p50": 6.416916847229004,
+    "p95": 22.56771326065065,
+    "p99": 61.650359630584724,
+    "mean": 9.529881089566702,
+    "n": 664,
+    "max": 145.5705165863037
+   },
+   "tcn": {
+    "p50": 8.498668670654297,
+    "p95": 24.42176342010499,
+    "p99": 44.27582502365112,
+    "mean": 11.15838698593967,
+    "n": 664,
+    "max": 100.24547576904297
+   },
+   "gw_to_score": {
+    "p50": 24.843215942382812,
+    "p95": 59.239161014556906,
+    "p99": 125.60389995574953,
+    "mean": 30.898744442376746,
+    "n": 664,
+    "max": 278.6598205566406
+   }
+  },
+  "per_attacker": {
+   "syn-att-9571d-0": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09190718084573746,
+    "first_action": "Terminate",
+    "first_action_after_ms": 22.403717041015625,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 2.1452903747558594,
+    "lat_ind_decision_ms": 22.403717041015625,
+    "lat_enf_ms": 178.06267738342285,
+    "lat_ind_observed_ms": 200.46639442443848,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 4767.392873764038,
+    "lat_tgn_total_ms": 45.52602767944336,
+    "tgn_inference_ms": 12.055,
+    "lat_coll_to_group_score_ms": 4833.177328109741,
+    "trigger_stages_ms": {
+     "gw": 1.6818046569824219,
+     "kafka": 6.317138671875,
+     "tcn_q": 5.367279052734375,
+     "tcn": 6.892204284667969
+    }
+   },
+   "syn-att-9571d-4": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09193477034568787,
+    "first_action": "Terminate",
+    "first_action_after_ms": 20.95794677734375,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 3.8535594940185547,
+    "lat_ind_decision_ms": 20.95794677734375,
+    "lat_enf_ms": 181.37526512145996,
+    "lat_ind_observed_ms": 202.3332118988037,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 4730.708122253418,
+    "lat_tgn_total_ms": 238.44218254089355,
+    "tgn_inference_ms": 18.961,
+    "lat_coll_to_group_score_ms": 4986.254692077637,
+    "trigger_stages_ms": {
+     "gw": 1.1708736419677734,
+     "kafka": 6.16455078125,
+     "tcn_q": 4.54258918762207,
+     "tcn": 5.226373672485352
+    }
+   },
+   "syn-att-9571d-1": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09190899133682251,
+    "first_action": "Terminate",
+    "first_action_after_ms": 55.8779239654541,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 2.8488636016845703,
+    "lat_ind_decision_ms": 55.8779239654541,
+    "lat_enf_ms": 146.55518531799316,
+    "lat_ind_observed_ms": 202.43310928344727,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5160.502672195435,
+    "lat_tgn_total_ms": 28.097867965698242,
+    "tgn_inference_ms": 14.495,
+    "lat_coll_to_group_score_ms": 5241.629600524902,
+    "trigger_stages_ms": {
+     "gw": 1.461029052734375,
+     "kafka": 6.320476531982422,
+     "tcn_q": 39.76941108703613,
+     "tcn": 5.478143692016602
+    }
+   },
+   "syn-att-9571d-2": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.09211326390504837,
+    "first_action": "Terminate",
+    "first_action_after_ms": 34.543514251708984,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 3.629446029663086,
+    "lat_ind_decision_ms": 34.543514251708984,
+    "lat_enf_ms": 182.63864517211914,
+    "lat_ind_observed_ms": 217.18215942382812,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 5443.981885910034,
+    "lat_tgn_total_ms": 363.5563850402832,
+    "tgn_inference_ms": 27.071,
+    "lat_coll_to_group_score_ms": 5838.452339172363,
+    "trigger_stages_ms": {
+     "gw": 2.5911331176757812,
+     "kafka": 7.691383361816406,
+     "tcn_q": 12.115240097045898,
+     "tcn": 8.516311645507812
+    }
+   },
+   "syn-att-9571d-3": {
+    "decided": true,
+    "action": "Terminate",
+    "s_ind": 0.0921069011092186,
+    "first_action": "Terminate",
+    "first_action_after_ms": 23.03457260131836,
+    "requests_before_trigger": 1,
+    "lat_pdp_ms": 3.9625167846679688,
+    "lat_ind_decision_ms": 23.03457260131836,
+    "lat_enf_ms": 179.3663501739502,
+    "lat_ind_observed_ms": 202.40092277526855,
+    "n_exposed": 0,
+    "escalation_paths": [
+     "high"
+    ],
+    "lat_esc_ms": 3944.5760250091553,
+    "lat_tgn_total_ms": 324.3439197540283,
+    "tgn_inference_ms": 134.206,
+    "lat_coll_to_group_score_ms": 4287.992000579834,
+    "trigger_stages_ms": {
+     "gw": 1.40380859375,
+     "kafka": 6.534814834594727,
+     "tcn_q": 4.33349609375,
+     "tcn": 6.799936294555664
+    }
+   }
+  },
+  "lat_ind_decision_ms": {
+   "p50": 23.03457260131836,
+   "p95": 51.61104202270508,
+   "p99": 55.0245475769043,
+   "mean": 31.363534927368164,
+   "n": 5,
+   "max": 55.8779239654541
+  },
+  "lat_ind_observed_ms": {
+   "p50": 202.40092277526855,
+   "p95": 214.23234939575195,
+   "p99": 216.5921974182129,
+   "mean": 204.96315956115723,
+   "n": 5,
+   "max": 217.18215942382812
+  },
+  "slo_fraction": {
+   "le_0.5s": 1.0,
+   "le_1s": 1.0,
+   "le_2s": 1.0,
+   "le_5s": 1.0
+  },
+  "n_exposed": {
+   "p50": 0.0,
+   "p95": 0.0,
+   "p99": 0.0,
+   "mean": 0.0,
+   "n": 5,
+   "max": 0.0
+  },
+  "throughput": {
+   "scores_per_s": 4.322488310098182,
+   "gateway_requests_per_s": 4.2964099492529435,
+   "gateway_status_mix": {
+    "200": 659
+   },
+   "gateway_response_ms": {
+    "p50": 8.463621139526367,
+    "p95": 19.90277767181397,
+    "p99": 38.35331916809051,
+    "mean": 10.960025020362032,
+    "n": 659,
+    "max": 431.3538074493408
+   }
+  }
+ },
+ "lag_samples": [
+  [
+   1794821343.3024392,
+   {
+    "hdfs-sink": 1,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 0,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 0,
+    "cmu-resource": 0,
+    "escalation": 0,
+    "graph-index": 0,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821350.3207476,
+   {
+    "hdfs-sink": 58,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 7,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821356.7048817,
+   {
+    "hdfs-sink": 132,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 10,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821362.6381388,
+   {
+    "hdfs-sink": 196,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821368.5458698,
+   {
+    "hdfs-sink": 250,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821374.4513369,
+   {
+    "hdfs-sink": 322,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 10,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 1,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821380.356568,
+   {
+    "hdfs-sink": 57,
+    "repartitioner": 0,
+    "sequencer": 1,
+    "tcn-v3": 8,
+    "resource-shard": 2,
+    "resource-merge": 0,
+    "cmu-user": 10,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821386.3171465,
+   {
+    "hdfs-sink": 118,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821392.3220007,
+   {
+    "hdfs-sink": 181,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 5,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 5,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821398.3189878,
+   {
+    "hdfs-sink": 259,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821404.2378707,
+   {
+    "hdfs-sink": 309,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 0,
+    "graph-index": 10,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821410.201486,
+   {
+    "hdfs-sink": 46,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 3,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 10,
+    "cmu-resource": 3,
+    "escalation": 1,
+    "graph-index": 8,
+    "tgn-rt": 6,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821416.0848289,
+   {
+    "hdfs-sink": 128,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 5,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 1,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 1,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821421.9730988,
+   {
+    "hdfs-sink": 178,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 10,
+    "cmu-resource": 3,
+    "escalation": 1,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821427.8600578,
+   {
+    "hdfs-sink": 248,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 4,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 1,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821433.7652595,
+   {
+    "hdfs-sink": 305,
+    "repartitioner": 0,
+    "sequencer": 1,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 1,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821439.9002688,
+   {
+    "hdfs-sink": 32,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 8,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 3,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821445.8470156,
+   {
+    "hdfs-sink": 102,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 7,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 3,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821451.9146476,
+   {
+    "hdfs-sink": 164,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 3,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 3,
+    "incidents": 0
+   }
+  ],
+  [
+   1794821457.827074,
+   {
+    "hdfs-sink": 224,
+    "repartitioner": 0,
+    "sequencer": 0,
+    "tcn-v3": 6,
+    "resource-shard": 0,
+    "resource-merge": 0,
+    "cmu-user": 8,
+    "cmu-resource": 3,
+    "escalation": 3,
+    "graph-index": 8,
+    "tgn-rt": 0,
+    "tgn-bg": 0,
+    "pdp": 0,
+    "incidents": 0
+   }
+  ]
+ ],
+ "environment": {
+  "recorded_at": "2026-11-16T09:31:57.321023+00:00",
+  "unix_time": 1794821517.3210585,
+  "host_os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+  "python": "3.11.10",
+  "cpu": {
+   "name": "13th Gen Intel(R) Core(TM) i5-13500HX",
+   "logical_cpus": 20
+  },
+  "ram_bytes": {
+   "total": 8178008064,
+   "available": 313057280
+  },
+  "gpu": [],
+  "libraries": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.4.6",
+   "pandas": "2.3.3",
+   "sklearn": "1.9.1",
+   "pyarrow": "26.0.1",
+   "confluent_kafka": "2.16.1",
+   "matplotlib": null
+  },
+  "torch_cuda_available": false,
+  "torch_threads": 10,
+  "git_commit": null,
+  "git_dirty": false,
+  "docker": null
+ }
+}

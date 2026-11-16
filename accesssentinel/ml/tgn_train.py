@@ -37,7 +37,8 @@ from ..config import TGNConfig
 from ..tgn import TGN
 from .tgn_graph import NODE_FEATURES, EdgeAnnotator, GraphParams, GraphSample, MemoryEdgeIndex, build_sample, edge_endpoints, featurize
 
-ATTACK_INDIVIDUAL = {"compromised_account", "insider_exfiltration", "bac_probe", "low_and_slow"}
+from ..datasets.synth import INDIVIDUAL_V3 as _IND_V3  # noqa: E402
+ATTACK_INDIVIDUAL = set(_IND_V3)                         # D3 four + the Phase 8 individual scenarios
 
 
 def tgn_config(gp: GraphParams) -> TGNConfig:
@@ -180,14 +181,21 @@ class Corpus:
             for t0 in inst["bursts"]:
                 for _ in range(anchors_per_burst):
                     it = self.item([rng.choice(inst["members"])], t0 + rng.uniform(10, 50) * 60,
-                                   f"collusion:{inst['kind']}:{'familiar' if inst['familiar'] else 'unfamiliar'}")
+                                   f"collusion:{inst['kind']}:{'familiar' if inst.get('familiar') else 'unfamiliar'}")
                     if it is not None:
+                        it.instance = name                                  # group instance (Experiment B)
                         items.append(it)
         for m in getattr(self.ds, "meetings", []):
             for day in range(int(a // 86400), int(b // 86400)):
                 t = day * 86400
                 if (int(t // 86400) + 3) % 7 == m["weekday"]:
                     it = self.item([rng.choice(m["team"])], t + (m["hour"] + 0.75) * 3600, "hard:team_meeting")
+                    if it is not None:
+                        items.append(it)
+        for p in getattr(self.ds, "projects", []):                        # Phase 8 hard negatives
+            for t0 in p.get("bursts", []):
+                if a <= t0 < b:
+                    it = self.item([rng.choice(p["team"])], t0 + rng.uniform(10, 50) * 60, "hard:benign_project")
                     if it is not None:
                         items.append(it)
         crowd = [e for e in self.edges if a <= e["t"] < b and self.lab[e["id"]].scenario == "benign_flash_crowd"]
