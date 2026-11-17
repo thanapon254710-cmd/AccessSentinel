@@ -5,3 +5,4 @@ pandas>=2.2,<3
 torch>=2.5
 pyarrow>=17
 scikit-learn>=1.5,<2     # metrics, grouped CV and the logistic-regression baseline (Phase 5)
+gensim>=4.4,<5             # PG-AID Doc2Vec path embeddings

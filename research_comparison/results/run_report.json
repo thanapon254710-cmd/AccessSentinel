@@ -1,0 +1,37 @@
+{
+  "seeds_requested": [
+    0
+  ],
+  "quick_smoke_only": true,
+  "accesssentinel_tcn_training_skipped": true,
+  "methods_requested": [
+    "AccessSentinel TCN v3",
+    "Reference [24]",
+    "Reference [14] DynAD",
+    "Reference [17] PG-AID",
+    "Reference [21] ACOBE",
+    "Reference [22] FGDT",
+    "Reference [25] DEEPRO"
+  ],
+  "methods_with_results": [
+    "Ref. 14 DynAD",
+    "Ref. 17 PG-AID",
+    "Ref. 21 ACOBE",
+    "Ref. 22 FGDT",
+    "Ref. 24 User-resource embedding",
+    "Ref. 25 DEEPRO"
+  ],
+  "failures": [],
+  "runs_completed": 6,
+  "elapsed_seconds": 46.5041698999994,
+  "protocol": "same generated AccessSentinel tcn_v3_eval dataset per seed; chronological train/validation/test windows; threshold calibrated on nominal validation scores; no test-label threshold tuning",
+  "timing_boundary": "Per-method fit_and_score_seconds excludes shared dataset generation and shared build_v3 window-index construction; includes method-specific graph/features/model fit and scoring.",
+  "limitations": [
+    "Synthetic AccessSentinel data only; no public real-world post-authentication access-control benchmark is supplied.",
+    "References [17] and [25] use interaction-provenance approximations, not OS-level audit provenance.",
+    "Reference [21] uses role as a cohort proxy; Reference [22] adapts review-group detection to co-access groups.",
+    "Reference [24] uses its documented fixed embedding dimension and cosine-distance adaptation.",
+    "AccessSentinel TCN-v3 is trained on the common dataset for full runs; quick smoke runs skip it unless --train-accesssentinel is supplied.",
+    "Quick runs are engineering smoke tests and must not be reported as final research results."
+  ]
+}

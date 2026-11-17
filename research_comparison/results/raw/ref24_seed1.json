@@ -1,0 +1,53 @@
+{
+  "reference": "[24] A Graph Embedding Approach to User Behavior Anomaly Detection",
+  "method": "regularized bipartite spectral embedding + nearest previous user on resource",
+  "protocol": "AccessSentinel synthetic tcn_v3_eval; chronological split; train-only graph fit; threshold calibrated on nominal validation scores",
+  "seed": 1,
+  "data_seed": 24,
+  "dataset_fingerprint": "47036bdfd1fb6971",
+  "config": {
+    "embedding_dim": 8,
+    "distance": "cosine",
+    "regularization": "average bipartite degree"
+  },
+  "adaptations": [
+    "AccessSentinel user/application/resource event schema replaces paper's generic user-resource records.",
+    "Embedding is fitted on the training-period bipartite graph; paper permits periodic recomputation.",
+    "Embedding dimension is fixed by CLI (paper recommends scree-plot elbow).",
+    "Cosine distance is selected from the paper's permitted distance examples.",
+    "Cold-start user/resource events are left unscored because the paper does not define an out-of-sample rule."
+  ],
+  "reference24_test": {
+    "n_scored": 91332,
+    "n_unscored": 0,
+    "roc_auc": 0.5260696074058304,
+    "pr_auc": 0.05652323148552594,
+    "precision": 0.01980685849428459,
+    "recall": 1.0,
+    "f1": 0.038844332785776405,
+    "fpr": 1.0,
+    "threshold": 0.0
+  },
+  "accesssentinel_tcn_v3_test": {
+    "n_scored": 91332,
+    "roc_auc": 0.8896160892827805,
+    "pr_auc": 0.7002266088869635,
+    "comparison_note": "Threshold-free metrics from existing Exp.A seed file."
+  },
+  "alignment": {
+    "available": true,
+    "same_test_labels_and_order": true,
+    "file": "evaluation\\results\\raw\\exp_a\\seed1-scores.npz"
+  },
+  "timing": {
+    "fit_ms": 403.6898000049405,
+    "score_event_ms_median": 0.0013999815564602613,
+    "score_event_ms_p95": 0.0027999922167509794,
+    "score_event_count": 141099
+  },
+  "environment": {
+    "python": "3.11.7",
+    "numpy": "2.4.6"
+  },
+  "started_utc": "2026-11-17T06:27:32.319816+00:00"
+}

@@ -1,0 +1,37 @@
+method,metric,n,mean,sd
+Ref. 24 User-resource embedding,roc_auc,1,0.5005726015061086,0.0
+Ref. 24 User-resource embedding,pr_auc,1,0.02946817241133233,0.0
+Ref. 24 User-resource embedding,precision,1,0.02926300578034682,0.0
+Ref. 24 User-resource embedding,recall,1,1.0,0.0
+Ref. 24 User-resource embedding,f1,1,0.05686205686205686,0.0
+Ref. 24 User-resource embedding,fit_and_score_seconds,1,0.5182138000091072,0.0
+Ref. 14 DynAD,roc_auc,1,0.6326149682743157,0.0
+Ref. 14 DynAD,pr_auc,1,0.08117461200612766,0.0
+Ref. 14 DynAD,precision,1,0.04075829383886256,0.0
+Ref. 14 DynAD,recall,1,0.2654320987654321,0.0
+Ref. 14 DynAD,f1,1,0.07066557107641742,0.0
+Ref. 14 DynAD,fit_and_score_seconds,1,5.751655100000789,0.0
+Ref. 17 PG-AID,roc_auc,1,0.1987030604602866,0.0
+Ref. 17 PG-AID,pr_auc,1,0.023321283934650872,0.0
+Ref. 17 PG-AID,precision,1,0.0,0.0
+Ref. 17 PG-AID,recall,1,0.0,0.0
+Ref. 17 PG-AID,f1,1,0.0,0.0
+Ref. 17 PG-AID,fit_and_score_seconds,1,2.1312173000187613,0.0
+Ref. 21 ACOBE,roc_auc,1,0.23521057032718112,0.0
+Ref. 21 ACOBE,pr_auc,1,0.023673435060892097,0.0
+Ref. 21 ACOBE,precision,1,0.013563501849568433,0.0
+Ref. 21 ACOBE,recall,1,0.06790123456790123,0.0
+Ref. 21 ACOBE,f1,1,0.022610483042137718,0.0
+Ref. 21 ACOBE,fit_and_score_seconds,1,2.5216078000084963,0.0
+Ref. 22 FGDT,roc_auc,1,0.3635973617830708,0.0
+Ref. 22 FGDT,pr_auc,1,0.02993002041336912,0.0
+Ref. 22 FGDT,precision,1,0.027925531914893616,0.0
+Ref. 22 FGDT,recall,1,0.25925925925925924,0.0
+Ref. 22 FGDT,f1,1,0.05042016806722689,0.0
+Ref. 22 FGDT,fit_and_score_seconds,1,5.446101200010162,0.0
+Ref. 25 DEEPRO,roc_auc,1,0.8478700602351514,0.0
+Ref. 25 DEEPRO,pr_auc,1,0.1603172440087373,0.0
+Ref. 25 DEEPRO,precision,1,0.07043756670224119,0.0
+Ref. 25 DEEPRO,recall,1,0.4074074074074074,0.0
+Ref. 25 DEEPRO,f1,1,0.12010919017288443,0.0
+Ref. 25 DEEPRO,fit_and_score_seconds,1,4.017006899986882,0.0

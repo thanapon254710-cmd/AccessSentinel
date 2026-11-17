@@ -360,7 +360,7 @@ services:
     <<: *app
     command: ["uvicorn", "--factory", "accesssentinel.services.api.main:build", "--host", "0.0.0.0",
               "--port", "8080", "--no-access-log"]
-    ports: ["8080:8080"]             # dashboard: reachable from other computers on the network
+    ports: ["8081:8080"]             # dashboard: reachable from other computers on the network
     volumes: [../models:/app/models]                        # rw: admins promote model versions from the UI
     mem_limit: 768m
     healthcheck:

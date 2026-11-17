@@ -1,0 +1,19 @@
+reference_or_method,status_reason
+[1] TCN + U-Net network anomaly detection,Different input/label assumptions; faithful adapter pending
+[2] TCN network traffic anomaly detection,Traffic feature schema and original training protocol adapter pending
+[7] Link-based anomaly detection with Sysmon and GNNs,Sysmon/provenance event schema adapter pending
+[8] Network anomaly detection using GNN,Network graph schema and faithful architecture adapter pending
+[11] Hybrid GNN + Neural ODE,Dynamic network topology input adapter pending
+[12] Broken access control in App-Cloud IoT,Vulnerability-analysis task; not directly an event-classification baseline
+[13] Permission-check identification,Java source-code analysis task; not directly an event-classification baseline
+[14] Attentive Temporal Graph Networks,Exact architecture and protocol implementation pending
+[15] IIoT log threat detection,IIoT log schema and faithful method adapter pending
+[16] Inductive GNN with causal sampling,Causal graph sampling implementation pending
+[17] PG-AID provenance graph anomaly detection,Provenance graph construction and faithful model pending
+[18] Physical access-control log anomaly detection,Domain-specific features and method adapter pending
+[19] EHR access-log explainable anomaly detection,EHR feature schema and faithful method adapter pending
+[20] GSCPM group spamming detection,Review-spam task; not directly equivalent to access-control events
+[21] Time-window group-behavior anomaly detection,Exact group construction and method implementation pending
+[22] Spatio-temporal graph fraudster-group detection,Fraud graph assumptions and faithful method pending
+[23] Motif-level anomaly detection in dynamic graphs,Dynamic motif implementation pending
+[25] DEEPRO provenance-based APT detection,Provenance/attack-graph assumptions and faithful GNN pending

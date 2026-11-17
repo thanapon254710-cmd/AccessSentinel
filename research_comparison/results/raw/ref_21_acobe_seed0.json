@@ -1,0 +1,38 @@
+{
+  "method": "Ref. 21 ACOBE",
+  "metrics": {
+    "roc_auc": 0.23521057032718112,
+    "pr_auc": 0.023673435060892097,
+    "n_scored": 5536,
+    "n_unscored": 0,
+    "precision": 0.013563501849568433,
+    "recall": 0.06790123456790123,
+    "f1": 0.022610483042137718,
+    "validation_threshold": 0.03571428571428571
+  },
+  "fit_and_score_seconds": 2.5216078000084963,
+  "protocol_note": "Aspect autoencoders and rank-based investigation priority; train-fitted role cohorts and categorical vocabulary. User-level scores are broadcast to events.",
+  "extra": {
+    "n_train_users": 120,
+    "n_validation_users": 120,
+    "n_test_users": 120,
+    "n_nominal_train_users": 113,
+    "n_anomalous_train_users": 7,
+    "priority_std": 26.267639575890502,
+    "priority_min": 3,
+    "priority_max": 100,
+    "aspect_score_std": {
+      "resource_access": 0.009228947572410107,
+      "operation": 0.0200175940990448,
+      "environment": 0.0006858334527350962,
+      "policy": 0.04976107180118561
+    },
+    "vocabulary_fit_split": "train",
+    "cohort_baseline_fit_split": "train",
+    "future_split_features_used": false
+  },
+  "seed": 0,
+  "dataset_fingerprint": "2b77c97a8ea77b35",
+  "dataset_events": 67349,
+  "quick_smoke_only": true
+}
