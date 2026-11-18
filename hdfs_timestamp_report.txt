@@ -1,0 +1,6176 @@
+PARQUET SCHEMAS AND TIMESTAMP RANGES
+=================================================================
+
+File: accesssentinel-export\04a0b6\events\hour=000008\part-d3808dbc.parquet
+Rows: 286
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000009\part-b1d7768b.parquet
+Rows: 317
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000010\part-3edec0ce.parquet
+Rows: 327
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000011\part-518f0dea.parquet
+Rows: 331
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000012\part-039595dd.parquet
+Rows: 296
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000013\part-6ba6501d.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000014\part-e996a3eb.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000015\part-bf030eb1.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000016\part-fcbe011c.parquet
+Rows: 287
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000017\part-e8e12752.parquet
+Rows: 383
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000018\part-394921cc.parquet
+Rows: 111
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000019\part-7addfe2c.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000020\part-b0598a06.parquet
+Rows: 14
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000028\part-177af342.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000029\part-b2178d71.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000030\part-3fdb9d82.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000032\part-b14a681d.parquet
+Rows: 335
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000033\part-ce998c37.parquet
+Rows: 301
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000034\part-7d44d149.parquet
+Rows: 314
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000035\part-0d987f94.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000036\part-17e97088.parquet
+Rows: 311
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000037\part-1c36abcd.parquet
+Rows: 11
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000037\part-dab33205.parquet
+Rows: 352
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000038\part-d319caa9.parquet
+Rows: 315
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000039\part-7adef8fa.parquet
+Rows: 299
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000040\part-c9c1fd41.parquet
+Rows: 343
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000041\part-ca2b6e1f.parquet
+Rows: 275
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000042\part-4f3c9f3e.parquet
+Rows: 26
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000043\part-14a07eda.parquet
+Rows: 47
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000044\part-74b7454a.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000052\part-a85c83ff.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000053\part-363c3a36.parquet
+Rows: 39
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000054\part-bd8345dc.parquet
+Rows: 1
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000054\part-d65a9bdb.parquet
+Rows: 22
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000055\part-ba9c60ca.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000056\part-170309d8.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000056\part-4db4dfab.parquet
+Rows: 155
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000056\part-62b09d1c.parquet
+Rows: 66
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000056\part-ee8ba3da.parquet
+Rows: 52
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000057\part-1c808488.parquet
+Rows: 112
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000057\part-84b0ee44.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000057\part-c18f9b91.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000057\part-d9d86988.parquet
+Rows: 112
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000058\part-1358d6d5.parquet
+Rows: 117
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000058\part-188b60a1.parquet
+Rows: 35
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000058\part-24cdc469.parquet
+Rows: 119
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000058\part-a4444369.parquet
+Rows: 27
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000059\part-459c2ca1.parquet
+Rows: 116
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000059\part-94633d89.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000059\part-9c3b7ddc.parquet
+Rows: 98
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000059\part-c1969c37.parquet
+Rows: 46
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000060\part-5b08edf8.parquet
+Rows: 27
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000060\part-a8570cd7.parquet
+Rows: 25
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000060\part-c49fb7a8.parquet
+Rows: 52
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000060\part-ca011ed9.parquet
+Rows: 241
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000061\part-05851cff.parquet
+Rows: 219
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000061\part-87941709.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000061\part-b0689ec8.parquet
+Rows: 49
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000062\part-0a527985.parquet
+Rows: 34
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000062\part-0fab37fa.parquet
+Rows: 278
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000062\part-6c084b51.parquet
+Rows: 10
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000063\part-b2e01be4.parquet
+Rows: 280
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000063\part-fa9ca8cb.parquet
+Rows: 44
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000064\part-4de41053.parquet
+Rows: 80
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000064\part-afcca127.parquet
+Rows: 343
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000065\part-16399732.parquet
+Rows: 265
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000065\part-db87c737.parquet
+Rows: 74
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000080\part-d4eb3583.parquet
+Rows: 262
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000080\part-facd08d9.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000081\part-42f45bf2.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000081\part-6d6578e0.parquet
+Rows: 280
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000082\part-dff7d98c.parquet
+Rows: 244
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000082\part-f19790c2.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000083\part-0d7faa18.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000083\part-6df2e667.parquet
+Rows: 266
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000084\part-807c1973.parquet
+Rows: 15
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000084\part-cb330d9c.parquet
+Rows: 280
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000084\part-f673cd92.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000085\part-159f2445.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000085\part-7c4500bf.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000086\part-159949d7.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000086\part-ba1d0e07.parquet
+Rows: 276
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000087\part-27071562.parquet
+Rows: 253
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000087\part-8f2f5f65.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000088\part-4a1e1914.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000088\part-a2da6703.parquet
+Rows: 277
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000089\part-3e793f64.parquet
+Rows: 256
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\04a0b6\events\hour=000089\part-496dbe67.parquet
+Rows: 23
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000008\part-777640f9.parquet
+Rows: 286
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000009\part-9a14f0ed.parquet
+Rows: 317
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000010\part-238534d2.parquet
+Rows: 327
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000011\part-9ae440df.parquet
+Rows: 331
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000012\part-ec919000.parquet
+Rows: 296
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000013\part-722348a1.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000014\part-5466b5c0.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000015\part-ed877ac1.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000016\part-05608ac6.parquet
+Rows: 287
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000017\part-cff1b0a9.parquet
+Rows: 383
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000018\part-bfb65fbb.parquet
+Rows: 111
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000019\part-5133a1d5.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000020\part-0ee1631e.parquet
+Rows: 14
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000028\part-5c687bd9.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000029\part-6bc78379.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000030\part-47a0f2f2.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000032\part-519265bc.parquet
+Rows: 335
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000033\part-7c0842d0.parquet
+Rows: 301
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000034\part-cf06a646.parquet
+Rows: 314
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000035\part-2aa34bc2.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000036\part-cd861945.parquet
+Rows: 311
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000037\part-550f9df7.parquet
+Rows: 352
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000037\part-d1214e8a.parquet
+Rows: 11
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000038\part-f6f5a74b.parquet
+Rows: 315
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000039\part-dc1478f5.parquet
+Rows: 299
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000040\part-232366fd.parquet
+Rows: 343
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000041\part-ec8af878.parquet
+Rows: 275
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000042\part-7d163171.parquet
+Rows: 26
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000043\part-878172dc.parquet
+Rows: 47
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000044\part-7bafaad6.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000052\part-7cabdeee.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000053\part-03f8a6c3.parquet
+Rows: 39
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000054\part-d027e4d7.parquet
+Rows: 23
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000055\part-81701990.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000056\part-48149665.parquet
+Rows: 29
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000056\part-68902c60.parquet
+Rows: 65
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000056\part-757fd91f.parquet
+Rows: 219
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000057\part-2cc7e079.parquet
+Rows: 29
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000057\part-d1354758.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000057\part-dce1fe27.parquet
+Rows: 231
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000058\part-67d76e09.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000058\part-6caa3745.parquet
+Rows: 45
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000058\part-824039a1.parquet
+Rows: 220
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000059\part-12d0088c.parquet
+Rows: 225
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000059\part-2a007070.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000059\part-76ab233a.parquet
+Rows: 34
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000060\part-3f2f389e.parquet
+Rows: 260
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000060\part-f2d70840.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000060\part-fc1b6f73.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000061\part-388db086.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000061\part-892911e0.parquet
+Rows: 213
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000061\part-bf16b73c.parquet
+Rows: 49
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000062\part-36f978b9.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000062\part-8def65b0.parquet
+Rows: 245
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000062\part-b807f88e.parquet
+Rows: 34
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000063\part-740e8bab.parquet
+Rows: 44
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000063\part-c95fac1d.parquet
+Rows: 239
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000063\part-f36634a4.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000064\part-2b948015.parquet
+Rows: 301
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000064\part-3b8a0fd0.parquet
+Rows: 73
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000064\part-cb8787f9.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000064\part-ee519475.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000065\part-03975bdd.parquet
+Rows: 74
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000065\part-23493f51.parquet
+Rows: 34
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000065\part-4eff27b1.parquet
+Rows: 231
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000080\part-6da6450d.parquet
+Rows: 227
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000080\part-c2045f64.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000080\part-ea255189.parquet
+Rows: 35
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000081\part-a91c57b8.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000081\part-b071b2ca.parquet
+Rows: 278
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000081\part-b6fc0079.parquet
+Rows: 2
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000082\part-54e028b4.parquet
+Rows: 244
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000082\part-cf1f6df9.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000083\part-53a96da7.parquet
+Rows: 266
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000083\part-df964936.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000084\part-5d1b8875.parquet
+Rows: 280
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000084\part-d2682068.parquet
+Rows: 55
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000085\part-11b9fccd.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000085\part-8cb9be47.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000086\part-1ea4f57b.parquet
+Rows: 276
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000086\part-275221ef.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000087\part-2a395f9d.parquet
+Rows: 19
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000087\part-9602d48b.parquet
+Rows: 23
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000087\part-be9d1a44.parquet
+Rows: 253
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000088\part-cc870f99.parquet
+Rows: 277
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000088\part-d3cfd37c.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000089\part-178505c1.parquet
+Rows: 14
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000089\part-6c402270.parquet
+Rows: 242
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\18d1f0\events\hour=000089\part-bb83441e.parquet
+Rows: 23
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000008\part-b23db889.parquet
+Rows: 286
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000009\part-e8dd3e0d.parquet
+Rows: 317
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000010\part-887ca7c6.parquet
+Rows: 327
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000011\part-0597fddf.parquet
+Rows: 331
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000012\part-09b26fef.parquet
+Rows: 296
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000013\part-d6335094.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000014\part-3074e0e3.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000015\part-1a811ddd.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000016\part-0f43799f.parquet
+Rows: 287
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000017\part-71126969.parquet
+Rows: 383
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000018\part-31ec883f.parquet
+Rows: 111
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000019\part-ae9ccc0b.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000020\part-29a73aea.parquet
+Rows: 14
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000028\part-505c0dd6.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000029\part-1b9a0f4f.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000030\part-5f1d224c.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000032\part-3b0d6c5d.parquet
+Rows: 335
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000033\part-91262ec2.parquet
+Rows: 301
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000034\part-36fd4a27.parquet
+Rows: 314
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000035\part-e9a28d26.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000036\part-749e95f7.parquet
+Rows: 311
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000037\part-447e719a.parquet
+Rows: 11
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000037\part-73bfcab0.parquet
+Rows: 352
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000038\part-19e8e0f0.parquet
+Rows: 315
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000039\part-59912189.parquet
+Rows: 299
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000040\part-95281f01.parquet
+Rows: 343
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000041\part-d9784ad1.parquet
+Rows: 275
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000042\part-3ccb06dc.parquet
+Rows: 26
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000043\part-c126bc46.parquet
+Rows: 47
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000044\part-0c9fa0e4.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000052\part-33008a8d.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000053\part-036e47f7.parquet
+Rows: 39
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000054\part-359646db.parquet
+Rows: 1
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000054\part-4feebc81.parquet
+Rows: 22
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000055\part-4a0704d1.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000056\part-357c506b.parquet
+Rows: 52
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000056\part-6574022b.parquet
+Rows: 228
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000056\part-98b63a69.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000057\part-0c5adea3.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000057\part-6ba04d53.parquet
+Rows: 32
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000057\part-6c698b98.parquet
+Rows: 232
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000058\part-135c0313.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000058\part-20961981.parquet
+Rows: 233
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000058\part-f151e542.parquet
+Rows: 27
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000059\part-c98c3706.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000059\part-dd51e54d.parquet
+Rows: 218
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000059\part-e84255dc.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000060\part-51c09512.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000060\part-67f27a50.parquet
+Rows: 260
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000060\part-735c052d.parquet
+Rows: 44
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000061\part-0ebd6a91.parquet
+Rows: 30
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000061\part-9e2c9862.parquet
+Rows: 19
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000061\part-d8eeb49c.parquet
+Rows: 256
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000062\part-36b9a433.parquet
+Rows: 280
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000062\part-8712a9ce.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000063\part-04baa606.parquet
+Rows: 28
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000063\part-c4861c6c.parquet
+Rows: 296
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000064\part-5abfa386.parquet
+Rows: 381
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000064\part-d36d80cd.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000065\part-27083ed0.parquet
+Rows: 73
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000065\part-9b077314.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000065\part-f5f50291.parquet
+Rows: 228
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000080\part-2c5d2efb.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000080\part-c2e90b4c.parquet
+Rows: 234
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000080\part-fd44d263.parquet
+Rows: 28
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000081\part-33ee5831.parquet
+Rows: 32
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000081\part-48007caf.parquet
+Rows: 6
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000081\part-79c77cf5.parquet
+Rows: 242
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000081\part-e186d38b.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000082\part-62ca83b3.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000082\part-a66bfd97.parquet
+Rows: 30
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000082\part-fc168d6d.parquet
+Rows: 214
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000083\part-47eccb94.parquet
+Rows: 31
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000083\part-4e296cca.parquet
+Rows: 235
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000083\part-a031621b.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000084\part-51b23ad8.parquet
+Rows: 55
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000084\part-93833b97.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000084\part-d9d5f26b.parquet
+Rows: 237
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000085\part-38b40fc4.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000085\part-4cf0e8a8.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000085\part-5e580273.parquet
+Rows: 225
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000086\part-3203b6f0.parquet
+Rows: 36
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000086\part-83de483c.parquet
+Rows: 48
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000086\part-a6aac612.parquet
+Rows: 240
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000087\part-374c3c67.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000087\part-42a826ce.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000087\part-8420a5b7.parquet
+Rows: 215
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000088\part-0a3c4844.parquet
+Rows: 237
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000088\part-1288d4f9.parquet
+Rows: 42
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000088\part-86259a6d.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000089\part-262b8458.parquet
+Rows: 229
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000089\part-28b646e1.parquet
+Rows: 23
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\643cf2\events\hour=000089\part-d6003cc5.parquet
+Rows: 27
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\agg-resource-participants\date=2026-11-16\part-1794848980478-3725c556.parquet
+Rows: 1
+Schema: record_id: string
+ts: double
+payload: string
+
+File: accesssentinel-export\agg-user-hourly\date=2026-11-16\part-1794848976180-959dd9e5.parquet
+Rows: 1
+Schema: record_id: string
+ts: double
+payload: string
+
+File: accesssentinel-export\b1b07b\events\hour=000008\part-f2f8db4f.parquet
+Rows: 286
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000009\part-25624ee0.parquet
+Rows: 317
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000010\part-3cc7373c.parquet
+Rows: 327
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000011\part-08000f41.parquet
+Rows: 331
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000012\part-28e771ea.parquet
+Rows: 296
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000013\part-51673d95.parquet
+Rows: 273
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000014\part-6358f4da.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000015\part-cc9765b9.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000016\part-e39e9afa.parquet
+Rows: 287
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000017\part-0d95fb86.parquet
+Rows: 383
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000018\part-c127ef8f.parquet
+Rows: 111
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000019\part-07df3089.parquet
+Rows: 54
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000020\part-187a175d.parquet
+Rows: 14
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000028\part-8428c535.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000029\part-6510d574.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000030\part-15188591.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000032\part-571dfdef.parquet
+Rows: 335
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000033\part-9e306ba1.parquet
+Rows: 301
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000034\part-a60a23f5.parquet
+Rows: 314
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000035\part-b9e093f4.parquet
+Rows: 325
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000036\part-d2631800.parquet
+Rows: 311
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000037\part-10a7a8cd.parquet
+Rows: 352
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000037\part-72800cc2.parquet
+Rows: 11
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000038\part-244086ab.parquet
+Rows: 315
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000039\part-78713c58.parquet
+Rows: 299
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000040\part-42eb4ef1.parquet
+Rows: 343
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000041\part-48cfb5d3.parquet
+Rows: 275
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000042\part-450a69c2.parquet
+Rows: 26
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000043\part-8a82504a.parquet
+Rows: 47
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000044\part-265112c5.parquet
+Rows: 7
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000052\part-8a209780.parquet
+Rows: 28
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000052\part-8e2ec9bc.parquet
+Rows: 12
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000053\part-7377ae3b.parquet
+Rows: 39
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000054\part-aed33f48.parquet
+Rows: 22
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000054\part-d0939924.parquet
+Rows: 1
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000055\part-e5548c48.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000056\part-1d5ec747.parquet
+Rows: 138
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000056\part-35761d0b.parquet
+Rows: 33
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000056\part-fbe7b895.parquet
+Rows: 96
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000056\part-ff70980b.parquet
+Rows: 46
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000057\part-02b59199.parquet
+Rows: 44
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000057\part-066d0939.parquet
+Rows: 113
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000057\part-26304da6.parquet
+Rows: 40
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000057\part-94dbaedf.parquet
+Rows: 104
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000058\part-606751ac.parquet
+Rows: 103
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000058\part-770db363.parquet
+Rows: 118
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000058\part-7f073e5a.parquet
+Rows: 36
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000058\part-add6d89d.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000059\part-59be1c58.parquet
+Rows: 128
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000059\part-b4796509.parquet
+Rows: 35
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000059\part-e3f205f6.parquet
+Rows: 107
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000059\part-f1dabfa5.parquet
+Rows: 27
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000060\part-0823d3be.parquet
+Rows: 227
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000060\part-343a3dc8.parquet
+Rows: 39
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000060\part-852a5691.parquet
+Rows: 36
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000060\part-b83b28a7.parquet
+Rows: 43
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000061\part-57414f09.parquet
+Rows: 35
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000061\part-6cf0f980.parquet
+Rows: 41
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000061\part-8d47fa9a.parquet
+Rows: 30
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000061\part-affcc417.parquet
+Rows: 199
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000062\part-1a558a8d.parquet
+Rows: 37
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000062\part-2a47055a.parquet
+Rows: 13
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000062\part-4f606e0d.parquet
+Rows: 202
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000062\part-978f1828.parquet
+Rows: 70
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000063\part-52dbac96.parquet
+Rows: 53
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000063\part-e38f5b61.parquet
+Rows: 90
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000063\part-e6c59cc5.parquet
+Rows: 181
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000064\part-1451d59d.parquet
+Rows: 143
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000064\part-7e34eff5.parquet
+Rows: 164
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000064\part-973226c0.parquet
+Rows: 116
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000065\part-93ace9cf.parquet
+Rows: 80
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000065\part-df024402.parquet
+Rows: 158
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000065\part-f8850f96.parquet
+Rows: 101
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000080\part-0858d9af.parquet
+Rows: 35
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000080\part-aab22b68.parquet
+Rows: 111
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000080\part-ab13d42f.parquet
+Rows: 159
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000081\part-6a67c076.parquet
+Rows: 29
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000081\part-cc7f3bad.parquet
+Rows: 157
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000081\part-da6f7159.parquet
+Rows: 142
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000082\part-3d27d2ac.parquet
+Rows: 207
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000082\part-6a41030c.parquet
+Rows: 75
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000083\part-d30dfcab.parquet
+Rows: 314
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000084\part-997bf00a.parquet
+Rows: 335
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000085\part-5bcb07ff.parquet
+Rows: 184
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000085\part-66c7b06a.parquet
+Rows: 143
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000086\part-5e1f9316.parquet
+Rows: 5
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000086\part-dbc73e27.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000087\part-37b50d69.parquet
+Rows: 257
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000087\part-98b837d5.parquet
+Rows: 38
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000088\part-cd9e0695.parquet
+Rows: 319
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\b1b07b\events\hour=000089\part-f093a588.parquet
+Rows: 279
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+
+File: accesssentinel-export\events\date=2026-11-16\app=docs\part-1794842445346-3ec57fd5.parquet
+Rows: 1
+Schema: u: string
+t: double
+a: string
+r: string
+s: int64
+p: string
+o: string
+c: string
+y: int64
+eid: int64
+event_id: string
+schema_version: int64
+correlation_id: string
+meta: string
+seq: int64
+stream: string
+tenant: string
+ti: double
+v_policy: string
+_kafka_partition: int64
+_kafka_offset: int64
+_ingested_at: double

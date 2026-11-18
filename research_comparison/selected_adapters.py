@@ -487,8 +487,22 @@ def run_accesssentinel_tcn(ds, seed=0, quick=False, device='cpu'):
     from accesssentinel.ml.train_tcn import train_variant, scores_v3
     start=time.perf_counter(); idx=_window_index(ds); enc=_window_encoder(ds)
     tr,va,te=idx.mask('train'),idx.mask('val'),idx.mask('test')
-    cfg=TCNv3Config()
-    if quick: cfg=replace(cfg,pretrain_epochs=1,finetune_epochs=1,batch_size=512)
+    cfg = TCNv3Config()
+    if quick:
+        cfg = replace(
+            cfg,
+            pretrain_epochs=1,
+            finetune_epochs=1,
+            batch_size=512,
+        )
+    else:
+        # Reduced training budget for full-dataset comparison.
+        cfg = replace(
+            cfg,
+            pretrain_epochs=1,
+            finetune_epochs=3,
+        )
+
     model,history,best=train_variant(idx,enc,cfg,'tcn-v3',tr,va,device,seed,log=lambda *a:None)
     yv=np.asarray(idx.y[va],dtype=int); yt=np.asarray(idx.y[te],dtype=int)
     sv=scores_v3(model,idx,va,device); st=scores_v3(model,idx,te,device)

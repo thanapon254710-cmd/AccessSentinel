@@ -1,0 +1,45 @@
+ACCESS SENTINEL - HDFS STORAGE REPORT
+=======================================================
+
+1. CURRENT DATA
+-------------------------------------------------------
+Parquet files: 362
+Total events: 52,713
+Parquet storage: 2.75 MB
+Average storage per event: 54.76 bytes
+
+2. EVENT TIMESTAMP RANGE
+-------------------------------------------------------
+Total timestamps: 52,713
+Valid timestamps: 1
+Invalid timestamps: 52,712
+Earliest event: 2026-11-16 15:19:12 UTC
+Latest event: 2026-11-16 15:19:12 UTC
+Observed timestamp span: 0.00 days
+
+3. HDFS STORAGE CAPACITY
+-------------------------------------------------------
+Available capacity: 943.57 GB
+Capacity source: Live HDFS report
+Estimated additional events: 18,503,140,369
+Estimated total event capacity: 18,503,193,082
+
+4. DATA RETENTION POLICY
+-------------------------------------------------------
+Automatic TTL / expiration: NOT CONFIGURED
+Current retention: No automatic deletion policy found
+Note: Timestamp span is not a configured retention limit.
+
+5. IMPORTANT LIMITATIONS
+-------------------------------------------------------
+- Timestamp validation accepts Unix dates from 2000 to 2100.
+- Invalid timestamps are excluded from the observed span.
+- Capacity assumes future events have similar compression.
+- Does not reserve space for feedback, indexes, or other files.
+- HDFS replication and operational overhead may reduce capacity.
+- Event counts include scanned tenant and root event files.
+- Counts are not deduplicated across tenants.
+- Capacity estimate assumes all available space is usable.
+
+=======================================================
+END OF REPORT

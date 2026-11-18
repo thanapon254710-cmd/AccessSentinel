@@ -1,0 +1,8 @@
+HDFS EVENT TIMESTAMP SUMMARY
+=============================================
+Parquet files: 0
+Total events: 0
+Earliest timestamp: None
+Latest timestamp: None
+Earliest date: N/A
+Latest date: N/A
