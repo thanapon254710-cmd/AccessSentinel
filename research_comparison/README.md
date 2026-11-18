@@ -69,3 +69,22 @@ The [17] and [25] adapters are **interaction-provenance approximations**, not OS
 - Runtime comparisons are meaningful only when device, hardware, thread count, and timing boundaries are reported. `fit_and_score_seconds` excludes shared dataset generation and shared `build_v3` window-index construction, but includes method-specific feature/graph construction, fitting, and scoring. It is not a hardware-independent algorithm complexity measure.
 - A method that fails or cannot score a sample is not silently replaced with another model. Failures and unscored samples are recorded.
 - Reference [24] is not itself a group-collusion or policy-enforcement method. Capability dimensions outside a paper's scope should be marked not applicable, not zero.
+
+## Current measured evaluation suite (Figures 2–7)
+
+**v4 is the current executable suite:** [`EVALUATION_V4.md`](EVALUATION_V4.md).
+It trains TCN-v3 and TGN-v3 on the common synthetic dataset, runs the six
+reference adapters, measures local inference latency, performs a real paced
+component load test, and replays all four escalation paths for the six ablations.
+
+```powershell
+python -m pip install -r requirements/evaluation.txt
+python -m pytest -q research_comparison/tests/test_measured_experiments.py
+python -m research_comparison.run_evaluation --quick --seeds 0 --tgn-epochs 2 --load-duration 0.6
+python -m research_comparison.run_evaluation --figures 2,3,4,5,6,7 --seeds 0,1,2,3,4 --device cuda
+```
+
+Full and quick results are isolated in `evaluation_v4/` and
+`evaluation_v4_smoke/` respectively. The earlier v3 Fig. 6/7 templates and
+status figures are superseded and must not be presented as scientific evidence.
+See the v4 document for the exact measured boundaries and limitations.

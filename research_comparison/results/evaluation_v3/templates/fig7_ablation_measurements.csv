@@ -1,0 +1,7 @@
+﻿configuration,precision,recall,f1,roc_auc,pr_auc,collusion_precision,collusion_recall,collusion_f1,training_seconds,inference_latency_ms,dataset_fingerprint,seed,notes
+TCN only,,,,,,,,,,,,,
+TCN + TGN,,,,,,,,,,,,,
+TCN + TGN without resource-triggered escalation,,,,,,,,,,,,,
+TCN + TGN without periodic sweep,,,,,,,,,,,,,
+TCN + TGN without random sampling,,,,,,,,,,,,,
+Full AccessSentinel,,,,,,,,,,,,,

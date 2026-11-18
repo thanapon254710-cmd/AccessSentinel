@@ -74,15 +74,46 @@ def _calibrate(yv, sv):
     if not len(nominal): return float('inf')
     return float(np.quantile(nominal,.95))
 
-def _result(name, yv, sv, yt, st, start, note, extra=None):
-    m=_event_metrics(yt,st); threshold=_calibrate(yv,sv)
-    pred=np.asarray(st)>=threshold; yy=np.asarray(yt,dtype=int); valid=np.isfinite(st); pred=pred[valid]; yy=yy[valid]
-    tp=int(((pred==1)&(yy==1)).sum()); fp=int(((pred==1)&(yy==0)).sum()); fn=int(((pred==0)&(yy==1)).sum())
-    precision=tp/max(1,tp+fp); recall=tp/max(1,tp+fn)
-    m.update({'precision':precision,'recall':recall,'f1':2*precision*recall/max(1e-12,precision+recall),
-              'validation_threshold':threshold})
+def _result(name, yv, sv, yt, st, start, note, extra=None, val_event_ids=None, test_event_ids=None):
+    """Validate score orientation; preserve raw direction for reproducibility.
+
+    Unscored positive test examples count as false negatives. We do not
+    reverse score direction automatically, because that would silently change
+    the method. Direction diagnostics use validation labels only.
+    """
+    yv=np.asarray(yv,dtype=int); sv=np.asarray(sv,dtype=float)
+    yt=np.asarray(yt,dtype=int); st=np.asarray(st,dtype=float)
+    if len(yv)!=len(sv) or len(yt)!=len(st):
+        raise ValueError(f'{name}: labels/scores length mismatch')
+    valid_val=np.isfinite(sv)
+    if valid_val.any() and len(np.unique(yv[valid_val]))==2:
+        val_auc=float(roc_auc_score(yv[valid_val],sv[valid_val]))
+    else:
+        val_auc=None
+    m=_event_metrics(yt,st)
+    threshold=_calibrate(yv,sv)
+    valid=np.isfinite(st)
+    pred=valid & (st>=threshold)
+    tp=int(np.sum(pred & (yt==1)))
+    fp=int(np.sum(pred & (yt==0)))
+    fn=int(np.sum((~pred) & (yt==1)))
+    precision=tp/max(1,tp+fp)
+    recall=tp/max(1,tp+fn)
+    m.update({'precision':precision,'recall':recall,
+              'f1':2*precision*recall/max(1e-12,precision+recall),
+              'validation_threshold':threshold,
+              'validation_roc_auc':val_auc,
+              'score_direction_warning':bool(val_auc is not None and val_auc<0.5),
+              'test_coverage':float(np.mean(valid)) if len(valid) else 0.0,
+              'n_unscored_positives':int(np.sum((~valid)&(yt==1))),
+              'tp':tp,'fp':fp,'fn':fn})
     return {'method':name,'metrics':m,'fit_and_score_seconds':time.perf_counter()-start,
-            'protocol_note':note,'extra':extra or {}}
+            'protocol_note':note,'extra':extra or {},
+            '_validation_event_ids':list(map(str,val_event_ids or [])),
+            '_validation_scores':sv.tolist(),
+            '_test_event_ids':list(map(str,test_event_ids or [])),
+            '_test_scores':st.tolist()}
+
 
 def run_dynad(ds, epochs=4):
     start=time.perf_counter(); tr,va,te=(_split(ds,x) for x in ('train','val','test')); idx=_window_index(ds)
@@ -106,7 +137,8 @@ def run_dynad(ds, epochs=4):
     sv=score(va); st=score(te)
     sv=_select_scores(dict(zip([e.event_id for e in va],sv)),vids); st=_select_scores(dict(zip([e.event_id for e in te],st)),tids)
     return _result('Ref. 14 DynAD',yv,sv,yt,st,start,
-        'Evolving GCN/GRU temporal graph core; event edges are user-resource interactions. Train labels supervise training snapshots only.')
+        'Evolving GCN/GRU temporal graph core; event edges are user-resource interactions. Train labels supervise training snapshots only.',
+        val_event_ids=vids, test_event_ids=tids)
 
 def run_pgaid(ds, epochs=4):
     """PG-AID adaptation with train-only TF-IDF/Doc2Vec fitting and causal snapshot alignment."""
@@ -210,7 +242,7 @@ def run_pgaid(ds, epochs=4):
     }
     return _result('Ref. 17 PG-AID',yv,sv,yt,st,start,
         'Cache snapshots, train-only TF-IDF and Doc2Vec, and next-snapshot Transformer. Interaction-provenance paths approximate OS provenance.',
-        diagnostics)
+        diagnostics, val_event_ids=vids, test_event_ids=tids)
 
 
 def _acobe_training_vocab(train_events):
@@ -327,7 +359,7 @@ def run_acobe(ds, epochs=3):
     }
     return _result('Ref. 21 ACOBE',yv,sv,yt,st,start,
         'Aspect autoencoders and rank-based investigation priority; train-fitted role cohorts and categorical vocabulary. User-level scores are broadcast to events.',
-        diagnostics)
+        diagnostics, val_event_ids=vids, test_event_ids=tids)
 
 def _groups_for(events, feature_dim=24, max_members=8):
     groups=build_coreview_groups(events,window_seconds=7*86400,min_shared_resources=1,feature_dim=feature_dim)
@@ -459,7 +491,7 @@ def run_fgdt(ds, epochs=4):
     }
     return _result('Ref. 22 FGDT',yv,sv,yt,st,start,
         'Co-access groups with train-fitted feature scaling, weighted member cross-entropy and group BCE; event behavior vectors replace review representations.',
-        diagnostics)
+        diagnostics, val_event_ids=vids, test_event_ids=tids)
 
 def run_deepro(ds, epochs=3):
     start=time.perf_counter(); tr,va,te=(_split(ds,x) for x in ('train','val','test')); idx=_window_index(ds)
@@ -478,7 +510,8 @@ def run_deepro(ds, epochs=3):
     user_scores={u:float(out['process_probabilities'][i,1]) for i,u in enumerate(process_nodes)}
     sv=_select_scores({e.event_id:user_scores.get(user_id(e),np.nan) for e in va},vids); st=_select_scores({e.event_id:user_scores.get(user_id(e),np.nan) for e in te},tids)
     return _result('Ref. 25 DEEPRO',yv,sv,yt,st,start,
-        'MAGNN process/file/network meta-path core trained on train-period interaction provenance; user/resource nodes proxy process/entity nodes. Unseen test users remain unscored.')
+        'MAGNN process/file/network meta-path core trained on train-period interaction provenance; user/resource nodes proxy process/entity nodes. Unseen test users remain unscored.',
+        val_event_ids=vids, test_event_ids=tids)
 
 def run_accesssentinel_tcn(ds, seed=0, quick=False, device='cpu'):
     """Train AccessSentinel's TCN-v3 on the exact common dataset and window split."""
@@ -506,10 +539,13 @@ def run_accesssentinel_tcn(ds, seed=0, quick=False, device='cpu'):
     model,history,best=train_variant(idx,enc,cfg,'tcn-v3',tr,va,device,seed,log=lambda *a:None)
     yv=np.asarray(idx.y[va],dtype=int); yt=np.asarray(idx.y[te],dtype=int)
     sv=scores_v3(model,idx,va,device); st=scores_v3(model,idx,te,device)
-    return _result('AccessSentinel TCN v3',yv,sv,yt,st,start,
+    result=_result('AccessSentinel TCN v3',yv,sv,yt,st,start,
         'AccessSentinel Revised-v3 TCN trained on the same generated dataset and chronological window split as all reference adaptations.',
         {'best_validation_pr_auc':float(best),'epochs_pretrain':cfg.pretrain_epochs,'epochs_finetune':cfg.finetune_epochs,
-         'training_epochs_completed':len(history) if hasattr(history,'__len__') else None,'device':device})
+         'training_epochs_completed':len(history) if hasattr(history,'__len__') else None,'device':device},
+        val_event_ids=[str(idx.event_ids[i]) for i in va], test_event_ids=[str(idx.event_ids[i]) for i in te])
+    result['_trained_model'] = model
+    return result
 
 def run_all_selected(seed=0,quick=False,device='cpu',train_accesssentinel=True):
     np.random.seed(1000+seed); torch.manual_seed(1000+seed); torch.set_num_threads(1)
@@ -551,5 +587,5 @@ def run_ref24(ds, seed=0, dim=8):
     return _result('Ref. 24 User-resource embedding',yv,_select_scores(val_map,vids),
                    yt,_select_scores(test_map,tids),start,
                    'Regularized bipartite spectral embedding and nearest prior user on resource; fitted on training-period interactions only.',
-                   {'embedding_dim':dim,'distance':'cosine'})
+                   {'embedding_dim':dim,'distance':'cosine'}, val_event_ids=vids, test_event_ids=tids)
 

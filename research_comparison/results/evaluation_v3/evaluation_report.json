@@ -1,0 +1,76 @@
+{
+  "figures_requested": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "seeds": [
+    0
+  ],
+  "quick_smoke_only": true,
+  "reuse_cache": false,
+  "dataset_requirement": "The full benchmark uses the same generated tcn_v3_eval dataset (~506k events) per seed; every compared method receives the same dataset object and chronological split.",
+  "dataset_by_seed": [
+    {
+      "seed": 0,
+      "dataset_events": 67349,
+      "dataset_fingerprint": "2b77c97a8ea77b35",
+      "collusion_labeled_events": 18
+    }
+  ],
+  "methods_completed": [
+    "Ref. 14 DynAD",
+    "Ref. 17 PG-AID",
+    "Ref. 21 ACOBE",
+    "Ref. 22 FGDT",
+    "Ref. 24 User-resource embedding",
+    "Ref. 25 DEEPRO"
+  ],
+  "failures": [],
+  "fig6_fig7_status": {
+    "fig6": "No numeric measurements yet; template retained",
+    "fig7": "No numeric measurements yet; template retained"
+  },
+  "figure_status": {
+    "fig2": {
+      "description": "Grouped Precision/Recall/F1 chart from the same benchmark predictions.",
+      "methods_present": [
+        "Ref. 14 DynAD",
+        "Ref. 17 PG-AID",
+        "Ref. 21 ACOBE",
+        "Ref. 22 FGDT",
+        "Ref. 24 User-resource embedding",
+        "Ref. 25 DEEPRO"
+      ],
+      "AccessSentinel_included": false
+    },
+    "fig3": {
+      "description": "Grouped ROC-AUC/PR-AUC chart from the same cached predictions as Fig.2.",
+      "methods_present": [
+        "Ref. 14 DynAD",
+        "Ref. 17 PG-AID",
+        "Ref. 21 ACOBE",
+        "Ref. 22 FGDT",
+        "Ref. 24 User-resource embedding",
+        "Ref. 25 DEEPRO"
+      ],
+      "AccessSentinel_included": false
+    },
+    "fig4": "Time-to-detect per attack instance from chronological test scores; event-to-decision latency explicitly not measured.",
+    "fig5": "Collusion-labelled event/member proxy; not native group-level detection for every method. Ref.24 excluded as not a group detector.",
+    "fig6": "Requires actual measured component load-test CSV; blank template is not a result.",
+    "fig7": "Requires actual measured ablation CSV; blank template is not a result."
+  },
+  "methodology_cautions": [
+    "Six related-work implementations are common-data adaptations, not exact reproductions of original paper datasets.",
+    "Ref.17 and Ref.25 use interaction-provenance approximations; Ref.21 uses role cohorts; Ref.22 adapts co-access groups.",
+    "Fig.4 detection latency (ms) is not the same as attack time-to-detect (seconds); only the latter is currently supported.",
+    "Fig.5 output is an exploratory event/member-level proxy, not a fair direct comparison of native group-level detectors.",
+    "Fig.6/7 templates intentionally contain blank measurements. Do not treat them as experimental results.",
+    "--quick uses a reduced dataset and must never be reported as paper results."
+  ],
+  "elapsed_seconds": 44.15945589996409
+}

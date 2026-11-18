@@ -1,0 +1,43 @@
+﻿method,seed,attack_instance,scenario,n_attack_events,attack_start_epoch_s,first_detection_epoch_s,time_to_detect_seconds,detected,threshold
+Ref. 24 User-resource embedding,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-0,compromised_account,107,1790990707.266253,1790991547.9943278,840.7280747890472,1,0.0
+Ref. 24 User-resource embedding,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,1791022220.963393,556.799665927887,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,1790939110.6563544,916.7388834953308,1,0.0
+Ref. 24 User-resource embedding,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,0.0
+Ref. 24 User-resource embedding,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,1791206757.3034754,783.9537930488586,1,0.0
+Ref. 24 User-resource embedding,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,1791248853.9237697,167011.64635753632,1,0.0
+Ref. 14 DynAD,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,0.9998849630355835
+Ref. 14 DynAD,0,compromised_account-test-0,compromised_account,107,1790990707.266253,1790991547.9943278,840.7280747890472,1,0.9998849630355835
+Ref. 14 DynAD,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,1791022220.963393,556.799665927887,1,0.9998849630355835
+Ref. 14 DynAD,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,,,0,0.9998849630355835
+Ref. 14 DynAD,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,0.9998849630355835
+Ref. 14 DynAD,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,1791206768.9042904,795.5546081066132,1,0.9998849630355835
+Ref. 14 DynAD,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,,,0,0.9998849630355835
+Ref. 17 PG-AID,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,compromised_account-test-0,compromised_account,107,1790990707.266253,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,,,0,1.5005667209625244
+Ref. 17 PG-AID,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,,,0,1.5005667209625244
+Ref. 21 ACOBE,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,0.03571428571428571
+Ref. 21 ACOBE,0,compromised_account-test-0,compromised_account,107,1790990707.266253,,,0,0.03571428571428571
+Ref. 21 ACOBE,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,1791022220.963393,556.799665927887,1,0.03571428571428571
+Ref. 21 ACOBE,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,,,0,0.03571428571428571
+Ref. 21 ACOBE,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,0.03571428571428571
+Ref. 21 ACOBE,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,,,0,0.03571428571428571
+Ref. 21 ACOBE,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,,,0,0.03571428571428571
+Ref. 22 FGDT,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,0.519231379032135
+Ref. 22 FGDT,0,compromised_account-test-0,compromised_account,107,1790990707.266253,,,0,0.519231379032135
+Ref. 22 FGDT,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,,,0,0.519231379032135
+Ref. 22 FGDT,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,1790939110.6563544,916.7388834953308,1,0.519231379032135
+Ref. 22 FGDT,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,0.519231379032135
+Ref. 22 FGDT,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,,,0,0.519231379032135
+Ref. 22 FGDT,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,,,0,0.519231379032135
+Ref. 25 DEEPRO,0,bac_probe-test-0,bac_probe,52,1790940845.9112406,,,0,9.793446221352199e-19
+Ref. 25 DEEPRO,0,compromised_account-test-0,compromised_account,107,1790990707.266253,,,0,9.793446221352199e-19
+Ref. 25 DEEPRO,0,horizontal_abuse-test-0,horizontal_abuse,89,1791021664.163727,1791022220.963393,556.799665927887,1,9.793446221352199e-19
+Ref. 25 DEEPRO,0,insider_exfiltration-test-0,insider_exfiltration,105,1790938193.917471,1790939110.6563544,916.7388834953308,1,9.793446221352199e-19
+Ref. 25 DEEPRO,0,low_and_slow-test-0,low_and_slow,28,1790933239.2781396,,,0,9.793446221352199e-19
+Ref. 25 DEEPRO,0,unusual_sequence-test-0,unusual_sequence,45,1791205973.3496823,,,0,9.793446221352199e-19
+Ref. 25 DEEPRO,0,unusual_time-test-0,unusual_time,33,1791081842.2774122,1791248853.9237697,167011.64635753632,1,9.793446221352199e-19

@@ -1,0 +1,72 @@
+{
+  "mode": "smoke_nonreportable",
+  "candidate_protocol_complete": false,
+  "paper_ready": false,
+  "figures_requested": [
+    2,
+    3,
+    4
+  ],
+  "seeds": [
+    0
+  ],
+  "device": "cpu",
+  "tgn_epochs": 6,
+  "load_duration_seconds": 2.0,
+  "elapsed_seconds": 95.0401074999827,
+  "datasets": [
+    {
+      "seed": 0,
+      "events": 67349,
+      "fingerprint": "2b77c97a8ea77b35",
+      "synthetic": true
+    }
+  ],
+  "methods_completed": [
+    "Ref. 14 DynAD",
+    "Ref. 17 PG-AID",
+    "Ref. 21 ACOBE",
+    "Ref. 22 FGDT",
+    "Ref. 24 User-resource embedding",
+    "Ref. 25 DEEPRO"
+  ],
+  "failures": [],
+  "figures": {
+    "fig2": {
+      "generated": true,
+      "present": [
+        "DynAD",
+        "PG-AID",
+        "ACOBE",
+        "FGDT",
+        "User-resource embedding",
+        "DEEPRO"
+      ],
+      "complete_comparison": false
+    },
+    "fig3": {
+      "generated": true,
+      "present": [
+        "DynAD",
+        "PG-AID",
+        "ACOBE",
+        "FGDT",
+        "User-resource embedding",
+        "DEEPRO"
+      ],
+      "complete_comparison": false
+    },
+    "fig4": {
+      "generated": true,
+      "latency_boundary": "local AccessSentinel TCN score and threshold; not system end-to-end"
+    }
+  },
+  "limitations": [
+    "All figures use synthetic AccessSentinel tcn_v3_eval data, never real production data.",
+    "References are common-data adaptations; several are event anomaly proxies rather than native group detectors.",
+    "Figure 4 local TCN callback time excludes gateway, Kafka, queue, PDP and enforcement.",
+    "Figure 6 is in-process offered-rate replay with a cold-start TGN; it does not validate deployed distributed throughput.",
+    "Figure 7 measures collusion anchor outcomes with actual Escalator admission; ungated TCN + TGN is an upper-bound compute baseline.",
+    "Five seeds and full dataset are required before candidate paper evidence; accuracy and methodological comparability must still be reviewed."
+  ]
+}

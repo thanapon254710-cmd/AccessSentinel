@@ -1,0 +1,7 @@
+﻿method,seed,threshold,collusion_positive_test_events,roc_auc,pr_auc,precision,recall,f1,n_scored,interpretation
+Ref. 24 User-resource embedding,0,0.0,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.
+Ref. 14 DynAD,0,0.9998931884765625,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.
+Ref. 17 PG-AID,0,1.234930157661438,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.
+Ref. 21 ACOBE,0,0.03571428571428571,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.
+Ref. 22 FGDT,0,0.519231379032135,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.
+Ref. 25 DEEPRO,0,3.7061347515710743e-13,0,,,,,,5536,Event/member-level collusion-label evaluation using this method's event anomaly score; not native group-level output unless the method exposes it.

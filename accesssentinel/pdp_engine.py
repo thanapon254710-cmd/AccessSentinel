@@ -35,7 +35,13 @@ import time
 import uuid
 from typing import Callable, Dict, List, Optional
 
-from redis.exceptions import WatchError
+try:
+    from redis.exceptions import WatchError
+except ImportError:
+    # Pure threshold/policy helpers and in-process Escalator evaluation do not
+    # require the optional Redis client. The real service installs redis.
+    class WatchError(Exception):
+        pass
 
 from .config import PDPConfig, RiskConfig
 

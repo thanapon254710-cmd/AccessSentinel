@@ -1,0 +1,8 @@
+﻿method,detection_latency_ms,status,reason
+AccessSentinel TCN v3,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 14 DynAD,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 17 PG-AID,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 21 ACOBE,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 22 FGDT,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 24 User-resource embedding,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.
+Ref. 25 DEEPRO,,NOT_MEASURED,Current adapters score batches; event-to-decision online timing requires instrumentation.

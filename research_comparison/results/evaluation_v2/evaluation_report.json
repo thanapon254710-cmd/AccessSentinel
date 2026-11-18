@@ -1,0 +1,41 @@
+{
+  "seeds": [
+    0
+  ],
+  "quick_smoke_only": true,
+  "methods_completed": [
+    "Ref. 14 DynAD",
+    "Ref. 17 PG-AID",
+    "Ref. 21 ACOBE",
+    "Ref. 22 FGDT",
+    "Ref. 24 User-resource embedding",
+    "Ref. 25 DEEPRO"
+  ],
+  "failures": [],
+  "dataset_by_seed": [
+    {
+      "seed": 0,
+      "dataset_events": 67349,
+      "dataset_fingerprint": "2b77c97a8ea77b35",
+      "collusion_labeled_events": 18
+    }
+  ],
+  "figures": {
+    "fig2": "Generated from shared individual-anomaly benchmark metrics.",
+    "fig3": "Generated from shared individual-anomaly benchmark metrics.",
+    "fig4": "Time-to-detect generated from chronological test scores; detection_latency_ms is explicitly not measured.",
+    "fig5": "Collusion-labeled event/member metrics; not equivalent to native group-level detection for every method.",
+    "fig6": "Awaiting measured per-component load results in fig6_scalability_measurements.csv.",
+    "fig7": "Awaiting measured ablation results in fig7_ablation_measurements.csv."
+  },
+  "dataset_requirement": "Same tcn_v3_eval synthetic dataset (~506k events) for all methods within each seed; all methods share the same dataset fingerprint per seed.",
+  "methodology_cautions": [
+    "The six reference methods are common-data adaptations, not exact reproductions on their original paper datasets.",
+    "Fig.4 detection latency (event trigger to decision in ms) is not available from current batch adapters and is not fabricated.",
+    "Fig.4 time-to-detect uses attack-instance first event to first test event score above a nominal-validation threshold.",
+    "Fig.5 currently evaluates collusion-labeled events/members with validation-only thresholding; it is not a group-level metric for methods without native group outputs.",
+    "Fig.6 and Fig.7 require measurements from actual component-level load and ablation runs; blank templates are provided rather than synthetic result values.",
+    "--quick outputs are engineering smoke tests and must not be reported as research results."
+  ],
+  "elapsed_seconds": 53.145991099998355
+}

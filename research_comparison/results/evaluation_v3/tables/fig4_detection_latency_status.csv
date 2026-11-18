@@ -1,0 +1,8 @@
+﻿method,detection_latency_ms,status,reason
+AccessSentinel TCN v3,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 14 DynAD,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 17 PG-AID,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 21 ACOBE,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 22 FGDT,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 24 User-resource embedding,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
+Ref. 25 DEEPRO,,NOT_MEASURED,Batch adapters do not expose online event-trigger-to-decision callbacks; do not infer latency from batch runtime.
