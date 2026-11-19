@@ -1,117 +1,133 @@
-# AccessSentinel — Deliverable 3 reference implementation
+# AccessSentinel
 
-> New here? Start with the plain-language overview: **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)**.
+**Continuous monitoring of broken access control in multi-web applications** — research prototype, local demo stack, and reproducible synthetic-data evaluation.
 
-Implements the D3 architecture (Steps 1–10) as a runnable, tested Python package.
-The deployed Docker stack uses real Kafka, HDFS, PostgreSQL and Redis; the in-process reference pipeline
-(`pipeline.py`, `run_demo.py`) uses stand-ins that keep the same contracts (see "Not real yet").
+> **Start here.** This is the canonical project README. The active comparison implementation is **evaluation revision v5**, not the archived v2–v4 suites. The full five-seed run has **not** been established as completed or paper-ready by this archive. A successful smoke test is not publishable evidence.
 
-| D3 step / component | Module |
+## What the system does
+
+AccessSentinel monitors authenticated access requests across protected web applications. A gateway records access events; Kafka distributes user-keyed and resource-keyed views; HDFS stores historical records. A **Temporal Convolutional Network (TCN)** scores individual access sequences. A **Temporal Graph Network (TGN)** maintains temporal graph memory and selectively analyzes escalated users for coordinated behavior. A **four-path escalation policy** (high-risk, sensitive-resource co-access, periodic sweep, and sampling) bounds graph inference work. A **Policy Decision Point (PDP)** applies risk-adaptive decisions, with analyst-confirmed feedback supporting later model refinement.
+
+This repository includes both an **in-process demonstration** and a **Docker-based multi-service prototype**. The synthetic evaluation does **not** establish production security efficacy or end-to-end deployment performance.
+
+## Repository map
+
+| Path | Purpose |
 |---|---|
-| Step 1 event tuple (Eq. 1), Gateway | `events.py`, `schema.py`, `gateway.py` (simulator model), `services/gateway/` (deployed) |
-| Step 2 Kafka, user-keyed + resource-keyed views, composite key | `broker.py` (in-process), `streaming/` (deployed: consumer framework, repartitioner) |
-| Step 3 historical store (HDFS) | `storage.py` (in-process), `adapters/hdfs_lake.py` + `streaming/hdfs_sink.py` (deployed), `history.py` (CLI) |
-| Step 4 TCN, sliding window X_u (Eqs. 2–3), d=50, L=20 | `tcn.py` (model); in-process: `features.py`, `state_store.py`; deployed: `ml/` (features, dataset, training, registry), `streaming/tcn_worker.py` |
-| Step 5 tiers, T_recheck | `risk.py` (in-process), `streaming/tcn_worker.py` (deployed) |
-| Step 6 four-path escalation (Eq. 4) | `escalation.py` (in-process); deployed: `escalation_engine.py`, `streaming/escalation_service.py`; evaluation: `ml/escalation_eval.py` |
-| Step 7 graph (users/resources/apps; access, membership, co-access) + TGN | `tgn.py` (model); in-process: `graph.py`; deployed: `ml/tgn_graph.py`, `ml/tgn_train.py`, `ml/train_tgn.py`, `ml/tgn_registry.py`, `streaming/graph_index.py`, `streaming/tgn_worker.py` |
-| Step 8 PDP Allow/Block, request- and session-time enforcement | `pdp.py`, `gateway.py` (in-process); deployed: `pdp_engine.py`, `streaming/pdp_service.py`, `pdp_admin.py`, gateway decision cache |
-| Step 9 feedback loop (analyst-verified only), dashboard | `feedback.py` (in-process); deployed: `incidents.py` + `streaming/incident_service.py`, `services/api/` (dashboard API), `dashboard/` (React + TypeScript UI), `ml/feedback_data.py`, `ml/retrain.py`, `runtime_settings.py` |
-| Step 10 capacity equations (8)–(12) | `scaling.py` |
-| Orchestration | `pipeline.py` |
-| Synthetic data with ground truth | `simulator.py` (v1, in-process demo), `datasets/synth.py` (v2, training/evaluation) |
+| `accesssentinel/` | Gateway, event schema, streaming, TCN/TGN, escalation, PDP, storage, API, and model code |
+| `dashboard/` | Analyst-facing web dashboard |
+| `deploy/`, `start.*`, `stop.bat` | Service deployment and startup helpers |
+| `models/` | Bundled model artifacts for the local demo |
+| `research_comparison/` | Current **v5** common-data comparison, reference adapters, measured evaluation, and tests |
+| `evaluation/` | Separate Experiments A–H, their figures, and recorded raw results |
+| `experiments/` | Standalone research experiment scripts and retained reports |
+| `requirements/` | Dependency sets; use `evaluation.txt` for research comparison |
+| `tests/`, `docs/` | Tests, architecture notes, audit history, and Windows setup |
+| `PROJECT_SUMMARY.md` | Plain-language project overview |
+| `PRESENTATION_DEMO.md` | Demo walkthrough |
 
-All hyper-parameters are in `config.py`; each is tagged `[D3]` (taken from the paper) or `[IMPL]` (a choice D3 leaves open).
+## Quick start — local application demo
 
-## Project status and infrastructure
-- Implementation status, defects and roadmap: `docs/PHASE1_AUDIT.md`; running log: `docs/PROGRESS.md`.
-- Docker stack (Kafka, HDFS, PostgreSQL, Redis) and Windows setup: `docs/SETUP_WINDOWS.md`. Short version:
+Prerequisites: Python 3.10+ for the in-process demo; Docker Desktop for the service stack. From the **AccessSentinel project root**:
 
-      copy .env.example .env        # then set the two passwords
-      docker compose up -d --build
-      docker compose run --rm tools # live check: Kafka, HDFS, PostgreSQL, Redis
-      # gateway + 3 protected demo apps: http://localhost:8000 (users/password: docs/SETUP_WINDOWS.md §5)
-      # security operations dashboard:   http://localhost:8080 (analyst1 / secadmin, AS_ANALYST_PASSWORD)
-
-## Run on another computer
-
-Everything runs in Docker, so another computer needs only **Docker Desktop** (Windows, macOS or Linux; about
-8 GB of memory for Docker, about 10 GB of free disk). The trained, promoted models are included (`models/`,
-about 2.5 MB), so no training is needed.
-
-**Easiest (Windows):** unzip the folder, start Docker Desktop, double-click **`start.bat`**. On first run it
-creates `.env` with random passwords, builds and starts everything (10-20 minutes the first time), waits until
-all services are healthy and opens the dashboard. `stop.bat` stops it. macOS/Linux: `sh start.sh`.
-
-**Sharing as a ZIP:** make the ZIP from Git, not by zipping the folder, so your own `.env` (your passwords),
-`.venv`, `node_modules` and local data are never included:
-
-```powershell
-git archive --format=zip -o AccessSentinel.zip HEAD
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q tests
+python run_demo.py --quick
 ```
 
-**Manually, from GitHub:**
+For the deployed local stack, review [`docs/SETUP_WINDOWS.md`](docs/SETUP_WINDOWS.md), copy `.env.example` to `.env`, set your own secrets, and run:
 
-```powershell
-git clone https://github.com/thanapon254710-cmd/AccessSentinel.git
-cd AccessSentinel
-copy .env.example .env          # macOS/Linux: cp .env.example .env
-# edit .env: replace every change-me with your own random value
-docker compose up -d --build    # first time 10-20 min (downloads images, builds the app and dashboard)
-docker compose ps               # wait until every service is healthy
+```bash
+docker compose up -d --build
+docker compose ps
 ```
 
-Then open http://localhost:8080 (dashboard: `analyst1` / `secadmin`, password `AS_ANALYST_PASSWORD`) and
-http://localhost:8000 (protected apps: demo users such as `alice`, password `AS_DEMO_USER_PASSWORD`). The new
-installation starts empty (no history, incidents or extra accounts); the demo in `PRESENTATION_DEMO.md` works
-the same way. Check it with `docker compose run --rm -T tools python scripts/smoke_dashboard.py`.
+On Windows you can instead run `start.bat` after starting Docker Desktop. The demo gateway normally uses `http://localhost:8000`; the dashboard uses `http://localhost:8080`. Do **not** expose this research prototype directly to the public internet. The supplied ZIP intentionally excludes the machine-specific `.env` file.
 
-**Using one running installation from other computers on the same network:** open `http://<that PC's IPv4
-address>:8080` and `:8000` (find the address with `ipconfig`; allow Docker through the firewall on private
-networks only). Only the gateway (8000) and the dashboard (8080) are reachable from the network. Kafka, HDFS,
-PostgreSQL and Redis listen on `127.0.0.1` only, because Kafka and HDFS have no authentication. Do not expose
-8000/8080 to the internet: this is a research prototype served over plain HTTP.
+## Current research comparison: revision v5
 
-## Run
-    pip install -r requirements.txt   # python>=3.10; torch CPU build is enough
-    pytest -q tests
-    python run_demo.py --quick     # a few minutes on CPU
-    python run_demo.py             # fuller training
+The comparison evaluates AccessSentinel and six **adapted** research methods on the same synthetic access-event data and chronological splits:
 
-## Not real yet
-- Kafka/HDFS are in-process stand-ins (`broker.py`, `storage.py`). Swap in `confluent-kafka` / Flink or Kafka Streams / pyarrow-HDFS behind the same interfaces.
-- Data is synthetic. Numbers from `run_demo.py` say the code works, not that the method works on real logs.
-- TGN is the D3/[14] dense GCN+GRU+attention variant, not Rossi et al.'s memory-based TGN (that is the Revised version's CMU/SGE split).
+| Display name | Reference | Notes |
+|---|---|---|
+| AccessSentinel | Proposed method | TCN individual detection; native TGN collective evaluation where applicable |
+| DynAD [14] | [14] | Dynamic-graph adaptation |
+| PG-AID [17] | [17] | Interaction-provenance approximation |
+| ACOBE [21] | [21] | Cohort/group-behavior adaptation |
+| FGDT [22] | [22] | Co-access group adaptation |
+| User-resource embedding [24] | [24] | Individual user-resource anomaly baseline |
+| DEEPRO [25] | [25] | Interaction-provenance approximation |
 
-## D3 gaps filled by implementation choices (confirm with the team)
-1. TCN kernel size (2), dense width, focal-loss gamma/alpha, epochs.
-2. T_recheck = 600 s (D3 Step 5: wall-clock interval initialised to 10 min). A forced re-score of an unchanged window would return the same score, so `window_at()` refreshes the newest inter-arrival feature to "time since last event".
-3. Sweep selection rule (sensitive resources touched by >= 4 distinct users over T_sweep) and sampling (exactly max(1, round(gamma*N)) users).
-4. Group g(u) = connected component of users sharing >= 2 sensitive resources; S_coll = mean of the top 25% edge scores over the group; users with no coupled group get no S_coll.
-5. theta_coll (PDP) and S_coll TTL are not in D3.
-6. TCN scores are Platt-calibrated on the validation fold so the fixed 0.4/0.6 thresholds are meaningful.
-7. TGN is trained supervised (BCE, edge labels = analyst-confirmed collusion) since D3 does not specify the objective.
+**Methodological warning:** These are common-data adaptations, not guaranteed faithful reproductions of the original papers or their reported numbers. In particular, reference event-anomaly scores projected onto collusion anchors are **not native group detectors**. Data are synthetic. Record hardware, training budget, prediction coverage, seeds, and metric definitions before citing any figures.
 
-## Real Kafka + real HDFS (all free / open source)
-Adapters: `accesssentinel/adapters/kafka_broker.py` (confluent-kafka) and `adapters/hdfs_store.py` (WebHDFS + Parquet).
-They plug into the same pipeline (`AccessSentinel(..., store=..., broker=...)`).
+### Install and verify
 
-1. Start the services (see `docs/SETUP_WINDOWS.md`; `.env` must exist):
+```bash
+python -m pip install -r requirements/evaluation.txt
+python -m pytest -q research_comparison/tests
+python -m compileall -q research_comparison evaluation
+```
 
-       docker compose up -d --build
+### Preflight: validate generated datasets without expensive training
 
-2. HDFS from your host: WebHDFS redirects writes to the datanode by hostname, so add this line to your hosts file
-   (`/etc/hosts`, or `C:\Windows\System32\drivers\etc\hosts`): `127.0.0.1 datanode`. Check the UI at http://localhost:9870.
+```bash
+python -m research_comparison.run_evaluation --preflight --figures 2,3,4,5,6,7,8,9 --seeds 0,1,2,3,4 --device cpu
+```
 
-3. Install and run:
+### Quick engineering smoke test (NOT paper results)
 
-       pip install -r requirements.txt
-       python run_demo.py --kafka localhost:9092 --hdfs http://localhost:9870
+```bash
+python -m research_comparison.run_evaluation --quick --figures 2,3,4,5,6,7,8,9 --seeds 0 --tgn-epochs 2 --load-duration 0.6 --device cpu
+```
 
-   `--kafka` and `--hdfs` are independent; omit either to keep the in-process stand-in for that part.
+### Full synthetic five-seed evaluation (compute-intensive)
 
-**Status:** both adapters were run against the live Docker stack by `scripts/check_infra.py` (Kafka: per-user
-partitioning/order and resource-view co-location; HDFS: Parquet write/read, compaction, feedback write). The
-deployed system (Phases 4-9) uses its own consumer framework with manual offset commits (audit D4 fixed) and keeps
-TCN window state in Redis, so restarts do not lose it; see `docs/PROGRESS.md`. In `run_demo.py --kafka/--hdfs`
-the TCN window state is still in-process.
+Use `--device cuda` only if `torch.cuda.is_available()` is true and the PyTorch installation supports the GPU:
+
+```bash
+python -m research_comparison.run_evaluation --figures 2,3,4,5,6,7,8,9 --seeds 0,1,2,3,4 --tgn-epochs 6 --load-duration 2 --device cuda
+```
+
+Run from the repository root, so Python can import `research_comparison` and `evaluation`. **Do not confuse a preflight pass or quick run with a completed five-seed result.** Revision v5 uses `research_comparison/results/evaluation_v5/` for full results and `evaluation_v5_smoke/` for quick results. These output directories are generated when experiments run; they are not shipped as verified full results.
+
+### Figure index
+
+| Figure | Subject |
+|---|---|
+| Fig. 2 | Precision, Recall, F1 |
+| Fig. 3 | ROC-AUC and PR-AUC |
+| Fig. 4 | Attack detection coverage |
+| Fig. 5 | Attack detection delay (conditional on detection) |
+| Fig. 6 | Collusion detection performance; AccessSentinel vs adapted references |
+| Fig. 7 | Throughput |
+| Fig. 8 | Component latency (local measurements, not full end-to-end) |
+| Fig. 9 | Ablation study |
+| Fig. 10 | Independent Experiment B |
+| Fig. 11 | Independent Experiment C |
+| Fig. 12 | Independent Experiment F |
+
+Figures 2–9 are generated by the v5 comparison runner from measured experiment outputs. Figures 10–12 are regenerated **separately** from the recorded independent Experiment B/C/F results:
+
+```bash
+python -m evaluation.figures b c f
+```
+
+Do not merge B/C/F data into the v5 common-data comparison or interpret local component latency as gateway-to-enforcement latency.
+
+### Outputs and research integrity
+
+The comparison runner writes `raw/` measurement JSON, `cache/` model/prediction artifacts, `tables/` CSV summaries, `figures/` PNG charts, and `evaluation_report.json` under its output directory. Inspect missing scores, detected denominators, dataset fingerprints, model training budgets, and failures. `paper_ready` remains false pending independent methods review. The current v5 revision changed synthetic collusion generation and must be rerun for all five seeds before drawing new comparative conclusions.
+
+For detailed rationale and limitations, see [`research_comparison/REVISION_V5_NOTES.md`](research_comparison/REVISION_V5_NOTES.md), [`research_comparison/IMPLEMENTATION_STATUS.md`](research_comparison/IMPLEMENTATION_STATUS.md), and [`research_comparison/reproduction_manifest.csv`](research_comparison/reproduction_manifest.csv). The separate experiment suite is documented in [`evaluation/README.md`](evaluation/README.md).
+
+## Running remotely (Kaggle / Colab)
+
+This archive is suitable as a **starting point** for a remote notebook, but it does **not yet include a configured Kaggle notebook**. Upload the cleaned project or an appropriate source-only subset, install `requirements/evaluation.txt`, check CUDA, run preflight and quick mode, then perform full runs with persistent checkpoint/output storage. GPU sessions have quotas and can terminate; do not assume multi-seed training will fit one session. Keep each seed's results and record the exact hardware and software environment.
+
+## Safety and scope
+
+- Use only with systems and data you are authorized to test.
+- Synthetic detections and simulated enforcement are not proof of real-world attack prevention.
+- Never publish `.env`, credentials, session tokens, production access logs, or analyst data in shared ZIP files.
+- Existing research raw data and standalone experiment reports are retained for reproducibility; archived v2–v4 comparison outputs and superseded comparison README files were removed from this distribution.
