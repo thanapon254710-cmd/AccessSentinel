@@ -1,0 +1,1086 @@
+﻿method,seed,attack_instance,scenario,n_attack_events,attack_start_epoch_s,first_detection_epoch_s,time_to_detect_seconds,detected,threshold
+AccessSentinel TCN v3,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,1794483769.1529195,26.924671173095703,1,0.11750709526240824
+AccessSentinel TCN v3,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,1794655102.6812427,17.540190935134888,1,0.11750709526240824
+AccessSentinel TCN v3,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,1794492726.1650736,0.0,1,0.11750709526240824
+AccessSentinel TCN v3,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,1794563256.165429,0.36024951934814453,1,0.11750709526240824
+AccessSentinel TCN v3,0,bac_probe-test-4,bac_probe,39,1794137430.166628,1794137434.0688338,3.9022059440612793,1,0.11750709526240824
+AccessSentinel TCN v3,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,1794362004.5001645,0.0,1,0.11750709526240824
+AccessSentinel TCN v3,0,compromised_account-test-1,compromised_account,119,1794366607.327163,1794366609.3889046,2.061741590499878,1,0.11750709526240824
+AccessSentinel TCN v3,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,1794456544.1803799,35.009241342544556,1,0.11750709526240824
+AccessSentinel TCN v3,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,1794025650.0445867,627.1215524673462,1,0.11750709526240824
+AccessSentinel TCN v3,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,1794021828.819756,687.463983297348,1,0.11750709526240824
+AccessSentinel TCN v3,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,1794477485.0785596,109.8510673046112,1,0.11750709526240824
+AccessSentinel TCN v3,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,1794484926.9096677,1.0925703048706055,1,0.11750709526240824
+AccessSentinel TCN v3,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,1794218250.1571968,143.7037751674652,1,0.11750709526240824
+AccessSentinel TCN v3,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,1794307034.0384698,2.2671637535095215,1,0.11750709526240824
+AccessSentinel TCN v3,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,1794063070.2239563,0.930640697479248,1,0.11750709526240824
+AccessSentinel TCN v3,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,1794304625.614798,9.607980966567993,1,0.11750709526240824
+AccessSentinel TCN v3,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,1794045513.8972192,111.918949842453,1,0.11750709526240824
+AccessSentinel TCN v3,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,1794741340.2844388,5.011677265167236,1,0.11750709526240824
+AccessSentinel TCN v3,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,1794405519.6137981,12794.253178596497,1,0.11750709526240824
+AccessSentinel TCN v3,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,1794749200.4068015,368.61909580230713,1,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,1794226255.5739937,447.5672779083252,1,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,1794187164.0910575,29.569400787353516,1,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,1794362714.0188987,633.1593329906464,1,0.11750709526240824
+AccessSentinel TCN v3,0,unusual_time-test-3,unusual_time,26,1794616761.973358,1794616808.6286488,46.655290842056274,1,0.11750709526240824
+Ref. 24 User-resource embedding,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,1794483742.2282484,0.0,1,0.0
+Ref. 24 User-resource embedding,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,1794655085.1410518,0.0,1,0.0
+Ref. 24 User-resource embedding,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,1794492726.1650736,0.0,1,0.0
+Ref. 24 User-resource embedding,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,1794563255.8051796,0.0,1,0.0
+Ref. 24 User-resource embedding,0,bac_probe-test-4,bac_probe,39,1794137430.166628,1794137430.166628,0.0,1,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,1794362004.5001645,0.0,1,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-1,compromised_account,119,1794366607.327163,1794366607.327163,0.0,1,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,1794456509.1711385,0.0,1,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,1794025650.0445867,627.1215524673462,1,0.0
+Ref. 24 User-resource embedding,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,1794021828.819756,687.463983297348,1,0.0
+Ref. 24 User-resource embedding,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,1794477375.2274923,0.0,1,0.0
+Ref. 24 User-resource embedding,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,1794307254.3656256,0.0,1,0.0
+Ref. 24 User-resource embedding,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,1794484925.8170974,0.0,1,0.0
+Ref. 24 User-resource embedding,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,1794218106.4534216,0.0,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,1794307031.771306,0.0,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,1794063069.2933156,0.0,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,1794304616.006817,0.0,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,1794045513.8972192,111.918949842453,1,0.0
+Ref. 24 User-resource embedding,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,1794741335.2727616,0.0,1,0.0
+Ref. 24 User-resource embedding,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,1794305038.2343652,0.0,1,0.0
+Ref. 24 User-resource embedding,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,1794392725.3606195,0.0,1,0.0
+Ref. 24 User-resource embedding,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,1794042830.660536,0.0,1,0.0
+Ref. 24 User-resource embedding,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,1793954926.0705125,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,1794229770.715199,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,1794748831.7877057,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,1794225808.0067158,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,0.0
+Ref. 24 User-resource embedding,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,1794454707.5562491,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,1794187134.5216568,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,1794362080.8595657,0.0,1,0.0
+Ref. 24 User-resource embedding,0,unusual_time-test-3,unusual_time,26,1794616761.973358,1794616761.973358,0.0,1,0.0
+Ref. 14 DynAD,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,1794483861.0854309,118.85718250274658,1,8.53380068292582e-05
+Ref. 14 DynAD,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,1794655085.1410518,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,1794492809.4438574,83.27878379821777,1,8.53380068292582e-05
+Ref. 14 DynAD,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,1794563433.87429,178.06911039352417,1,8.53380068292582e-05
+Ref. 14 DynAD,0,bac_probe-test-4,bac_probe,39,1794137430.166628,1794137430.166628,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,compromised_account-test-1,compromised_account,119,1794366607.327163,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,1794456553.7669973,44.59585881233215,1,8.53380068292582e-05
+Ref. 14 DynAD,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,1794484925.8170974,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,1794063069.2933156,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,1794045513.8972192,111.918949842453,1,8.53380068292582e-05
+Ref. 14 DynAD,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,1794741335.2727616,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,1794391189.1846185,86150.95025324821,1,8.53380068292582e-05
+Ref. 14 DynAD,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,1794392725.3606195,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,1794042830.660536,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,1794042704.3960116,87778.32549905777,1,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,1794748831.7877057,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,1794187134.5216568,0.0,1,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,,,0,8.53380068292582e-05
+Ref. 14 DynAD,0,unusual_time-test-3,unusual_time,26,1794616761.973358,,,0,8.53380068292582e-05
+Ref. 17 PG-AID,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,1794483742.2282484,0.0,1,1.158372163772583
+Ref. 17 PG-AID,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,,,0,1.158372163772583
+Ref. 17 PG-AID,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,1794493299.5866828,573.4216091632843,1,1.158372163772583
+Ref. 17 PG-AID,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,1794564556.4565475,1300.6513679027557,1,1.158372163772583
+Ref. 17 PG-AID,0,bac_probe-test-4,bac_probe,39,1794137430.166628,,,0,1.158372163772583
+Ref. 17 PG-AID,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,,,0,1.158372163772583
+Ref. 17 PG-AID,0,compromised_account-test-1,compromised_account,119,1794366607.327163,,,0,1.158372163772583
+Ref. 17 PG-AID,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,,,0,1.158372163772583
+Ref. 17 PG-AID,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,,,0,1.158372163772583
+Ref. 17 PG-AID,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,,,0,1.158372163772583
+Ref. 17 PG-AID,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,1794477375.2274923,0.0,1,1.158372163772583
+Ref. 17 PG-AID,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,1794307415.8226814,161.45705580711365,1,1.158372163772583
+Ref. 17 PG-AID,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,,,0,1.158372163772583
+Ref. 17 PG-AID,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,,,0,1.158372163772583
+Ref. 17 PG-AID,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,1794307413.5832791,381.8119730949402,1,1.158372163772583
+Ref. 17 PG-AID,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,,,0,1.158372163772583
+Ref. 17 PG-AID,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,1794304616.006817,0.0,1,1.158372163772583
+Ref. 17 PG-AID,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,,,0,1.158372163772583
+Ref. 17 PG-AID,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,,,0,1.158372163772583
+Ref. 17 PG-AID,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,1794308961.4790912,3923.2447259426117,1,1.158372163772583
+Ref. 17 PG-AID,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,1794481827.8834622,89102.52284264565,1,1.158372163772583
+Ref. 17 PG-AID,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,,,0,1.158372163772583
+Ref. 17 PG-AID,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,1794408207.8356154,453281.7651028633,1,1.158372163772583
+Ref. 17 PG-AID,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,1794226472.0698287,664.0631129741669,1,1.158372163772583
+Ref. 17 PG-AID,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,,,0,1.158372163772583
+Ref. 17 PG-AID,0,unusual_time-test-3,unusual_time,26,1794616761.973358,,,0,1.158372163772583
+Ref. 21 ACOBE,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,bac_probe-test-4,bac_probe,39,1794137430.166628,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,compromised_account-test-1,compromised_account,119,1794366607.327163,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,,,0,0.021739130434782608
+Ref. 21 ACOBE,0,unusual_time-test-3,unusual_time,26,1794616761.973358,,,0,0.021739130434782608
+Ref. 22 FGDT,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,,,0,0.47891709208488464
+Ref. 22 FGDT,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,,,0,0.47891709208488464
+Ref. 22 FGDT,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,1794492726.1650736,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,1794563255.8051796,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,bac_probe-test-4,bac_probe,39,1794137430.166628,,,0,0.47891709208488464
+Ref. 22 FGDT,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,,,0,0.47891709208488464
+Ref. 22 FGDT,0,compromised_account-test-1,compromised_account,119,1794366607.327163,1794366607.327163,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,1794456509.1711385,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,,,0,0.47891709208488464
+Ref. 22 FGDT,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,,,0,0.47891709208488464
+Ref. 22 FGDT,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,,,0,0.47891709208488464
+Ref. 22 FGDT,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,1794307254.3656256,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,,,0,0.47891709208488464
+Ref. 22 FGDT,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,,,0,0.47891709208488464
+Ref. 22 FGDT,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,,,0,0.47891709208488464
+Ref. 22 FGDT,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,,,0,0.47891709208488464
+Ref. 22 FGDT,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,,,0,0.47891709208488464
+Ref. 22 FGDT,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,,,0,0.47891709208488464
+Ref. 22 FGDT,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,,,0,0.47891709208488464
+Ref. 22 FGDT,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,,,0,0.47891709208488464
+Ref. 22 FGDT,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,,,0,0.47891709208488464
+Ref. 22 FGDT,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,,,0,0.47891709208488464
+Ref. 22 FGDT,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,1794229770.715199,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,1794187134.5216568,0.0,1,0.47891709208488464
+Ref. 22 FGDT,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,,,0,0.47891709208488464
+Ref. 22 FGDT,0,unusual_time-test-3,unusual_time,26,1794616761.973358,,,0,0.47891709208488464
+Ref. 25 DEEPRO,0,bac_probe-test-0,bac_probe,39,1794483742.2282484,1794483742.2282484,0.0,1,1.411644823289494e-18
+Ref. 25 DEEPRO,0,bac_probe-test-1,bac_probe,47,1794655085.1410518,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,bac_probe-test-2,bac_probe,49,1794492726.1650736,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,bac_probe-test-3,bac_probe,59,1794563255.8051796,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,bac_probe-test-4,bac_probe,39,1794137430.166628,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,compromised_account-test-0,compromised_account,86,1794362004.5001645,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,compromised_account-test-1,compromised_account,119,1794366607.327163,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,compromised_account-test-2,compromised_account,106,1794456509.1711385,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,compromised_account-test-3,compromised_account,96,1794025022.9230342,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,compromised_account-test-4,compromised_account,114,1794021141.3557727,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,horizontal_abuse-test-0,horizontal_abuse,84,1794477375.2274923,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,horizontal_abuse-test-1,horizontal_abuse,79,1794307254.3656256,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,horizontal_abuse-test-2,horizontal_abuse,69,1794484925.8170974,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,horizontal_abuse-test-3,horizontal_abuse,53,1794218106.4534216,1794218106.4534216,0.0,1,1.411644823289494e-18
+Ref. 25 DEEPRO,0,insider_exfiltration-test-0,insider_exfiltration,93,1794307031.771306,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,insider_exfiltration-test-1,insider_exfiltration,94,1794063069.2933156,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,insider_exfiltration-test-2,insider_exfiltration,87,1794304616.006817,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,insider_exfiltration-test-3,insider_exfiltration,87,1794045401.9782693,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,insider_exfiltration-test-4,insider_exfiltration,62,1794741335.2727616,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,low_and_slow-test-0,low_and_slow,31,1794305038.2343652,1794305038.2343652,0.0,1,1.411644823289494e-18
+Ref. 25 DEEPRO,0,low_and_slow-test-1,low_and_slow,28,1794392725.3606195,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,low_and_slow-test-2,low_and_slow,19,1794042830.660536,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,low_and_slow-test-3,low_and_slow,36,1793954926.0705125,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_sequence-test-0,unusual_sequence,44,1794229770.715199,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_sequence-test-1,unusual_sequence,48,1794748831.7877057,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_sequence-test-2,unusual_sequence,43,1794225808.0067158,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_sequence-test-3,unusual_sequence,38,1793960708.3973904,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_time-test-0,unusual_time,51,1794454707.5562491,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_time-test-1,unusual_time,27,1794187134.5216568,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_time-test-2,unusual_time,42,1794362080.8595657,,,0,1.411644823289494e-18
+Ref. 25 DEEPRO,0,unusual_time-test-3,unusual_time,26,1794616761.973358,1794616761.973358,0.0,1,1.411644823289494e-18
+AccessSentinel TCN v3,1,bac_probe-test-0,bac_probe,40,1794309351.829192,1794309462.167507,110.3383150100708,1,0.09209839105606078
+AccessSentinel TCN v3,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,1794573901.5149791,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,1794569860.3396835,51.400604009628296,1,0.09209839105606078
+AccessSentinel TCN v3,1,bac_probe-test-3,bac_probe,62,1794564430.856838,1794564430.856838,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794409190.9190502,356.07174158096313,1,0.09209839105606078
+AccessSentinel TCN v3,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,1794274053.8607824,4.400141954421997,1,0.09209839105606078
+AccessSentinel TCN v3,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,1794367872.6516933,177.3736970424652,1,0.09209839105606078
+AccessSentinel TCN v3,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,1794280944.1213753,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,1793932540.195701,808.245646238327,1,0.09209839105606078
+AccessSentinel TCN v3,1,compromised_account-test-4,compromised_account,61,1794624798.929271,1794624798.929271,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,1794487668.1227903,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,1794663234.4092238,266.2520651817322,1,0.09209839105606078
+AccessSentinel TCN v3,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,1794749397.599431,4.974261999130249,1,0.09209839105606078
+AccessSentinel TCN v3,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,1793959924.7390702,0.023097991943359375,1,0.09209839105606078
+AccessSentinel TCN v3,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,1794653857.3345354,66.30264401435852,1,0.09209839105606078
+AccessSentinel TCN v3,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,1793971614.5472066,242.8609869480133,1,0.09209839105606078
+AccessSentinel TCN v3,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,1794128861.850921,28.432611227035522,1,0.09209839105606078
+AccessSentinel TCN v3,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,1794653618.907067,3.8606083393096924,1,0.09209839105606078
+AccessSentinel TCN v3,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,1793959758.844312,317.59092807769775,1,0.09209839105606078
+AccessSentinel TCN v3,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,1793977786.5607104,19181.115802764893,1,0.09209839105606078
+AccessSentinel TCN v3,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,1794213864.9455438,0.0,1,0.09209839105606078
+AccessSentinel TCN v3,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,1794392989.757766,2420.550538778305,1,0.09209839105606078
+AccessSentinel TCN v3,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,1794476535.0675545,166638.55997538567,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,1794141266.9552336,409.5791881084442,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,,,0,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,1794662579.1411407,1142.9482946395874,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,,,0,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,1794452654.1603994,43.9142541885376,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,1794189582.9323347,4.621077299118042,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,1794369381.7120144,98670.93273091316,1,0.09209839105606078
+AccessSentinel TCN v3,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,1794370527.7372713,0.0,1,0.09209839105606078
+Ref. 24 User-resource embedding,1,bac_probe-test-0,bac_probe,40,1794309351.829192,1794309351.829192,0.0,1,0.0
+Ref. 24 User-resource embedding,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,1794573901.5149791,0.0,1,0.0
+Ref. 24 User-resource embedding,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,1794569808.9390795,0.0,1,0.0
+Ref. 24 User-resource embedding,1,bac_probe-test-3,bac_probe,62,1794564430.856838,1794564430.856838,0.0,1,0.0
+Ref. 24 User-resource embedding,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794408834.8473086,0.0,1,0.0
+Ref. 24 User-resource embedding,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,1794274049.4606404,0.0,1,0.0
+Ref. 24 User-resource embedding,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,1794367695.2779963,0.0,1,0.0
+Ref. 24 User-resource embedding,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,1794280944.1213753,0.0,1,0.0
+Ref. 24 User-resource embedding,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,1793932540.195701,808.245646238327,1,0.0
+Ref. 24 User-resource embedding,1,compromised_account-test-4,compromised_account,61,1794624798.929271,1794624798.929271,0.0,1,0.0
+Ref. 24 User-resource embedding,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,1794487668.1227903,0.0,1,0.0
+Ref. 24 User-resource embedding,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,1794662968.1571586,0.0,1,0.0
+Ref. 24 User-resource embedding,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,1794749392.625169,0.0,1,0.0
+Ref. 24 User-resource embedding,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,1793959924.7159722,0.0,1,0.0
+Ref. 24 User-resource embedding,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,1794653791.0318913,0.0,1,0.0
+Ref. 24 User-resource embedding,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,1793971371.6862197,0.0,1,0.0
+Ref. 24 User-resource embedding,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,1794128833.4183097,0.0,1,0.0
+Ref. 24 User-resource embedding,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,1794653615.0464587,0.0,1,0.0
+Ref. 24 User-resource embedding,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,1793959441.2533839,0.0,1,0.0
+Ref. 24 User-resource embedding,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,1793958605.4449077,0.0,1,0.0
+Ref. 24 User-resource embedding,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,1794213864.9455438,0.0,1,0.0
+Ref. 24 User-resource embedding,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,1794390569.2072272,0.0,1,0.0
+Ref. 24 User-resource embedding,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,1794476535.0675545,166638.55997538567,1,0.0
+Ref. 24 User-resource embedding,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,1794140857.3760455,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,1794407082.0799103,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,1794661436.192846,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,1794222240.7519128,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,1794452610.2461452,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,1794189578.3112574,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,1794270710.7792835,0.0,1,0.0
+Ref. 24 User-resource embedding,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,1794370527.7372713,0.0,1,0.0
+Ref. 14 DynAD,1,bac_probe-test-0,bac_probe,40,1794309351.829192,,,0,0.041197847574949265
+Ref. 14 DynAD,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,,,0,0.041197847574949265
+Ref. 14 DynAD,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,,,0,0.041197847574949265
+Ref. 14 DynAD,1,bac_probe-test-3,bac_probe,62,1794564430.856838,,,0,0.041197847574949265
+Ref. 14 DynAD,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794409011.1337276,176.28641891479492,1,0.041197847574949265
+Ref. 14 DynAD,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,,,0,0.041197847574949265
+Ref. 14 DynAD,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,,,0,0.041197847574949265
+Ref. 14 DynAD,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,,,0,0.041197847574949265
+Ref. 14 DynAD,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,,,0,0.041197847574949265
+Ref. 14 DynAD,1,compromised_account-test-4,compromised_account,61,1794624798.929271,,,0,0.041197847574949265
+Ref. 14 DynAD,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,,,0,0.041197847574949265
+Ref. 14 DynAD,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,1794662968.1571586,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,1794749392.625169,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,,,0,0.041197847574949265
+Ref. 14 DynAD,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,1794653791.0318913,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,,,0,0.041197847574949265
+Ref. 14 DynAD,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,1794128833.4183097,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,1794653615.0464587,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,,,0,0.041197847574949265
+Ref. 14 DynAD,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,1794051839.4945605,93234.04965281487,1,0.041197847574949265
+Ref. 14 DynAD,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,1794486940.0136275,273075.0680837631,1,0.041197847574949265
+Ref. 14 DynAD,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,1794661676.9622157,271107.75498843193,1,0.041197847574949265
+Ref. 14 DynAD,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,1794643830.531273,333934.0236938,1,0.041197847574949265
+Ref. 14 DynAD,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,1794140857.3760455,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,,,0,0.041197847574949265
+Ref. 14 DynAD,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,1794661436.192846,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,,,0,0.041197847574949265
+Ref. 14 DynAD,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,,,0,0.041197847574949265
+Ref. 14 DynAD,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,1794189578.3112574,0.0,1,0.041197847574949265
+Ref. 14 DynAD,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,,,0,0.041197847574949265
+Ref. 14 DynAD,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,,,0,0.041197847574949265
+Ref. 17 PG-AID,1,bac_probe-test-0,bac_probe,40,1794309351.829192,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,1794573930.8669667,29.351987600326538,1,0.9586769342422485
+Ref. 17 PG-AID,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,bac_probe-test-3,bac_probe,62,1794564430.856838,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794409372.8220463,537.9747376441956,1,0.9586769342422485
+Ref. 17 PG-AID,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,compromised_account-test-4,compromised_account,61,1794624798.929271,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,,,0,0.9586769342422485
+Ref. 17 PG-AID,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,,,0,0.9586769342422485
+Ref. 21 ACOBE,1,bac_probe-test-0,bac_probe,40,1794309351.829192,,,0,0.025
+Ref. 21 ACOBE,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,,,0,0.025
+Ref. 21 ACOBE,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,,,0,0.025
+Ref. 21 ACOBE,1,bac_probe-test-3,bac_probe,62,1794564430.856838,,,0,0.025
+Ref. 21 ACOBE,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794408834.8473086,0.0,1,0.025
+Ref. 21 ACOBE,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,,,0,0.025
+Ref. 21 ACOBE,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,,,0,0.025
+Ref. 21 ACOBE,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,,,0,0.025
+Ref. 21 ACOBE,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,,,0,0.025
+Ref. 21 ACOBE,1,compromised_account-test-4,compromised_account,61,1794624798.929271,,,0,0.025
+Ref. 21 ACOBE,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,,,0,0.025
+Ref. 21 ACOBE,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,,,0,0.025
+Ref. 21 ACOBE,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,,,0,0.025
+Ref. 21 ACOBE,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,,,0,0.025
+Ref. 21 ACOBE,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,,,0,0.025
+Ref. 21 ACOBE,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,,,0,0.025
+Ref. 21 ACOBE,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,,,0,0.025
+Ref. 21 ACOBE,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,,,0,0.025
+Ref. 21 ACOBE,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,,,0,0.025
+Ref. 21 ACOBE,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,,,0,0.025
+Ref. 21 ACOBE,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,,,0,0.025
+Ref. 21 ACOBE,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,,,0,0.025
+Ref. 21 ACOBE,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,,,0,0.025
+Ref. 21 ACOBE,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,,,0,0.025
+Ref. 21 ACOBE,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,,,0,0.025
+Ref. 21 ACOBE,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,,,0,0.025
+Ref. 21 ACOBE,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,,,0,0.025
+Ref. 21 ACOBE,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,,,0,0.025
+Ref. 21 ACOBE,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,,,0,0.025
+Ref. 21 ACOBE,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,,,0,0.025
+Ref. 21 ACOBE,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,,,0,0.025
+Ref. 22 FGDT,1,bac_probe-test-0,bac_probe,40,1794309351.829192,,,0,0.46856918931007385
+Ref. 22 FGDT,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,,,0,0.46856918931007385
+Ref. 22 FGDT,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,,,0,0.46856918931007385
+Ref. 22 FGDT,1,bac_probe-test-3,bac_probe,62,1794564430.856838,1794564430.856838,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,,,0,0.46856918931007385
+Ref. 22 FGDT,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,1794274049.4606404,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,,,0,0.46856918931007385
+Ref. 22 FGDT,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,,,0,0.46856918931007385
+Ref. 22 FGDT,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,,,0,0.46856918931007385
+Ref. 22 FGDT,1,compromised_account-test-4,compromised_account,61,1794624798.929271,,,0,0.46856918931007385
+Ref. 22 FGDT,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,,,0,0.46856918931007385
+Ref. 22 FGDT,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,1794662968.1571586,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,,,0,0.46856918931007385
+Ref. 22 FGDT,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,,,0,0.46856918931007385
+Ref. 22 FGDT,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,,,0,0.46856918931007385
+Ref. 22 FGDT,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,,,0,0.46856918931007385
+Ref. 22 FGDT,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,1794128833.4183097,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,,,0,0.46856918931007385
+Ref. 22 FGDT,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,1793959441.2533839,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,1793958605.4449077,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,1794213864.9455438,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,1794390569.2072272,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,1794476535.0675545,166638.55997538567,1,0.46856918931007385
+Ref. 22 FGDT,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,1794452610.2461452,0.0,1,0.46856918931007385
+Ref. 22 FGDT,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,,,0,0.46856918931007385
+Ref. 22 FGDT,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,,,0,0.46856918931007385
+Ref. 25 DEEPRO,1,bac_probe-test-0,bac_probe,40,1794309351.829192,1794309351.829192,0.0,1,0.0
+Ref. 25 DEEPRO,1,bac_probe-test-1,bac_probe,46,1794573901.5149791,1794573901.5149791,0.0,1,0.0
+Ref. 25 DEEPRO,1,bac_probe-test-2,bac_probe,45,1794569808.9390795,1794569808.9390795,0.0,1,0.0
+Ref. 25 DEEPRO,1,bac_probe-test-3,bac_probe,62,1794564430.856838,1794564430.856838,0.0,1,0.0
+Ref. 25 DEEPRO,1,bac_probe-test-4,bac_probe,32,1794408834.8473086,1794408834.8473086,0.0,1,0.0
+Ref. 25 DEEPRO,1,compromised_account-test-0,compromised_account,61,1794274049.4606404,1794274049.4606404,0.0,1,0.0
+Ref. 25 DEEPRO,1,compromised_account-test-1,compromised_account,96,1794367695.2779963,1794367695.2779963,0.0,1,0.0
+Ref. 25 DEEPRO,1,compromised_account-test-2,compromised_account,128,1794280944.1213753,1794280944.1213753,0.0,1,0.0
+Ref. 25 DEEPRO,1,compromised_account-test-3,compromised_account,81,1793931731.9500546,1793932540.195701,808.245646238327,1,0.0
+Ref. 25 DEEPRO,1,compromised_account-test-4,compromised_account,61,1794624798.929271,1794624798.929271,0.0,1,0.0
+Ref. 25 DEEPRO,1,horizontal_abuse-test-0,horizontal_abuse,92,1794487668.1227903,1794487668.1227903,0.0,1,0.0
+Ref. 25 DEEPRO,1,horizontal_abuse-test-1,horizontal_abuse,64,1794662968.1571586,1794662968.1571586,0.0,1,0.0
+Ref. 25 DEEPRO,1,horizontal_abuse-test-2,horizontal_abuse,99,1794749392.625169,1794749392.625169,0.0,1,0.0
+Ref. 25 DEEPRO,1,horizontal_abuse-test-3,horizontal_abuse,111,1793959924.7159722,1793959924.7159722,0.0,1,0.0
+Ref. 25 DEEPRO,1,insider_exfiltration-test-0,insider_exfiltration,95,1794653791.0318913,1794653791.0318913,0.0,1,0.0
+Ref. 25 DEEPRO,1,insider_exfiltration-test-1,insider_exfiltration,65,1793971371.6862197,1793971371.6862197,0.0,1,0.0
+Ref. 25 DEEPRO,1,insider_exfiltration-test-2,insider_exfiltration,73,1794128833.4183097,1794128833.4183097,0.0,1,0.0
+Ref. 25 DEEPRO,1,insider_exfiltration-test-3,insider_exfiltration,71,1794653615.0464587,1794653615.0464587,0.0,1,0.0
+Ref. 25 DEEPRO,1,insider_exfiltration-test-4,insider_exfiltration,84,1793959441.2533839,1793959441.2533839,0.0,1,0.0
+Ref. 25 DEEPRO,1,low_and_slow-test-0,low_and_slow,24,1793958605.4449077,1793958605.4449077,0.0,1,0.0
+Ref. 25 DEEPRO,1,low_and_slow-test-1,low_and_slow,32,1794213864.9455438,1794213864.9455438,0.0,1,0.0
+Ref. 25 DEEPRO,1,low_and_slow-test-2,low_and_slow,23,1794390569.2072272,1794390569.2072272,0.0,1,0.0
+Ref. 25 DEEPRO,1,low_and_slow-test-3,low_and_slow,23,1794309896.507579,1794476535.0675545,166638.55997538567,1,0.0
+Ref. 25 DEEPRO,1,unusual_sequence-test-0,unusual_sequence,53,1794140857.3760455,1794140857.3760455,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_sequence-test-1,unusual_sequence,55,1794407082.0799103,1794407082.0799103,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_sequence-test-2,unusual_sequence,38,1794661436.192846,1794661436.192846,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_sequence-test-3,unusual_sequence,48,1794222240.7519128,1794222240.7519128,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_time-test-0,unusual_time,52,1794452610.2461452,1794452610.2461452,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_time-test-1,unusual_time,30,1794189578.3112574,1794189578.3112574,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_time-test-2,unusual_time,33,1794270710.7792835,1794270710.7792835,0.0,1,0.0
+Ref. 25 DEEPRO,1,unusual_time-test-3,unusual_time,40,1794370527.7372713,1794370527.7372713,0.0,1,0.0
+AccessSentinel TCN v3,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,1794662382.1553574,1.336035966873169,1,0.08164410926401612
+AccessSentinel TCN v3,2,bac_probe-test-1,bac_probe,50,1793977685.730633,1793977736.9308605,51.20022749900818,1,0.08164410926401612
+AccessSentinel TCN v3,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,1794056536.054994,56.25336170196533,1,0.08164410926401612
+AccessSentinel TCN v3,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,1794492525.1037407,71.60182118415833,1,0.08164410926401612
+AccessSentinel TCN v3,2,bac_probe-test-4,bac_probe,54,1794563922.488185,1794564027.395812,104.90762710571289,1,0.08164410926401612
+AccessSentinel TCN v3,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,1794536092.2358391,16.42925238609314,1,0.08164410926401612
+AccessSentinel TCN v3,2,compromised_account-test-1,compromised_account,74,1794540194.061114,1794540251.0619156,57.00080156326294,1,0.08164410926401612
+AccessSentinel TCN v3,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,1794186480.4501762,0.0,1,0.08164410926401612
+AccessSentinel TCN v3,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,1794278898.9574065,0.0,1,0.08164410926401612
+AccessSentinel TCN v3,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,1794102000.8665493,0.0,1,0.08164410926401612
+AccessSentinel TCN v3,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,1794394731.0919075,22.472233533859253,1,0.08164410926401612
+AccessSentinel TCN v3,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,1794071134.4927816,5.0752787590026855,1,0.08164410926401612
+AccessSentinel TCN v3,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,1793957982.938793,154.80943655967712,1,0.08164410926401612
+AccessSentinel TCN v3,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,,,0,0.08164410926401612
+AccessSentinel TCN v3,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,1794127583.0579581,91.01440739631653,1,0.08164410926401612
+AccessSentinel TCN v3,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,1794651832.3125362,111.50942921638489,1,0.08164410926401612
+AccessSentinel TCN v3,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,1794053339.1842713,24.375951528549194,1,0.08164410926401612
+AccessSentinel TCN v3,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,1794746599.4747453,96.12985277175903,1,0.08164410926401612
+AccessSentinel TCN v3,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,1794133743.359009,530.975005865097,1,0.08164410926401612
+AccessSentinel TCN v3,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,1794244228.9685957,27030.22177195549,1,0.08164410926401612
+AccessSentinel TCN v3,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,1794061681.5651019,3630.8999693393707,1,0.08164410926401612
+AccessSentinel TCN v3,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,1794493436.943683,268908.4566693306,1,0.08164410926401612
+AccessSentinel TCN v3,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,1794219256.3945932,0.0,1,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,1794745804.0490494,379.0077311992645,1,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,1794490871.4983647,619.9565734863281,1,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,1794052124.6261342,911.3195788860321,1,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,1794543726.5149035,603057.8998103142,1,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,,,0,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_time-test-2,unusual_time,21,1794105932.327116,,,0,0.08164410926401612
+AccessSentinel TCN v3,2,unusual_time-test-3,unusual_time,31,1794099237.138483,,,0,0.08164410926401612
+Ref. 24 User-resource embedding,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,1794662380.8193214,0.0,1,0.0
+Ref. 24 User-resource embedding,2,bac_probe-test-1,bac_probe,50,1793977685.730633,1793977685.730633,0.0,1,0.0
+Ref. 24 User-resource embedding,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,1794056479.8016324,0.0,1,0.0
+Ref. 24 User-resource embedding,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,1794492453.5019195,0.0,1,0.0
+Ref. 24 User-resource embedding,2,bac_probe-test-4,bac_probe,54,1794563922.488185,1794563922.488185,0.0,1,0.0
+Ref. 24 User-resource embedding,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,1794536075.8065867,0.0,1,0.0
+Ref. 24 User-resource embedding,2,compromised_account-test-1,compromised_account,74,1794540194.061114,1794540194.061114,0.0,1,0.0
+Ref. 24 User-resource embedding,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,1794186480.4501762,0.0,1,0.0
+Ref. 24 User-resource embedding,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,1794278898.9574065,0.0,1,0.0
+Ref. 24 User-resource embedding,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,1794102000.8665493,0.0,1,0.0
+Ref. 24 User-resource embedding,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,1794394708.619674,0.0,1,0.0
+Ref. 24 User-resource embedding,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,1794071129.4175029,0.0,1,0.0
+Ref. 24 User-resource embedding,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,1793957982.938793,154.80943655967712,1,0.0
+Ref. 24 User-resource embedding,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,1793972273.4185486,0.0,1,0.0
+Ref. 24 User-resource embedding,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,1794127492.0435507,0.0,1,0.0
+Ref. 24 User-resource embedding,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,1794651720.803107,0.0,1,0.0
+Ref. 24 User-resource embedding,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,1794053314.8083198,0.0,1,0.0
+Ref. 24 User-resource embedding,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,1794746503.3448925,0.0,1,0.0
+Ref. 24 User-resource embedding,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,1794133743.359009,530.975005865097,1,0.0
+Ref. 24 User-resource embedding,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,1794217198.7468238,0.0,1,0.0
+Ref. 24 User-resource embedding,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,1794058050.6651325,0.0,1,0.0
+Ref. 24 User-resource embedding,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,1794224528.4870136,0.0,1,0.0
+Ref. 24 User-resource embedding,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,1794219256.3945932,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,1794745425.0413182,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.0
+Ref. 24 User-resource embedding,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,1794490251.5417912,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,1794051213.3065553,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,1793940668.6150932,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,1794106966.8186648,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_time-test-2,unusual_time,21,1794105932.327116,1794105932.327116,0.0,1,0.0
+Ref. 24 User-resource embedding,2,unusual_time-test-3,unusual_time,31,1794099237.138483,1794360590.0844831,261352.94600009918,1,0.0
+Ref. 14 DynAD,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,,,0,0.8149598240852356
+Ref. 14 DynAD,2,bac_probe-test-1,bac_probe,50,1793977685.730633,1793977871.1005049,185.3698718547821,1,0.8149598240852356
+Ref. 14 DynAD,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,,,0,0.8149598240852356
+Ref. 14 DynAD,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,1794492453.5019195,0.0,1,0.8149598240852356
+Ref. 14 DynAD,2,bac_probe-test-4,bac_probe,54,1794563922.488185,1794563941.9234853,19.43530035018921,1,0.8149598240852356
+Ref. 14 DynAD,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,1794536075.8065867,0.0,1,0.8149598240852356
+Ref. 14 DynAD,2,compromised_account-test-1,compromised_account,74,1794540194.061114,1794540245.628972,51.56785798072815,1,0.8149598240852356
+Ref. 14 DynAD,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,,,0,0.8149598240852356
+Ref. 14 DynAD,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,1794278898.9574065,0.0,1,0.8149598240852356
+Ref. 14 DynAD,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,,,0,0.8149598240852356
+Ref. 14 DynAD,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,,,0,0.8149598240852356
+Ref. 14 DynAD,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,,,0,0.8149598240852356
+Ref. 14 DynAD,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,,,0,0.8149598240852356
+Ref. 14 DynAD,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,,,0,0.8149598240852356
+Ref. 14 DynAD,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,,,0,0.8149598240852356
+Ref. 14 DynAD,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,,,0,0.8149598240852356
+Ref. 14 DynAD,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,,,0,0.8149598240852356
+Ref. 14 DynAD,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,,,0,0.8149598240852356
+Ref. 14 DynAD,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,,,0,0.8149598240852356
+Ref. 14 DynAD,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,1794217198.7468238,0.0,1,0.8149598240852356
+Ref. 14 DynAD,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,1794223112.7722335,165062.1071009636,1,0.8149598240852356
+Ref. 14 DynAD,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,1794224528.4870136,0.0,1,0.8149598240852356
+Ref. 14 DynAD,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_time-test-2,unusual_time,21,1794105932.327116,,,0,0.8149598240852356
+Ref. 14 DynAD,2,unusual_time-test-3,unusual_time,31,1794099237.138483,,,0,0.8149598240852356
+Ref. 17 PG-AID,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,bac_probe-test-1,bac_probe,50,1793977685.730633,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,bac_probe-test-4,bac_probe,54,1794563922.488185,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,compromised_account-test-1,compromised_account,74,1794540194.061114,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,1794304552.318178,80023.83116436005,1,0.5964534282684326
+Ref. 17 PG-AID,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,1794568502.6282637,349246.2336704731,1,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_time-test-2,unusual_time,21,1794105932.327116,,,0,0.5964534282684326
+Ref. 17 PG-AID,2,unusual_time-test-3,unusual_time,31,1794099237.138483,,,0,0.5964534282684326
+Ref. 21 ACOBE,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,bac_probe-test-1,bac_probe,50,1793977685.730633,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,bac_probe-test-4,bac_probe,54,1794563922.488185,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,compromised_account-test-1,compromised_account,74,1794540194.061114,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,1794071129.4175029,0.0,1,0.022222222222222223
+Ref. 21 ACOBE,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,,,0,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_time-test-2,unusual_time,21,1794105932.327116,1794105932.327116,0.0,1,0.022222222222222223
+Ref. 21 ACOBE,2,unusual_time-test-3,unusual_time,31,1794099237.138483,,,0,0.022222222222222223
+Ref. 22 FGDT,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,,,0,0.5019983053207397
+Ref. 22 FGDT,2,bac_probe-test-1,bac_probe,50,1793977685.730633,,,0,0.5019983053207397
+Ref. 22 FGDT,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,,,0,0.5019983053207397
+Ref. 22 FGDT,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,,,0,0.5019983053207397
+Ref. 22 FGDT,2,bac_probe-test-4,bac_probe,54,1794563922.488185,,,0,0.5019983053207397
+Ref. 22 FGDT,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,,,0,0.5019983053207397
+Ref. 22 FGDT,2,compromised_account-test-1,compromised_account,74,1794540194.061114,,,0,0.5019983053207397
+Ref. 22 FGDT,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,,,0,0.5019983053207397
+Ref. 22 FGDT,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,,,0,0.5019983053207397
+Ref. 22 FGDT,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,,,0,0.5019983053207397
+Ref. 22 FGDT,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,,,0,0.5019983053207397
+Ref. 22 FGDT,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,,,0,0.5019983053207397
+Ref. 22 FGDT,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,,,0,0.5019983053207397
+Ref. 22 FGDT,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,,,0,0.5019983053207397
+Ref. 22 FGDT,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,,,0,0.5019983053207397
+Ref. 22 FGDT,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,,,0,0.5019983053207397
+Ref. 22 FGDT,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,,,0,0.5019983053207397
+Ref. 22 FGDT,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,,,0,0.5019983053207397
+Ref. 22 FGDT,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,,,0,0.5019983053207397
+Ref. 22 FGDT,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,,,0,0.5019983053207397
+Ref. 22 FGDT,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,,,0,0.5019983053207397
+Ref. 22 FGDT,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,,,0,0.5019983053207397
+Ref. 22 FGDT,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_time-test-2,unusual_time,21,1794105932.327116,,,0,0.5019983053207397
+Ref. 22 FGDT,2,unusual_time-test-3,unusual_time,31,1794099237.138483,,,0,0.5019983053207397
+Ref. 25 DEEPRO,2,bac_probe-test-0,bac_probe,42,1794662380.8193214,1794662380.8193214,0.0,1,0.0
+Ref. 25 DEEPRO,2,bac_probe-test-1,bac_probe,50,1793977685.730633,1793977685.730633,0.0,1,0.0
+Ref. 25 DEEPRO,2,bac_probe-test-2,bac_probe,59,1794056479.8016324,1794056479.8016324,0.0,1,0.0
+Ref. 25 DEEPRO,2,bac_probe-test-3,bac_probe,47,1794492453.5019195,1794492453.5019195,0.0,1,0.0
+Ref. 25 DEEPRO,2,bac_probe-test-4,bac_probe,54,1794563922.488185,1794563922.488185,0.0,1,0.0
+Ref. 25 DEEPRO,2,compromised_account-test-0,compromised_account,72,1794536075.8065867,1794536075.8065867,0.0,1,0.0
+Ref. 25 DEEPRO,2,compromised_account-test-1,compromised_account,74,1794540194.061114,1794540194.061114,0.0,1,0.0
+Ref. 25 DEEPRO,2,compromised_account-test-2,compromised_account,100,1794186480.4501762,1794186480.4501762,0.0,1,0.0
+Ref. 25 DEEPRO,2,compromised_account-test-3,compromised_account,71,1794278898.9574065,1794278898.9574065,0.0,1,0.0
+Ref. 25 DEEPRO,2,compromised_account-test-4,compromised_account,62,1794102000.8665493,1794102000.8665493,0.0,1,0.0
+Ref. 25 DEEPRO,2,horizontal_abuse-test-0,horizontal_abuse,88,1794394708.619674,1794394708.619674,0.0,1,0.0
+Ref. 25 DEEPRO,2,horizontal_abuse-test-1,horizontal_abuse,89,1794071129.4175029,1794071129.4175029,0.0,1,0.0
+Ref. 25 DEEPRO,2,horizontal_abuse-test-2,horizontal_abuse,107,1793957828.1293564,1793957982.938793,154.80943655967712,1,0.0
+Ref. 25 DEEPRO,2,horizontal_abuse-test-3,horizontal_abuse,50,1793972273.4185486,1793972273.4185486,0.0,1,0.0
+Ref. 25 DEEPRO,2,insider_exfiltration-test-0,insider_exfiltration,92,1794127492.0435507,1794127492.0435507,0.0,1,0.0
+Ref. 25 DEEPRO,2,insider_exfiltration-test-1,insider_exfiltration,106,1794651720.803107,1794651720.803107,0.0,1,0.0
+Ref. 25 DEEPRO,2,insider_exfiltration-test-2,insider_exfiltration,85,1794053314.8083198,1794053314.8083198,0.0,1,0.0
+Ref. 25 DEEPRO,2,insider_exfiltration-test-3,insider_exfiltration,65,1794746503.3448925,1794746503.3448925,0.0,1,0.0
+Ref. 25 DEEPRO,2,insider_exfiltration-test-4,insider_exfiltration,52,1794133212.3840032,1794133743.359009,530.975005865097,1,0.0
+Ref. 25 DEEPRO,2,low_and_slow-test-0,low_and_slow,36,1794217198.7468238,1794217198.7468238,0.0,1,0.0
+Ref. 25 DEEPRO,2,low_and_slow-test-1,low_and_slow,26,1794058050.6651325,1794058050.6651325,0.0,1,0.0
+Ref. 25 DEEPRO,2,low_and_slow-test-2,low_and_slow,35,1794224528.4870136,1794224528.4870136,0.0,1,0.0
+Ref. 25 DEEPRO,2,low_and_slow-test-3,low_and_slow,27,1794219256.3945932,1794219256.3945932,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_sequence-test-0,unusual_sequence,30,1794745425.0413182,1794745425.0413182,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_sequence-test-1,unusual_sequence,25,1794044414.5875251,,,0,0.0
+Ref. 25 DEEPRO,2,unusual_sequence-test-2,unusual_sequence,47,1794490251.5417912,1794490251.5417912,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_sequence-test-3,unusual_sequence,49,1794051213.3065553,1794051213.3065553,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_time-test-0,unusual_time,41,1793940668.6150932,1793940668.6150932,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_time-test-1,unusual_time,24,1794106966.8186648,1794106966.8186648,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_time-test-2,unusual_time,21,1794105932.327116,1794105932.327116,0.0,1,0.0
+Ref. 25 DEEPRO,2,unusual_time-test-3,unusual_time,31,1794099237.138483,1794360590.0844831,261352.94600009918,1,0.0
+AccessSentinel TCN v3,3,bac_probe-test-0,bac_probe,69,1794399379.955275,1794399379.955275,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,1794136328.2108939,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,1794564500.9018238,45.63509941101074,1,0.07743247002363204
+AccessSentinel TCN v3,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,1794569801.5544238,241.0115511417389,1,0.07743247002363204
+AccessSentinel TCN v3,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,1794220880.2009785,44.842562198638916,1,0.07743247002363204
+AccessSentinel TCN v3,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,1794446119.4526668,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,1794447370.9863229,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,1794187779.5210185,23.323777198791504,1,0.07743247002363204
+AccessSentinel TCN v3,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,1794455713.5827315,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,1793927924.8319695,16.558197259902954,1,0.07743247002363204
+AccessSentinel TCN v3,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,1794047988.9140294,257.5730812549591,1,0.07743247002363204
+AccessSentinel TCN v3,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,,,0,0.07743247002363204
+AccessSentinel TCN v3,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,1794656554.4081895,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,1794658001.614555,39.37323212623596,1,0.07743247002363204
+AccessSentinel TCN v3,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,1794301644.234682,9.648325443267822,1,0.07743247002363204
+AccessSentinel TCN v3,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,1794561593.2885208,20.552699089050293,1,0.07743247002363204
+AccessSentinel TCN v3,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,1794728848.2404892,188.05823349952698,1,0.07743247002363204
+AccessSentinel TCN v3,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,1794047239.9688597,589.6685140132904,1,0.07743247002363204
+AccessSentinel TCN v3,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,1794221529.659205,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,,,0,0.07743247002363204
+AccessSentinel TCN v3,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,1794222302.9422026,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,1794404294.6994278,357065.6403810978,1,0.07743247002363204
+AccessSentinel TCN v3,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,1794316325.1750028,161615.01284718513,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,1794143308.8122015,1367.8133080005646,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,1794319139.6943583,178.67783999443054,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,1794317764.6309369,0.0,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,1794756144.9914722,147.84130311012268,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_time-test-0,unusual_time,33,1794023603.719857,1794023610.5130756,6.793218612670898,1,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,,,0,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,,,0,0.07743247002363204
+AccessSentinel TCN v3,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,1794539345.5117078,602451.6505360603,1,0.07743247002363204
+Ref. 24 User-resource embedding,3,bac_probe-test-0,bac_probe,69,1794399379.955275,1794399379.955275,0.0,1,0.0
+Ref. 24 User-resource embedding,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,1794136328.2108939,0.0,1,0.0
+Ref. 24 User-resource embedding,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,1794564455.2667243,0.0,1,0.0
+Ref. 24 User-resource embedding,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,1794569560.5428727,0.0,1,0.0
+Ref. 24 User-resource embedding,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,1794220835.3584163,0.0,1,0.0
+Ref. 24 User-resource embedding,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,1794446119.4526668,0.0,1,0.0
+Ref. 24 User-resource embedding,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,1794447370.9863229,0.0,1,0.0
+Ref. 24 User-resource embedding,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,1794187756.1972413,0.0,1,0.0
+Ref. 24 User-resource embedding,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,1794455713.5827315,0.0,1,0.0
+Ref. 24 User-resource embedding,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,1793927908.2737722,0.0,1,0.0
+Ref. 24 User-resource embedding,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,1794047988.9140294,257.5730812549591,1,0.0
+Ref. 24 User-resource embedding,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,1794143489.2168667,0.0,1,0.0
+Ref. 24 User-resource embedding,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,1794656554.4081895,0.0,1,0.0
+Ref. 24 User-resource embedding,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,1794657962.2413228,0.0,1,0.0
+Ref. 24 User-resource embedding,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,1794301634.5863566,0.0,1,0.0
+Ref. 24 User-resource embedding,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,1794561572.7358217,0.0,1,0.0
+Ref. 24 User-resource embedding,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,1794728660.1822557,0.0,1,0.0
+Ref. 24 User-resource embedding,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,1794047239.9688597,589.6685140132904,1,0.0
+Ref. 24 User-resource embedding,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,1794221529.659205,0.0,1,0.0
+Ref. 24 User-resource embedding,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,1794141967.384847,0.0,1,0.0
+Ref. 24 User-resource embedding,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,1794222302.9422026,0.0,1,0.0
+Ref. 24 User-resource embedding,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,1794404294.6994278,357065.6403810978,1,0.0
+Ref. 24 User-resource embedding,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,1794316325.1750028,161615.01284718513,1,0.0
+Ref. 24 User-resource embedding,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,1794143308.8122015,1367.8133080005646,1,0.0
+Ref. 24 User-resource embedding,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,1794318961.0165184,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,1794317764.6309369,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,1794755997.1501691,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_time-test-0,unusual_time,33,1794023603.719857,1794023603.719857,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,1794107453.2868845,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,1794026259.5624363,0.0,1,0.0
+Ref. 24 User-resource embedding,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,1794538833.3302274,601939.4690556526,1,0.0
+Ref. 14 DynAD,3,bac_probe-test-0,bac_probe,69,1794399379.955275,1794399409.7240782,29.768803119659424,1,0.8100396245717988
+Ref. 14 DynAD,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,,,0,0.8100396245717988
+Ref. 14 DynAD,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,1794564455.2667243,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,1794569801.5544238,241.0115511417389,1,0.8100396245717988
+Ref. 14 DynAD,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,1794220835.3584163,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,,,0,0.8100396245717988
+Ref. 14 DynAD,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,,,0,0.8100396245717988
+Ref. 14 DynAD,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,,,0,0.8100396245717988
+Ref. 14 DynAD,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,,,0,0.8100396245717988
+Ref. 14 DynAD,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,1793927924.8319695,16.558197259902954,1,0.8100396245717988
+Ref. 14 DynAD,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,1794047988.9140294,257.5730812549591,1,0.8100396245717988
+Ref. 14 DynAD,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,1794143489.2168667,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,,,0,0.8100396245717988
+Ref. 14 DynAD,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,,,0,0.8100396245717988
+Ref. 14 DynAD,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,,,0,0.8100396245717988
+Ref. 14 DynAD,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,1794561572.7358217,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,1794728660.1822557,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,,,0,0.8100396245717988
+Ref. 14 DynAD,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,1794221529.659205,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,1794221139.6714413,79172.28659439087,1,0.8100396245717988
+Ref. 14 DynAD,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,1794222302.9422026,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,,,0,0.8100396245717988
+Ref. 14 DynAD,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,1794573567.8031795,418857.6410238743,1,0.8100396245717988
+Ref. 14 DynAD,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,,,0,0.8100396245717988
+Ref. 14 DynAD,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,,,0,0.8100396245717988
+Ref. 14 DynAD,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,,,0,0.8100396245717988
+Ref. 14 DynAD,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,,,0,0.8100396245717988
+Ref. 14 DynAD,3,unusual_time-test-0,unusual_time,33,1794023603.719857,1794023603.719857,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,1794281824.4316673,174371.1447827816,1,0.8100396245717988
+Ref. 14 DynAD,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,1794026259.5624363,0.0,1,0.8100396245717988
+Ref. 14 DynAD,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,1794538954.82996,602060.9687883854,1,0.8100396245717988
+Ref. 17 PG-AID,3,bac_probe-test-0,bac_probe,69,1794399379.955275,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,1794411301.0441282,269333.6592812538,1,0.7928321361541748
+Ref. 17 PG-AID,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,1794490532.0765018,335821.9143462181,1,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_time-test-0,unusual_time,33,1794023603.719857,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,,,0,0.7928321361541748
+Ref. 17 PG-AID,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,,,0,0.7928321361541748
+Ref. 21 ACOBE,3,bac_probe-test-0,bac_probe,69,1794399379.955275,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,1794187756.1972413,0.0,1,0.02631578947368421
+Ref. 21 ACOBE,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_time-test-0,unusual_time,33,1794023603.719857,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,,,0,0.02631578947368421
+Ref. 21 ACOBE,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,,,0,0.02631578947368421
+Ref. 22 FGDT,3,bac_probe-test-0,bac_probe,69,1794399379.955275,,,0,0.4876515865325928
+Ref. 22 FGDT,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,,,0,0.4876515865325928
+Ref. 22 FGDT,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,,,0,0.4876515865325928
+Ref. 22 FGDT,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,,,0,0.4876515865325928
+Ref. 22 FGDT,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,,,0,0.4876515865325928
+Ref. 22 FGDT,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,1794446119.4526668,0.0,1,0.4876515865325928
+Ref. 22 FGDT,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,,,0,0.4876515865325928
+Ref. 22 FGDT,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,,,0,0.4876515865325928
+Ref. 22 FGDT,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,,,0,0.4876515865325928
+Ref. 22 FGDT,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,,,0,0.4876515865325928
+Ref. 22 FGDT,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,,,0,0.4876515865325928
+Ref. 22 FGDT,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,,,0,0.4876515865325928
+Ref. 22 FGDT,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,,,0,0.4876515865325928
+Ref. 22 FGDT,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,,,0,0.4876515865325928
+Ref. 22 FGDT,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,1794301634.5863566,0.0,1,0.4876515865325928
+Ref. 22 FGDT,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,,,0,0.4876515865325928
+Ref. 22 FGDT,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,,,0,0.4876515865325928
+Ref. 22 FGDT,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,,,0,0.4876515865325928
+Ref. 22 FGDT,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,,,0,0.4876515865325928
+Ref. 22 FGDT,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,,,0,0.4876515865325928
+Ref. 22 FGDT,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,,,0,0.4876515865325928
+Ref. 22 FGDT,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,,,0,0.4876515865325928
+Ref. 22 FGDT,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_time-test-0,unusual_time,33,1794023603.719857,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,,,0,0.4876515865325928
+Ref. 22 FGDT,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,,,0,0.4876515865325928
+Ref. 25 DEEPRO,3,bac_probe-test-0,bac_probe,69,1794399379.955275,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,bac_probe-test-1,bac_probe,43,1794136328.2108939,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,bac_probe-test-2,bac_probe,51,1794564455.2667243,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,bac_probe-test-3,bac_probe,45,1794569560.5428727,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,bac_probe-test-4,bac_probe,65,1794220835.3584163,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,compromised_account-test-0,compromised_account,108,1794446119.4526668,1794446119.4526668,0.0,1,7.623753084771453e-38
+Ref. 25 DEEPRO,3,compromised_account-test-1,compromised_account,124,1794447370.9863229,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,compromised_account-test-2,compromised_account,104,1794187756.1972413,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,compromised_account-test-3,compromised_account,80,1794455713.5827315,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,compromised_account-test-4,compromised_account,79,1793927908.2737722,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,horizontal_abuse-test-0,horizontal_abuse,118,1794047731.340948,1794047988.9140294,257.5730812549591,1,7.623753084771453e-38
+Ref. 25 DEEPRO,3,horizontal_abuse-test-1,horizontal_abuse,83,1794143489.2168667,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,horizontal_abuse-test-2,horizontal_abuse,79,1794656554.4081895,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,horizontal_abuse-test-3,horizontal_abuse,44,1794657962.2413228,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,insider_exfiltration-test-0,insider_exfiltration,89,1794301634.5863566,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,insider_exfiltration-test-1,insider_exfiltration,108,1794561572.7358217,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,insider_exfiltration-test-2,insider_exfiltration,82,1794728660.1822557,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,insider_exfiltration-test-3,insider_exfiltration,78,1794046650.3003457,1794047239.9688597,589.6685140132904,1,7.623753084771453e-38
+Ref. 25 DEEPRO,3,insider_exfiltration-test-4,insider_exfiltration,63,1794221529.659205,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,low_and_slow-test-0,low_and_slow,36,1794141967.384847,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,low_and_slow-test-1,low_and_slow,24,1794222302.9422026,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,low_and_slow-test-2,low_and_slow,23,1794047229.0590467,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,low_and_slow-test-3,low_and_slow,26,1794154710.1621556,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_sequence-test-0,unusual_sequence,55,1794141940.9988935,1794143308.8122015,1367.8133080005646,1,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_sequence-test-1,unusual_sequence,42,1794318961.0165184,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_sequence-test-2,unusual_sequence,28,1794317764.6309369,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_sequence-test-3,unusual_sequence,56,1794755997.1501691,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_time-test-0,unusual_time,33,1794023603.719857,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_time-test-1,unusual_time,49,1794107453.2868845,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_time-test-2,unusual_time,38,1794026259.5624363,,,0,7.623753084771453e-38
+Ref. 25 DEEPRO,3,unusual_time-test-3,unusual_time,43,1793936893.8611717,,,0,7.623753084771453e-38
+AccessSentinel TCN v3,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,1793969024.1149228,1.8765943050384521,1,0.11223015449941158
+AccessSentinel TCN v3,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794217920.7433176,0.0,1,0.11223015449941158
+AccessSentinel TCN v3,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,1794310120.5070312,44.93430757522583,1,0.11223015449941158
+AccessSentinel TCN v3,4,bac_probe-test-3,bac_probe,58,1794735208.002113,1794735246.5574265,38.55531334877014,1,0.11223015449941158
+AccessSentinel TCN v3,4,bac_probe-test-4,bac_probe,69,1794134273.478396,1794134745.0024924,471.52409648895264,1,0.11223015449941158
+AccessSentinel TCN v3,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,1794189841.1601255,0.0,1,0.11223015449941158
+AccessSentinel TCN v3,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,1794015544.1448746,500.4605393409729,1,0.11223015449941158
+AccessSentinel TCN v3,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,1794274243.74683,38.40387535095215,1,0.11223015449941158
+AccessSentinel TCN v3,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,1793937318.1500235,0.0,1,0.11223015449941158
+AccessSentinel TCN v3,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,1793938441.7485974,374.6858067512512,1,0.11223015449941158
+AccessSentinel TCN v3,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,1794484793.2478583,44.937096118927,1,0.11223015449941158
+AccessSentinel TCN v3,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,1794654013.5799294,91.05977463722229,1,0.11223015449941158
+AccessSentinel TCN v3,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,1794747004.3600972,5.80813455581665,1,0.11223015449941158
+AccessSentinel TCN v3,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,1794404410.7012033,25.820844888687134,1,0.11223015449941158
+AccessSentinel TCN v3,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,1794227751.7080266,43.51718068122864,1,0.11223015449941158
+AccessSentinel TCN v3,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,1794572511.7740552,42.93929839134216,1,0.11223015449941158
+AccessSentinel TCN v3,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,1794486657.6432939,56.02323889732361,1,0.11223015449941158
+AccessSentinel TCN v3,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,1794660841.8991554,12.397730112075806,1,0.11223015449941158
+AccessSentinel TCN v3,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,1794568689.7432678,138.02004027366638,1,0.11223015449941158
+AccessSentinel TCN v3,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,,,0,0.11223015449941158
+AccessSentinel TCN v3,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,,,0,0.11223015449941158
+AccessSentinel TCN v3,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,1794414302.1863692,110492.90353369713,1,0.11223015449941158
+AccessSentinel TCN v3,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,1793959519.263107,0.0,1,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,1794477185.589068,557.312103509903,1,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,,,0,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,1794656139.2625568,130.14820432662964,1,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,1793964360.9593394,417.72357869148254,1,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_time-test-0,unusual_time,35,1794200343.781037,,,0,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,,,0,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_time-test-2,unusual_time,65,1794276076.589848,1794542045.0149186,265968.4250705242,1,0.11223015449941158
+AccessSentinel TCN v3,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,1794273526.1602886,476.8846900463104,1,0.11223015449941158
+Ref. 24 User-resource embedding,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,1793969022.2383285,0.0,1,0.0
+Ref. 24 User-resource embedding,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794217920.7433176,0.0,1,0.0
+Ref. 24 User-resource embedding,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,1794310075.5727236,0.0,1,0.0
+Ref. 24 User-resource embedding,4,bac_probe-test-3,bac_probe,58,1794735208.002113,1794735208.002113,0.0,1,0.0
+Ref. 24 User-resource embedding,4,bac_probe-test-4,bac_probe,69,1794134273.478396,1794134745.0024924,471.52409648895264,1,0.0
+Ref. 24 User-resource embedding,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,1794189841.1601255,0.0,1,0.0
+Ref. 24 User-resource embedding,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,1794015544.1448746,500.4605393409729,1,0.0
+Ref. 24 User-resource embedding,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,1794274205.3429546,0.0,1,0.0
+Ref. 24 User-resource embedding,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,1793937318.1500235,0.0,1,0.0
+Ref. 24 User-resource embedding,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,1793938441.7485974,374.6858067512512,1,0.0
+Ref. 24 User-resource embedding,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,1794484748.3107622,0.0,1,0.0
+Ref. 24 User-resource embedding,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,1794653922.5201547,0.0,1,0.0
+Ref. 24 User-resource embedding,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,1794746998.5519626,0.0,1,0.0
+Ref. 24 User-resource embedding,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,1794404384.8803585,0.0,1,0.0
+Ref. 24 User-resource embedding,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,1794227708.190846,0.0,1,0.0
+Ref. 24 User-resource embedding,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,1794572468.8347569,0.0,1,0.0
+Ref. 24 User-resource embedding,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,1794486601.620055,0.0,1,0.0
+Ref. 24 User-resource embedding,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,1794660829.5014253,0.0,1,0.0
+Ref. 24 User-resource embedding,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,1794568551.7232275,0.0,1,0.0
+Ref. 24 User-resource embedding,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,1794315533.6780348,0.0,1,0.0
+Ref. 24 User-resource embedding,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,1794045496.4877856,0.0,1,0.0
+Ref. 24 User-resource embedding,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,1794303809.2828355,0.0,1,0.0
+Ref. 24 User-resource embedding,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,1793959519.263107,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,1794477161.7715182,533.4945538043976,1,0.0
+Ref. 24 User-resource embedding,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,1794752424.2132587,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,1794656009.1143525,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,1793963943.2357607,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_time-test-0,unusual_time,35,1794200343.781037,1794200343.781037,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,1794272689.4000378,0.0,1,0.0
+Ref. 24 User-resource embedding,4,unusual_time-test-2,unusual_time,65,1794276076.589848,1794541193.3638818,265116.77403378487,1,0.0
+Ref. 24 User-resource embedding,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,1794273049.2755985,0.0,1,0.0
+Ref. 14 DynAD,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,1793969024.1149228,1.8765943050384521,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794217920.7433176,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,1794310081.849223,6.276499271392822,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,bac_probe-test-3,bac_probe,58,1794735208.002113,1794735208.002113,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,bac_probe-test-4,bac_probe,69,1794134273.478396,1794134837.4262614,563.947865486145,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,1794189841.1601255,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,1794274611.2232792,405.8803246021271,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,1793937598.56475,280.4147264957428,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,1793938657.6778617,590.6150710582733,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,1794746998.5519626,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,1794227708.190846,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,1794486601.620055,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,1794660829.5014253,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,1794568551.7232275,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,1794647929.4969983,332395.8189635277,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,1794045496.4877856,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,1794409789.6944456,105980.4116101265,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,1793959519.263107,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,1794752424.2132587,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,1794656009.1143525,0.0,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_time-test-0,unusual_time,35,1794200343.781037,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,,,0,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_time-test-2,unusual_time,65,1794276076.589848,1794541193.3638818,265116.77403378487,1,2.3218159640236604e-05
+Ref. 14 DynAD,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,,,0,2.3218159640236604e-05
+Ref. 17 PG-AID,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794219210.6560888,1289.9127712249756,1,0.9713404774665833
+Ref. 17 PG-AID,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,1794311261.6183953,1186.0456717014313,1,0.9713404774665833
+Ref. 17 PG-AID,4,bac_probe-test-3,bac_probe,58,1794735208.002113,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,bac_probe-test-4,bac_probe,69,1794134273.478396,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,1794746998.5519626,0.0,1,0.9713404774665833
+Ref. 17 PG-AID,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,1794404384.8803585,0.0,1,0.9713404774665833
+Ref. 17 PG-AID,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,1794746827.6769197,431293.9988849163,1,0.9713404774665833
+Ref. 17 PG-AID,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,1794045496.4877856,0.0,1,0.9713404774665833
+Ref. 17 PG-AID,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,1794575332.3977747,271523.1149392128,1,0.9713404774665833
+Ref. 17 PG-AID,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,1794051616.434506,92097.1713988781,1,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,1794752424.2132587,0.0,1,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_time-test-0,unusual_time,35,1794200343.781037,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_time-test-2,unusual_time,65,1794276076.589848,,,0,0.9713404774665833
+Ref. 17 PG-AID,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,,,0,0.9713404774665833
+Ref. 21 ACOBE,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,bac_probe-test-3,bac_probe,58,1794735208.002113,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,bac_probe-test-4,bac_probe,69,1794134273.478396,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_time-test-0,unusual_time,35,1794200343.781037,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_time-test-2,unusual_time,65,1794276076.589848,,,0,0.023255813953488372
+Ref. 21 ACOBE,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,,,0,0.023255813953488372
+Ref. 22 FGDT,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,1793969022.2383285,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794217920.7433176,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,,,0,0.4602451026439667
+Ref. 22 FGDT,4,bac_probe-test-3,bac_probe,58,1794735208.002113,,,0,0.4602451026439667
+Ref. 22 FGDT,4,bac_probe-test-4,bac_probe,69,1794134273.478396,,,0,0.4602451026439667
+Ref. 22 FGDT,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,,,0,0.4602451026439667
+Ref. 22 FGDT,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,,,0,0.4602451026439667
+Ref. 22 FGDT,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,,,0,0.4602451026439667
+Ref. 22 FGDT,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,1793937318.1500235,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,,,0,0.4602451026439667
+Ref. 22 FGDT,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,1794484748.3107622,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,,,0,0.4602451026439667
+Ref. 22 FGDT,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,,,0,0.4602451026439667
+Ref. 22 FGDT,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,,,0,0.4602451026439667
+Ref. 22 FGDT,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,,,0,0.4602451026439667
+Ref. 22 FGDT,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,,,0,0.4602451026439667
+Ref. 22 FGDT,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,1794486601.620055,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,1794660829.5014253,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,,,0,0.4602451026439667
+Ref. 22 FGDT,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,,,0,0.4602451026439667
+Ref. 22 FGDT,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,,,0,0.4602451026439667
+Ref. 22 FGDT,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,,,0,0.4602451026439667
+Ref. 22 FGDT,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,,,0,0.4602451026439667
+Ref. 22 FGDT,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,,,0,0.4602451026439667
+Ref. 22 FGDT,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,,,0,0.4602451026439667
+Ref. 22 FGDT,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,,,0,0.4602451026439667
+Ref. 22 FGDT,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,1793963943.2357607,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,unusual_time-test-0,unusual_time,35,1794200343.781037,1794200343.781037,0.0,1,0.4602451026439667
+Ref. 22 FGDT,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,,,0,0.4602451026439667
+Ref. 22 FGDT,4,unusual_time-test-2,unusual_time,65,1794276076.589848,1794541193.3638818,265116.77403378487,1,0.4602451026439667
+Ref. 22 FGDT,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,,,0,0.4602451026439667
+Ref. 25 DEEPRO,4,bac_probe-test-0,bac_probe,53,1793969022.2383285,1793969022.2383285,0.0,1,0.0
+Ref. 25 DEEPRO,4,bac_probe-test-1,bac_probe,36,1794217920.7433176,1794217920.7433176,0.0,1,0.0
+Ref. 25 DEEPRO,4,bac_probe-test-2,bac_probe,40,1794310075.5727236,1794310075.5727236,0.0,1,0.0
+Ref. 25 DEEPRO,4,bac_probe-test-3,bac_probe,58,1794735208.002113,1794735208.002113,0.0,1,0.0
+Ref. 25 DEEPRO,4,bac_probe-test-4,bac_probe,69,1794134273.478396,1794134745.0024924,471.52409648895264,1,0.0
+Ref. 25 DEEPRO,4,compromised_account-test-0,compromised_account,63,1794189841.1601255,1794189841.1601255,0.0,1,0.0
+Ref. 25 DEEPRO,4,compromised_account-test-1,compromised_account,127,1794015043.6843352,1794015544.1448746,500.4605393409729,1,0.0
+Ref. 25 DEEPRO,4,compromised_account-test-2,compromised_account,117,1794274205.3429546,1794274205.3429546,0.0,1,0.0
+Ref. 25 DEEPRO,4,compromised_account-test-3,compromised_account,85,1793937318.1500235,1793937318.1500235,0.0,1,0.0
+Ref. 25 DEEPRO,4,compromised_account-test-4,compromised_account,115,1793938067.0627906,1793938441.7485974,374.6858067512512,1,0.0
+Ref. 25 DEEPRO,4,horizontal_abuse-test-0,horizontal_abuse,119,1794484748.3107622,1794484748.3107622,0.0,1,0.0
+Ref. 25 DEEPRO,4,horizontal_abuse-test-1,horizontal_abuse,99,1794653922.5201547,1794653922.5201547,0.0,1,0.0
+Ref. 25 DEEPRO,4,horizontal_abuse-test-2,horizontal_abuse,56,1794746998.5519626,1794746998.5519626,0.0,1,0.0
+Ref. 25 DEEPRO,4,horizontal_abuse-test-3,horizontal_abuse,89,1794404384.8803585,1794404384.8803585,0.0,1,0.0
+Ref. 25 DEEPRO,4,insider_exfiltration-test-0,insider_exfiltration,89,1794227708.190846,1794227708.190846,0.0,1,0.0
+Ref. 25 DEEPRO,4,insider_exfiltration-test-1,insider_exfiltration,81,1794572468.8347569,1794572468.8347569,0.0,1,0.0
+Ref. 25 DEEPRO,4,insider_exfiltration-test-2,insider_exfiltration,92,1794486601.620055,1794486601.620055,0.0,1,0.0
+Ref. 25 DEEPRO,4,insider_exfiltration-test-3,insider_exfiltration,88,1794660829.5014253,1794660829.5014253,0.0,1,0.0
+Ref. 25 DEEPRO,4,insider_exfiltration-test-4,insider_exfiltration,67,1794568551.7232275,1794568551.7232275,0.0,1,0.0
+Ref. 25 DEEPRO,4,low_and_slow-test-0,low_and_slow,22,1794315533.6780348,1794315533.6780348,0.0,1,0.0
+Ref. 25 DEEPRO,4,low_and_slow-test-1,low_and_slow,33,1794045496.4877856,1794045496.4877856,0.0,1,0.0
+Ref. 25 DEEPRO,4,low_and_slow-test-2,low_and_slow,22,1794303809.2828355,1794303809.2828355,0.0,1,0.0
+Ref. 25 DEEPRO,4,low_and_slow-test-3,low_and_slow,27,1793959519.263107,1793959519.263107,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_sequence-test-0,unusual_sequence,43,1794476628.2769644,1794477161.7715182,533.4945538043976,1,0.0
+Ref. 25 DEEPRO,4,unusual_sequence-test-1,unusual_sequence,35,1794752424.2132587,1794752424.2132587,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_sequence-test-2,unusual_sequence,31,1794656009.1143525,1794656009.1143525,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_sequence-test-3,unusual_sequence,59,1793963943.2357607,1793963943.2357607,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_time-test-0,unusual_time,35,1794200343.781037,1794200343.781037,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_time-test-1,unusual_time,46,1794272689.4000378,1794272689.4000378,0.0,1,0.0
+Ref. 25 DEEPRO,4,unusual_time-test-2,unusual_time,65,1794276076.589848,1794541193.3638818,265116.77403378487,1,0.0
+Ref. 25 DEEPRO,4,unusual_time-test-3,unusual_time,37,1794273049.2755985,1794273049.2755985,0.0,1,0.0

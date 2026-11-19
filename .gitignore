@@ -31,12 +31,15 @@ accesssentinel_data/
 .idea/
 .DS_Store
 Thumbs.db
-# Trained models: the PROMOTED versions are tracked (about 2.5 MB) so a fresh clone runs without training.
-# Other versions (retraining candidates, experiments) stay local unless added on purpose.
+# Trained models: the PROMOTED versions are tracked so a fresh clone runs without training. CURRENT points at the
+# v3 models, so their folders must be tracked too (they were not: a fresh clone pointed at missing models and had to
+# retrain). The D3 models stay tracked as the D3 baseline. Other versions stay local unless added on purpose.
 models/*/*
 !models/*/CURRENT
 !models/tcn/tcn-20261110T194520Z-beeb9b/
 !models/tgn/tgn-20261111T104626Z-ccc61d/
+!models/tcn/tcn3-20261115T091825Z-0c7a4e/
+!models/tgn/tgn3-20261115T094228Z-ccc61d/
 !models/**/model.pt
 
 # Shareable archives made with git archive

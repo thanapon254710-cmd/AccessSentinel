@@ -1,0 +1,214 @@
+{
+  "status": "complete",
+  "seed": 0,
+  "dataset_events": 67349,
+  "dataset_fingerprint": "2b77c97a8ea77b35",
+  "evaluation_unit": "collusion-labelled test anchors",
+  "notes": "TCN+TGN is an ungated full-compute reference. Other TGN configs require an actual Escalator admission in the previous 3600 event-time seconds; TCN remains online for every variant. Independent Escalator state per ablation.",
+  "measurements": [
+    {
+      "configuration": "TCN only",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 10,
+      "fn": 0
+    },
+    {
+      "configuration": "TCN + TGN",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 22,
+      "fn": 0
+    },
+    {
+      "configuration": "TCN + TGN without resource-triggered escalation",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 11,
+      "fn": 0
+    },
+    {
+      "configuration": "TCN + TGN without periodic sweep",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 15,
+      "fn": 0
+    },
+    {
+      "configuration": "TCN + TGN without random sampling",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 16,
+      "fn": 0
+    },
+    {
+      "configuration": "Full AccessSentinel",
+      "seed": 0,
+      "threshold_tcn_high": 0.14146026968955994,
+      "threshold_tgn_collective": 0.9148632303636972,
+      "n_test_anchors": 607,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": null,
+      "pr_auc": null,
+      "n_scored": 607,
+      "n_total": 607,
+      "positive_anchors": 0,
+      "coverage": 1.0,
+      "tp": 0,
+      "fp": 16,
+      "fn": 0
+    }
+  ],
+  "escalation_trace_metadata": {
+    "TCN only": {
+      "execution": "TCN only; group scorer disabled"
+    },
+    "TCN + TGN": {
+      "execution": "Unrestricted TGN at all sampled anchors (upper-bound oracle compute; no escalation gating)"
+    },
+    "TCN + TGN without resource-triggered escalation": {
+      "configuration": "TCN + TGN without resource-triggered escalation",
+      "triggers_by_path": {
+        "sample": 792,
+        "high": 1310,
+        "sweep": 2346
+      },
+      "escalations": 3352,
+      "users_escalated": 119,
+      "sweeps": 215,
+      "wall_seconds": 5.409954399990966,
+      "enabled_paths": {
+        "high": true,
+        "resource": false,
+        "sweep": true,
+        "sample": true
+      },
+      "state_backend": "research_comparison.memory_redis.MemoryRedis",
+      "budget_admission": "accesssentinel.escalation_engine.Escalator.priority_admit"
+    },
+    "TCN + TGN without periodic sweep": {
+      "configuration": "TCN + TGN without periodic sweep",
+      "triggers_by_path": {
+        "sample": 792,
+        "high": 1310,
+        "resource": 8889
+      },
+      "escalations": 3861,
+      "users_escalated": 119,
+      "sweeps": 0,
+      "wall_seconds": 3.83621170000697,
+      "enabled_paths": {
+        "high": true,
+        "resource": true,
+        "sweep": false,
+        "sample": true
+      },
+      "state_backend": "research_comparison.memory_redis.MemoryRedis",
+      "budget_admission": "accesssentinel.escalation_engine.Escalator.priority_admit"
+    },
+    "TCN + TGN without random sampling": {
+      "configuration": "TCN + TGN without random sampling",
+      "triggers_by_path": {
+        "high": 1310,
+        "sweep": 2346,
+        "resource": 8889
+      },
+      "escalations": 5227,
+      "users_escalated": 97,
+      "sweeps": 215,
+      "wall_seconds": 6.290568399999756,
+      "enabled_paths": {
+        "high": true,
+        "resource": true,
+        "sweep": true,
+        "sample": false
+      },
+      "state_backend": "research_comparison.memory_redis.MemoryRedis",
+      "budget_admission": "accesssentinel.escalation_engine.Escalator.priority_admit"
+    },
+    "Full AccessSentinel": {
+      "configuration": "Full AccessSentinel",
+      "triggers_by_path": {
+        "sample": 792,
+        "high": 1310,
+        "sweep": 2346,
+        "resource": 8889
+      },
+      "escalations": 5801,
+      "users_escalated": 119,
+      "sweeps": 215,
+      "wall_seconds": 6.26693840000371,
+      "enabled_paths": {
+        "high": true,
+        "resource": true,
+        "sweep": true,
+        "sample": true
+      },
+      "state_backend": "research_comparison.memory_redis.MemoryRedis",
+      "budget_admission": "accesssentinel.escalation_engine.Escalator.priority_admit"
+    }
+  },
+  "quick_smoke_only": true
+}

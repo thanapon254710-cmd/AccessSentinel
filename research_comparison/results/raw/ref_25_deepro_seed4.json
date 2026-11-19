@@ -1,0 +1,20 @@
+{
+  "method": "Ref. 25 DEEPRO",
+  "metrics": {
+    "roc_auc": 0.5,
+    "pr_auc": 0.022763763513754594,
+    "n_scored": 84081,
+    "n_unscored": 0,
+    "precision": 0.022763763513754594,
+    "recall": 1.0,
+    "f1": 0.04451421594278737,
+    "validation_threshold": 0.0
+  },
+  "fit_and_score_seconds": 46.134878100000606,
+  "protocol_note": "MAGNN process/file/network meta-path core trained on train-period interaction provenance; user/resource nodes proxy process/entity nodes. Unseen test users remain unscored.",
+  "extra": {},
+  "seed": 4,
+  "dataset_fingerprint": "6f7fa63ddf318d69",
+  "dataset_events": 480288,
+  "quick_smoke_only": false
+}

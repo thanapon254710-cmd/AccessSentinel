@@ -13,6 +13,8 @@ Status: **all experiments A–H run and reported.**
 - **Collusion (B).** The graph path finds groups that the individual path misses: TGN and TCN together detect
   61 of 75 test groups, against 46 for the TCN alone. It does so with almost no false alarms on benign
   collaboration.
+- **Reference methods (§K).** On the same synthetic data, six adapted reference methods reach PR-AUC 0.017–0.078,
+  against 0.728 for the AccessSentinel TCN v3 (5 seeds). These are adaptations, not reproductions; caveats in §K.
 - **Compute budget (E).** The deployed budget B_W is never binding.
 - **Enforcement (G).** The PDP implements Eq. 21 exactly (200/200).
 - **Failure modes (H).** No loss and no duplicates under crashes.
@@ -469,9 +471,59 @@ per-member scores.
 
 ## K. Comparison with reference papers
 
-- **Method A (reproduced).** No reference method was reproduced. The baselines in D are implementations of method
-  families, not reproductions.
-- **Method B (reported).** No reference numbers are used:
+- **Method A (common-data comparison with adapted reference methods).** `research_comparison/` (added by the team
+  on 2026-11-17) implements the core of six referenced methods. It adapts each one to AccessSentinel's event data,
+  and runs all of them, with a freshly trained AccessSentinel TCN v3, on the **same** synthetic `tcn_v3_eval`
+  dataset per seed.
+  - **Protocol:** the same chronological windows; each method's threshold is the 95th percentile of its own scores
+    on nominal validation windows; test labels are used only for the final metrics.
+  - **Source:** `research_comparison/results/tables/mean_std_summary.csv` and `all_seed_metrics.csv`; Figs.
+    `research_comparison/results/figures/{pr_auc,roc_auc,runtime}_mean_std.png`.
+  - **Run:** `.venv-gpu/Scripts/python -m research_comparison.run_all --seeds 0,1,2,3,4` (2026-11-17, 5 seeds,
+    RTX 4050).
+
+  | Method (adapted) | ROC-AUC | PR-AUC | Precision | Recall | fit + score (s) |
+  |---|---|---|---|---|---|
+  | **AccessSentinel TCN v3** | **0.887 ± 0.019** | **0.728 ± 0.039** | 0.240 ± 0.014 | 0.753 ± 0.032 | 776 ± 171 |
+  | [14] DynAD | 0.634 ± 0.104 | 0.078 ± 0.068 | 0.050 ± 0.030 | 0.287 ± 0.123 | 10 ± 0.2 |
+  | [25] DEEPRO | 0.525 ± 0.042 | 0.024 ± 0.005 | 0.026 ± 0.009 | 0.643 ± 0.489 | 39 ± 11 |
+  | [24] user–resource embedding (candidate paper, unconfirmed, D5) | 0.521 ± 0.002 | 0.053 ± 0.004 | 0.020 ± 0.001 | 1.000 ± 0.000 | 1.6 ± 0.2 |
+  | [17] PG-AID | 0.490 ± 0.110 | 0.031 ± 0.017 | 0.042 ± 0.023 | 0.104 ± 0.051 | 131 ± 24 |
+  | [22] FGDT | 0.484 ± 0.046 | 0.021 ± 0.004 | 0.015 ± 0.008 | 0.193 ± 0.134 | 55 ± 11 |
+  | [21] ACOBE | 0.366 ± 0.038 | 0.017 ± 0.003 | 0.015 ± 0.019 | 0.028 ± 0.032 | 26 ± 8 |
+
+  Attack windows are about 2 % of the test windows, so a random scorer has PR-AUC ≈ 0.02 and ROC-AUC 0.5.
+
+  **Reading.** On this dataset the AccessSentinel TCN v3 separates attacks from normal activity far better than
+  the adapted reference methods. Its result here (PR-AUC 0.728 ± 0.039) agrees with Experiment A (0.714 ± 0.027),
+  an independent training run in a separate harness. Of the references, only DynAD is clearly above chance on
+  ROC-AUC.
+
+  **What this comparison is not, and its caveats.**
+  - These are **adaptations**, not reproductions. Each method is mapped onto AccessSentinel's events, which differ
+    from its original task:
+    - [17] and [25] use interaction-provenance approximations instead of OS-level provenance;
+    - [21] uses the role as its cohort;
+    - [22] uses co-access groups in place of review groups;
+    - [14] uses user–resource snapshots in place of its dynamic-network datasets.
+    - The results say nothing about how the methods perform on the data they were designed for. No paper's
+      published number is used.
+  - **Home ground.** The synthetic generator was built for AccessSentinel's scenarios and features, which favours
+    the TCN.
+  - **ACOBE is below chance in all 5 seeds** (ROC-AUC 0.33–0.42). This suggests the adapted score is inverted, or
+    the role-cohort mapping does not fit this data, rather than a property of ACOBE. Not investigated.
+  - **[24]'s threshold flags every test window** (recall 1.000), so its thresholded precision and recall are not
+    meaningful.
+  - **[17] PG-AID is not repeatable for a fixed seed.** Seed 0 gave ROC-AUC 0.623 in a first run and 0.386 in the
+    reported run. Its Doc2Vec step is multi-threaded and therefore non-deterministic. Its ± therefore mixes seed
+    variation and run-to-run noise.
+  - **Different threshold from Experiment A.** The harness threshold (95th percentile, close to θ_low) differs
+    from Experiment A's θ_high (99th percentile). That is why the TCN's precision / recall here (0.240 / 0.753)
+    differ from Section E (0.527 / 0.702). The threshold-free ROC-AUC and PR-AUC agree.
+  - **Only six references are covered.** `research_comparison/results/tables/pending_methods.csv` lists the rest as
+    not adapted (different tasks or data). Note that this file (19:15) still marks [14], [17], [21], [22] and [25]
+    as pending, too; it predates the adapters and was not regenerated.
+- **Method B (numbers reported by the papers).** No reference numbers are used:
   - [24] is a placeholder in v3; a candidate exists but needs team confirmation.
   - The full text of [25] (Prov-Trust) is not accessible.
   - [1] and [4] were identified (title, venue, DOI), but their full texts could not be retrieved here. They also
@@ -495,6 +547,9 @@ per-member scores.
   whether the graph path then flags it; Experiment B measures the latter.
 - **Interactions.** PDP-caused denials enter the TCN's input like ACL denials (v3 Eq. 1). This couples Restrict
   to Terminate (Section I).
+- **Feedback loop only half-implemented for v3.** Analyst verdicts are recorded as verified labels (the retraining
+  set). But the retraining step (`ml/retrain.py`) was written for the D3 models and fails with the v3 models
+  (checked 2026-11-17). Retraining from feedback was therefore not evaluated for v3.
 - **Shared machine for the model experiments.** Experiments A and B trained on the same GPU at the same time (A's
   seed 2 took 6,087 s, against about 2,500–3,600 s for the others). Detection metrics do not depend on this; the
   inference timings in Fig. `exp_a_fig5_latency` do, so they are indicative only. The live experiments (C, D, G, H)

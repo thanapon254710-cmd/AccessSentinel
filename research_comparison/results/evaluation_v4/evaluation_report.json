@@ -1,0 +1,103 @@
+{
+  "mode": "full_synthetic",
+  "candidate_protocol_complete": false,
+  "paper_ready": false,
+  "figures_requested": [
+    2,
+    3,
+    4
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "device": "cuda",
+  "tgn_epochs": 6,
+  "load_duration_seconds": 2.0,
+  "elapsed_seconds": 4615.064479199995,
+  "datasets": [
+    {
+      "seed": 0,
+      "events": 506161,
+      "fingerprint": "fc867de8b9b12cd2",
+      "synthetic": true
+    },
+    {
+      "seed": 1,
+      "events": 505010,
+      "fingerprint": "47036bdfd1fb6971",
+      "synthetic": true
+    },
+    {
+      "seed": 2,
+      "events": 476904,
+      "fingerprint": "0d81e6155d2fbac6",
+      "synthetic": true
+    },
+    {
+      "seed": 3,
+      "events": 497405,
+      "fingerprint": "b345b11e45d03d26",
+      "synthetic": true
+    },
+    {
+      "seed": 4,
+      "events": 480288,
+      "fingerprint": "6f7fa63ddf318d69",
+      "synthetic": true
+    }
+  ],
+  "methods_completed": [
+    "AccessSentinel TCN v3",
+    "Ref. 14 DynAD",
+    "Ref. 17 PG-AID",
+    "Ref. 21 ACOBE",
+    "Ref. 22 FGDT",
+    "Ref. 24 User-resource embedding",
+    "Ref. 25 DEEPRO"
+  ],
+  "failures": [],
+  "figures": {
+    "fig2": {
+      "generated": true,
+      "present": [
+        "AccessSentinel",
+        "DynAD",
+        "PG-AID",
+        "ACOBE",
+        "FGDT",
+        "User-resource embedding",
+        "DEEPRO"
+      ],
+      "complete_comparison": true
+    },
+    "fig3": {
+      "generated": true,
+      "present": [
+        "AccessSentinel",
+        "DynAD",
+        "PG-AID",
+        "ACOBE",
+        "FGDT",
+        "User-resource embedding",
+        "DEEPRO"
+      ],
+      "complete_comparison": true
+    },
+    "fig4": {
+      "generated": true,
+      "latency_boundary": "local AccessSentinel TCN score and threshold; not system end-to-end"
+    }
+  },
+  "limitations": [
+    "All figures use synthetic AccessSentinel tcn_v3_eval data, never real production data.",
+    "References are common-data adaptations; several are event anomaly proxies rather than native group detectors.",
+    "Figure 4 local TCN callback time excludes gateway, Kafka, queue, PDP and enforcement.",
+    "Figure 6 is in-process offered-rate replay with a cold-start TGN; it does not validate deployed distributed throughput.",
+    "Figure 7 measures collusion anchor outcomes with actual Escalator admission; ungated TCN + TGN is an upper-bound compute baseline.",
+    "Five seeds and full dataset are required before candidate paper evidence; accuracy and methodological comparability must still be reviewed."
+  ]
+}

@@ -111,7 +111,8 @@ Legend: ✅ implemented and tested · 🟡 partial · ❌ missing · ⚠️ impl
 | Decision version ψ; gateway rejects ψ ≤ ψcur | PDP writes increasing `version`; gateway reads the latest value but does not compare | ✅ Phase 7 (global ψ, gateway rejects ψ ≤ ψcur; verified live) |
 | Decision TTL + **sensitivity-based fallback** (s = 0 fail-open, s = 1 fail-closed Restrict) | Gateway fails **closed for everything** (HTTP 503) when Redis is down | ✅ Phase 7 (PDP heartbeat TTL, s=0 open / s=1 Restrict, per-app override; verified live) |
 | Request-time and session-time enforcement | Cached decision + session revocation | ✅ |
-| Feedback: only analyst-verified outcomes become labels | `ml/feedback_data.py`, verified live in Phase 9 | ✅ |
+| Feedback: only analyst-verified outcomes become labels | `ml/feedback_data.py`, verified live in Phase 9 | ✅ label collection (verdicts → verified retraining set) |
+| Retraining from verified feedback (`ml/retrain.py`, validation gate, promotion) | Written for the D3 models | 🟡 works for the D3 TCN/TGN only: with the v3 models CURRENT, `retrain tcn` fails (`TcnScorerV3` has no D3 preprocessor `pre`; checked 2026-11-17). v3 retraining (Table III encoder, z_u, multi-task fine-tune, Eq. 8 re-calibration) is not implemented |
 
 ### 3.6 Formal properties (Table IV) and failure modes (Table V)
 

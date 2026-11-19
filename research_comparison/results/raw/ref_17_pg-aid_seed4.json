@@ -1,0 +1,31 @@
+{
+  "method": "Ref. 17 PG-AID",
+  "metrics": {
+    "roc_auc": 0.599538437780823,
+    "pr_auc": 0.0599372180528535,
+    "n_scored": 84081,
+    "n_unscored": 0,
+    "precision": 0.07751060820367751,
+    "recall": 0.14315569487983282,
+    "f1": 0.1005689117269224,
+    "validation_threshold": 0.9984702467918396
+  },
+  "fit_and_score_seconds": 139.53239439999925,
+  "protocol_note": "Cache snapshots, train-only TF-IDF and Doc2Vec, and next-snapshot Transformer. Interaction-provenance paths approximate OS provenance.",
+  "extra": {
+    "n_all_snapshots": 3536,
+    "n_train_snapshots": 1837,
+    "n_scored_snapshots": 3534,
+    "n_inferred_snapshots": 1699,
+    "snapshot_score_std": 0.10043932837701779,
+    "snapshot_score_min": 0.3941589593887329,
+    "snapshot_score_max": 1.4290112257003784,
+    "tfidf_fit_snapshots": 1837,
+    "doc2vec_train_only": true,
+    "deterministic_inference": true
+  },
+  "seed": 4,
+  "dataset_fingerprint": "6f7fa63ddf318d69",
+  "dataset_events": 480288,
+  "quick_smoke_only": false
+}

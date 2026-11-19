@@ -46,9 +46,24 @@ ABLATIONS = (
 )
 
 
+def _json_safe(value):
+    """Represent undefined numeric metrics as JSON null, never as zero."""
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, np.ndarray):
+        return _json_safe(value.tolist())
+    if isinstance(value, np.generic):
+        return _json_safe(value.item())
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
+
+
 def _json(path: Path, payload):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, default=str, allow_nan=False), encoding='utf-8')
+    path.write_text(json.dumps(_json_safe(payload), indent=2, allow_nan=False), encoding='utf-8')
 
 
 def _percentile(x, q):

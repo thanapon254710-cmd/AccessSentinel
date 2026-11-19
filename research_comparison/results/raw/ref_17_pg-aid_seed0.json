@@ -1,31 +1,31 @@
 {
   "method": "Ref. 17 PG-AID",
   "metrics": {
-    "roc_auc": 0.1987030604602866,
-    "pr_auc": 0.023321283934650872,
-    "n_scored": 5536,
+    "roc_auc": 0.38621231934398537,
+    "pr_auc": 0.02200170261335494,
+    "n_scored": 91527,
     "n_unscored": 0,
-    "precision": 0.0,
-    "recall": 0.0,
-    "f1": 0.0,
-    "validation_threshold": 1.4657238721847534
+    "precision": 0.036858271171566474,
+    "recall": 0.09333333333333334,
+    "f1": 0.05284680717206669,
+    "validation_threshold": 1.1829818487167358
   },
-  "fit_and_score_seconds": 2.1312173000187613,
+  "fit_and_score_seconds": 110.53403649999973,
   "protocol_note": "Cache snapshots, train-only TF-IDF and Doc2Vec, and next-snapshot Transformer. Interaction-provenance paths approximate OS provenance.",
   "extra": {
-    "n_all_snapshots": 210,
-    "n_train_snapshots": 112,
-    "n_scored_snapshots": 208,
-    "n_inferred_snapshots": 98,
-    "snapshot_score_std": 0.22723538226035217,
-    "snapshot_score_min": 0.4749390482902527,
-    "snapshot_score_max": 1.664091944694519,
-    "tfidf_fit_snapshots": 112,
+    "n_all_snapshots": 3583,
+    "n_train_snapshots": 1858,
+    "n_scored_snapshots": 3581,
+    "n_inferred_snapshots": 1725,
+    "snapshot_score_std": 0.10142936553517408,
+    "snapshot_score_min": 0.5032340288162231,
+    "snapshot_score_max": 1.5787851810455322,
+    "tfidf_fit_snapshots": 1858,
     "doc2vec_train_only": true,
     "deterministic_inference": true
   },
   "seed": 0,
-  "dataset_fingerprint": "2b77c97a8ea77b35",
-  "dataset_events": 67349,
-  "quick_smoke_only": true
+  "dataset_fingerprint": "fc867de8b9b12cd2",
+  "dataset_events": 506161,
+  "quick_smoke_only": false
 }

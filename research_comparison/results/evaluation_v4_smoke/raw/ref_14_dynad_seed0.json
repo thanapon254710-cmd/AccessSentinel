@@ -17,7 +17,7 @@
     "fp": 1012,
     "fn": 119
   },
-  "fit_and_score_seconds": 8.874428600014653,
+  "fit_and_score_seconds": 1.52510529999563,
   "protocol_note": "Evolving GCN/GRU temporal graph core; event edges are user-resource interactions. Train labels supervise training snapshots only.",
   "extra": {},
   "seed": 0,

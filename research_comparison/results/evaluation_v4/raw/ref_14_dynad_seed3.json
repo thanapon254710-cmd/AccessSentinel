@@ -1,0 +1,26 @@
+{
+  "method": "Ref. 14 DynAD",
+  "metrics": {
+    "roc_auc": 0.5393603607914681,
+    "pr_auc": 0.02189903070597913,
+    "n_scored": 88910,
+    "n_unscored": 0,
+    "precision": 0.021871023114031194,
+    "recall": 0.4112409571508069,
+    "f1": 0.04153318720845276,
+    "validation_threshold": 0.8100396245717988,
+    "validation_roc_auc": 0.7093296360160459,
+    "score_direction_warning": false,
+    "test_coverage": 1.0,
+    "n_unscored_positives": 0,
+    "tp": 739,
+    "fp": 33050,
+    "fn": 1058
+  },
+  "fit_and_score_seconds": 10.979965300008189,
+  "protocol_note": "Evolving GCN/GRU temporal graph core; event edges are user-resource interactions. Train labels supervise training snapshots only.",
+  "extra": {},
+  "seed": 3,
+  "dataset_events": 497405,
+  "dataset_fingerprint": "b345b11e45d03d26"
+}

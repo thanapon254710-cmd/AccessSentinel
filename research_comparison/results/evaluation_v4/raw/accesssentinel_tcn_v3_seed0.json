@@ -1,0 +1,32 @@
+{
+  "method": "AccessSentinel TCN v3",
+  "metrics": {
+    "roc_auc": 0.882139978923723,
+    "pr_auc": 0.7119130621194653,
+    "n_scored": 91527,
+    "n_unscored": 0,
+    "precision": 0.21349413298565842,
+    "recall": 0.7277777777777777,
+    "f1": 0.33014112903225806,
+    "validation_threshold": 0.11750709526240824,
+    "validation_roc_auc": 0.9295579133836394,
+    "score_direction_warning": false,
+    "test_coverage": 1.0,
+    "n_unscored_positives": 0,
+    "tp": 1310,
+    "fp": 4826,
+    "fn": 490
+  },
+  "fit_and_score_seconds": 360.93674889999966,
+  "protocol_note": "AccessSentinel Revised-v3 TCN trained on the same generated dataset and chronological window split as all reference adaptations.",
+  "extra": {
+    "best_validation_pr_auc": 0.7535163541538419,
+    "epochs_pretrain": 1,
+    "epochs_finetune": 3,
+    "training_epochs_completed": 4,
+    "device": "cuda"
+  },
+  "seed": 0,
+  "dataset_events": 506161,
+  "dataset_fingerprint": "fc867de8b9b12cd2"
+}

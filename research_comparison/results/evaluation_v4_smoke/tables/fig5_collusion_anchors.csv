@@ -1,0 +1,8 @@
+﻿method,seed,threshold,evaluation_level,n_scored,n_total,positive_anchors,coverage,tp,fp,fn,precision,recall,f1,roc_auc,pr_auc
+AccessSentinel TCN + TGN (native group),0,0.9148632303636972,native TGN group/member anchor,607,607,0,1.0,0,12,0,0.0,0.0,0.0,,
+Ref. 24 User-resource embedding,0,0.0,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,204,0,0.0,0.0,0.0,,
+Ref. 14 DynAD,0,0.9998849630355835,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,60,0,0.0,0.0,0.0,,
+Ref. 17 PG-AID,0,1.2878403663635254,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,38,0,0.0,0.0,0.0,,
+Ref. 21 ACOBE,0,0.03571428571428571,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,24,0,0.0,0.0,0.0,,
+Ref. 22 FGDT,0,0.519231379032135,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,41,0,0.0,0.0,0.0,,
+Ref. 25 DEEPRO,0,9.793446221352199e-19,latest same-user event anomaly proxy (NOT group output),204,607,0,0.33607907742998355,0,30,0,0.0,0.0,0.0,,

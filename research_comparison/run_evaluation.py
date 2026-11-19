@@ -248,8 +248,8 @@ def main(argv=None):
         print(f'\n=== SEED {seed} ===',flush=True)
         ds=make_dataset(seed,args.quick)
         n=len(ds.events);fp=ds.fingerprint()
-        if not args.quick and not 500000<=n<=510000:
-            raise RuntimeError(f'Full dataset must have approximately 506k events, got {n:,} for seed {seed}')
+        if not args.quick and not 450000<=n<=560000:  # seed-to-seed variation of tcn_v3_eval (seeds 0-4: 477k-506k); guards only against a quick/wrong-config dataset
+            raise RuntimeError(f'Full dataset must have roughly 450k-560k events (tcn_v3_eval), got {n:,} for seed {seed}')
         data_meta.append({'seed':seed,'events':n,'fingerprint':fp,'synthetic':True})
         print(f'Dataset: {n:,} events; fingerprint {fp}',flush=True)
         idx=_window_index(ds)

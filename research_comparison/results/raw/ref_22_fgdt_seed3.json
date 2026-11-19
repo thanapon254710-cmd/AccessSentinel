@@ -1,0 +1,44 @@
+{
+  "method": "Ref. 22 FGDT",
+  "metrics": {
+    "roc_auc": 0.5528663315605638,
+    "pr_auc": 0.027028600425747305,
+    "n_scored": 88910,
+    "n_unscored": 0,
+    "precision": 0.018639417163402405,
+    "recall": 0.10962715637173066,
+    "f1": 0.03186155587902313,
+    "validation_threshold": 0.4876515865325928
+  },
+  "fit_and_score_seconds": 62.02719719999914,
+  "protocol_note": "Co-access groups with train-fitted feature scaling, weighted member cross-entropy and group BCE; event behavior vectors replace review representations.",
+  "extra": {
+    "feature_mean_abs": 2.8761634826660156,
+    "feature_scale_median": 1.5266916751861572,
+    "feature_value_abs_max_after_clip": 5.0,
+    "train_member_class_0": 362,
+    "train_member_class_1": 38,
+    "train_group_class_0": 23,
+    "train_group_class_1": 27,
+    "member_class_weights": [
+      0.5524861812591553,
+      5.263157844543457
+    ],
+    "group_positive_weight": 0.8518518518518519,
+    "mean_training_loss": 1.3308891892433166,
+    "mean_member_loss": 0.6905635559558868,
+    "mean_group_loss": 0.6403256383538246,
+    "validation_member_score_std": 0.01954590949372893,
+    "test_member_score_std": 0.020177009163631916,
+    "test_member_score_min": 0.41315194964408875,
+    "test_member_score_max": 0.5338963270187378,
+    "test_group_score_std": 0.03201287782199207,
+    "n_group_predictions": 50,
+    "input_features_log1p_standardized": true,
+    "member_classifier_uses_logits": true
+  },
+  "seed": 3,
+  "dataset_fingerprint": "b345b11e45d03d26",
+  "dataset_events": 497405,
+  "quick_smoke_only": false
+}

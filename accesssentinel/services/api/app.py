@@ -285,6 +285,14 @@ def create_app(settings, engine, aredis, redis, live, probe, lake_factory: Calla
             # no user-user edges through a shared application) and the user's latest v3 collective result (Eqs. 18-19)
             gp = scorer.gp if d3 else GraphParams(app_coaccess_weight=0.0)
             s = build_sample([u], RedisEdgeIndex(redis), t or time.time(), gp)
+            anchored = False
+            if t is None and not s.edges:
+                # nothing in the last window: open the graph at the user's LAST activity instead of showing an empty
+                # one (g:user:<u> = event_id -> t, kept for the index retention, 3 h by default)
+                last = redis.zrevrange(f"g:user:{u}", 0, 0, withscores=True)
+                if last:
+                    s = build_sample([u], RedisEdgeIndex(redis), float(last[0][1]) + 1.0, gp)
+                    anchored = True
             scores = scorer.edge_scores(s) if (d3 and s.edges) else None
             if d3:
                 analysis = scorer.analyse(s).get(u) if s.edges else None
@@ -312,7 +320,8 @@ def create_app(settings, engine, aredis, redis, live, probe, lake_factory: Calla
             for (i, j), c in s.co_res.items():
                 edges.append({"source": f"u:{s.users[i]}", "target": f"u:{s.users[j]}", "type": "co-access", "count": c})
             return {"seed": u, "window": [s.t0, s.t1], "nodes": nodes, "edges": edges, "model_version": scorer.version if scorer else None,
-                    "tau_edge": scorer.tau_edge if d3 else None, "analysis": analysis, "source": _src(u)}
+                    "tau_edge": scorer.tau_edge if d3 else None, "analysis": analysis, "source": _src(u),
+                    "anchored_at_last_activity": anchored}
         return await run_in_threadpool(compute)
 
     # ------------------------------------------------------------------ incidents + feedback

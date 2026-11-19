@@ -1,0 +1,6167 @@
+{
+  "status": "complete",
+  "seed": 0,
+  "dataset_fingerprint": "2b77c97a8ea77b35",
+  "dataset_events": 67349,
+  "epochs_requested": 2,
+  "config": {
+    "mem_dim": 100,
+    "msg_dim": 100,
+    "time_dim": 100,
+    "emb_dim": 100,
+    "n_neighbors": 10,
+    "n_hops": 1,
+    "n_heads": 2,
+    "edge_feat_dim": 7,
+    "lr": 0.0001,
+    "epochs": 2,
+    "weight_decay": 1e-06,
+    "batch_size": 200,
+    "self_supervised_epochs": 1,
+    "sup_weight": 1.0,
+    "window": 3600.0,
+    "delta_c": 1800.0,
+    "h_min": 1,
+    "d_cap": 25,
+    "tau": 900.0,
+    "n_min": 2,
+    "ns_min": 1,
+    "delta_min": 0.3,
+    "trim_pi": 0.1,
+    "alpha_coll": 0.01,
+    "alpha_attr": 0.05
+  },
+  "training_seconds": 105.96821230000933,
+  "best_val_edge_pr_auc": -1.0,
+  "history": [
+    {
+      "epoch": 0,
+      "stage": "self_supervised",
+      "loss": 1.0215012322473263,
+      "val_edge_pr_auc": null,
+      "seconds": 12.324291944503784
+    },
+    {
+      "epoch": 1,
+      "stage": "joint",
+      "loss": 0.8723329898402177,
+      "val_edge_pr_auc": null,
+      "seconds": 11.975361347198486
+    }
+  ],
+  "thresholds": {
+    "theta_C": 0.9148632303636972,
+    "theta_A": 0.3220835896241636,
+    "alpha_coll": 0.01,
+    "alpha_attr": 0.05,
+    "n_nominal_members": 2471
+  },
+  "calibration": {
+    "coef": [
+      0.38166605667973946,
+      6.455970009880919,
+      -4.146018854676941
+    ],
+    "intercept": -0.9983489338636092,
+    "features": [
+      "TM_pi(eps)",
+      "A_u",
+      "Nov(u,g)"
+    ],
+    "n_train_members": 2655,
+    "positives": 5
+  },
+  "test_anchors": [
+    {
+      "t": 1790852919.3928742,
+      "seed": "syn-u072",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790854207.3112786,
+      "seed": "syn-u042",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791036879.5339313,
+      "seed": "syn-u085",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8881489462707595,
+      "flagged": false,
+      "A_u": 0.4460283717056791
+    },
+    {
+      "t": 1791117840.1883101,
+      "seed": "syn-u085",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9265208631288684,
+      "flagged": true,
+      "A_u": 0.5176139055843813
+    },
+    {
+      "t": 1791119165.5440233,
+      "seed": "syn-u068",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6087848284626584,
+      "flagged": false,
+      "A_u": 0.1935511141866303
+    },
+    {
+      "t": 1791284767.1154923,
+      "seed": "syn-u068",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7411667773678648,
+      "flagged": false,
+      "A_u": 0.28807969413616724
+    },
+    {
+      "t": 1791284932.937555,
+      "seed": "syn-u000",
+      "kind": "hard:flash_crowd",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8131177592227219,
+      "flagged": false,
+      "A_u": 0.3528089008093955
+    },
+    {
+      "t": 1790864529.5448623,
+      "seed": "syn-u077",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.00836951898407757,
+      "flagged": false,
+      "A_u": 0.027736369407751663
+    },
+    {
+      "t": 1790769016.408887,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6484388175952959,
+      "flagged": false,
+      "A_u": 0.21993143716927008
+    },
+    {
+      "t": 1791285407.1708817,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5406502368910167,
+      "flagged": false,
+      "A_u": 0.15036971986461176
+    },
+    {
+      "t": 1790695052.8928442,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5176238674607909,
+      "flagged": false,
+      "A_u": 0.13606348666820953
+    },
+    {
+      "t": 1791283895.430736,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6053140676190808,
+      "flagged": false,
+      "A_u": 0.19135317882100253
+    },
+    {
+      "t": 1790862618.7582476,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6776718512414268,
+      "flagged": false,
+      "A_u": 0.24020846358304054
+    },
+    {
+      "t": 1791284363.2810683,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.885920196563929,
+      "flagged": false,
+      "A_u": 0.4425903111596979
+    },
+    {
+      "t": 1791286246.5929594,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5469715419624323,
+      "flagged": false,
+      "A_u": 0.15433683097298534
+    },
+    {
+      "t": 1790776392.3588893,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7569079549659229,
+      "flagged": false,
+      "A_u": 0.30099196322270044
+    },
+    {
+      "t": 1790777314.4908822,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9593021887630687,
+      "flagged": true,
+      "A_u": 0.6145585183269175
+    },
+    {
+      "t": 1791307739.3020184,
+      "seed": "syn-u109",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.06424298306730013,
+      "flagged": false,
+      "A_u": 0.35241662202889795
+    },
+    {
+      "t": 1790677379.3760943,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6615465651322033,
+      "flagged": false,
+      "A_u": 0.22890257991219906
+    },
+    {
+      "t": 1790694370.480248,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3806838629923413,
+      "flagged": false,
+      "A_u": 0.049723168293170736
+    },
+    {
+      "t": 1790684658.7072766,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083530900189429,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790680542.2119033,
+      "seed": "syn-u071",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7030427441646615,
+      "flagged": false,
+      "A_u": 0.25850288834039536
+    },
+    {
+      "t": 1790935356.0624924,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.44789493598382024,
+      "flagged": false,
+      "A_u": 0.0927123945805937
+    },
+    {
+      "t": 1791195363.7366452,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49418825348775114,
+      "flagged": false,
+      "A_u": 0.12152508223661924
+    },
+    {
+      "t": 1791209924.9555595,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.46725321699032013,
+      "flagged": false,
+      "A_u": 0.10476833810753497
+    },
+    {
+      "t": 1791222760.197525,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4041928442342104,
+      "flagged": false,
+      "A_u": 0.06499991383846493
+    },
+    {
+      "t": 1790771568.1543138,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4133342887067936,
+      "flagged": false,
+      "A_u": 0.07086928149644493
+    },
+    {
+      "t": 1790759779.9493012,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4943408703224864,
+      "flagged": false,
+      "A_u": 0.12161529687583818
+    },
+    {
+      "t": 1791292754.5777113,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5844833696653664,
+      "flagged": false,
+      "A_u": 0.1779583605890704
+    },
+    {
+      "t": 1791214199.4806683,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790941617.7468314,
+      "seed": "syn-u106",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.016373018199927546,
+      "flagged": false,
+      "A_u": 0.13302197694286585
+    },
+    {
+      "t": 1791194976.865985,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7292854516446021,
+      "flagged": false,
+      "A_u": 0.2785934094518434
+    },
+    {
+      "t": 1791202244.6235619,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7187136723550202,
+      "flagged": false,
+      "A_u": 0.2704026998283645
+    },
+    {
+      "t": 1790954290.8203177,
+      "seed": "syn-u007",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.007006429789020799,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790680207.2929487,
+      "seed": "syn-u071",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7023956445917314,
+      "flagged": false,
+      "A_u": 0.2580199279537757
+    },
+    {
+      "t": 1790783214.3659172,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4961490076151146,
+      "flagged": false,
+      "A_u": 0.12274177942623495
+    },
+    {
+      "t": 1790951380.3268607,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.517184527637444,
+      "flagged": false,
+      "A_u": 0.13574136914222815
+    },
+    {
+      "t": 1790762899.0407438,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6270059248137017,
+      "flagged": false,
+      "A_u": 0.2055186502855162
+    },
+    {
+      "t": 1790855085.172685,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9597958654720895,
+      "flagged": true,
+      "A_u": 0.6165133020195803
+    },
+    {
+      "t": 1790933934.831082,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.32398802618730205,
+      "flagged": false,
+      "A_u": 0.011199568315835493
+    },
+    {
+      "t": 1790694328.2852843,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791288532.7834315,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7522131616511841,
+      "flagged": false,
+      "A_u": 0.29710325456153003
+    },
+    {
+      "t": 1790695024.3558726,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8236201751322122,
+      "flagged": false,
+      "A_u": 0.36375516554035586
+    },
+    {
+      "t": 1790776304.9982007,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8233940596511108,
+      "flagged": false,
+      "A_u": 0.36356595222712645
+    },
+    {
+      "t": 1791210444.4972599,
+      "seed": "syn-u000",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.639519857706784,
+      "flagged": false,
+      "A_u": 0.21390721133970605
+    },
+    {
+      "t": 1790764858.1285,
+      "seed": "syn-u031",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.920645362717777,
+      "flagged": true,
+      "A_u": 0.5047834233725066
+    },
+    {
+      "t": 1790685969.9240744,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8298562615173122,
+      "flagged": false,
+      "A_u": 0.3706081610720168
+    },
+    {
+      "t": 1790952036.6392875,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8385722596327786,
+      "flagged": false,
+      "A_u": 0.380295306538494
+    },
+    {
+      "t": 1790938403.8704882,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.46519283753346036,
+      "flagged": false,
+      "A_u": 0.16771532164654712
+    },
+    {
+      "t": 1790681354.8493674,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8462621792324853,
+      "flagged": false,
+      "A_u": 0.3892636976266071
+    },
+    {
+      "t": 1790698675.0543284,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.424867170813177,
+      "flagged": false,
+      "A_u": 0.07819848814979281
+    },
+    {
+      "t": 1790680699.0334327,
+      "seed": "syn-u031",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7297869033288731,
+      "flagged": false,
+      "A_u": 0.27893910518458503
+    },
+    {
+      "t": 1791202015.2520525,
+      "seed": "syn-u086",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083638428213554,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790927786.2782772,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790685035.9843082,
+      "seed": "syn-u097",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7019922473253739,
+      "flagged": false,
+      "A_u": 0.2577875885552952
+    },
+    {
+      "t": 1790955414.7821894,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5423802698550839,
+      "flagged": false,
+      "A_u": 0.15141685754982712
+    },
+    {
+      "t": 1790772624.9424627,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8511116217796911,
+      "flagged": false,
+      "A_u": 0.39515339501869096
+    },
+    {
+      "t": 1791190651.6230748,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5821158892477893,
+      "flagged": false,
+      "A_u": 0.176511273535798
+    },
+    {
+      "t": 1791305248.5190918,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.34133796016632506,
+      "flagged": false,
+      "A_u": 0.023311035319729636
+    },
+    {
+      "t": 1790762477.881048,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.588881871865089,
+      "flagged": false,
+      "A_u": 0.1807185210296622
+    },
+    {
+      "t": 1791297005.278673,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.899609633933445,
+      "flagged": false,
+      "A_u": 0.4647269494318618
+    },
+    {
+      "t": 1790864528.2542355,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6619586283400928,
+      "flagged": false,
+      "A_u": 0.22917395809658883
+    },
+    {
+      "t": 1791214690.8706877,
+      "seed": "syn-u011",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7267392024147141,
+      "flagged": false,
+      "A_u": 0.2766068209199379
+    },
+    {
+      "t": 1791305974.1721146,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5413775551993345,
+      "flagged": false,
+      "A_u": 0.15076195638250708
+    },
+    {
+      "t": 1790954856.0041003,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7621964382101375,
+      "flagged": false,
+      "A_u": 0.3055091581751029
+    },
+    {
+      "t": 1791204860.9126441,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5949246985873766,
+      "flagged": false,
+      "A_u": 0.1846113394007999
+    },
+    {
+      "t": 1790947006.6446157,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.1398336837868755,
+      "flagged": false,
+      "A_u": 0.057784727147584605
+    },
+    {
+      "t": 1790770424.7035353,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4717596747953077,
+      "flagged": false,
+      "A_u": 0.107552316874209
+    },
+    {
+      "t": 1790952314.4358983,
+      "seed": "syn-u068",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5683365815696573,
+      "flagged": false,
+      "A_u": 0.16779312336441632
+    },
+    {
+      "t": 1790961876.3888402,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7845068405012764,
+      "flagged": false,
+      "A_u": 0.32518287693474196
+    },
+    {
+      "t": 1790938510.3195312,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6663276802543614,
+      "flagged": false,
+      "A_u": 0.3035588484830411
+    },
+    {
+      "t": 1790678749.9395175,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.821407228072132,
+      "flagged": false,
+      "A_u": 0.36138711000011475
+    },
+    {
+      "t": 1790678920.478295,
+      "seed": "syn-u060",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5555600458922959,
+      "flagged": false,
+      "A_u": 0.21319728884662892
+    },
+    {
+      "t": 1790869798.291699,
+      "seed": "syn-u101",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6923171443522037,
+      "flagged": false,
+      "A_u": 0.2506925382967983
+    },
+    {
+      "t": 1790940940.7370946,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7322987677441407,
+      "flagged": false,
+      "A_u": 0.2809943252841031
+    },
+    {
+      "t": 1790948967.692017,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6295906510338857,
+      "flagged": false,
+      "A_u": 0.2072611431351382
+    },
+    {
+      "t": 1790844976.3492618,
+      "seed": "syn-u109",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30837191496251054,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791121208.7065184,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790930177.394042,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082338502293721,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791189952.8735058,
+      "seed": "syn-u118",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.011185129961575878,
+      "flagged": false,
+      "A_u": 0.07311222044551154
+    },
+    {
+      "t": 1790679992.1637268,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6541600228767055,
+      "flagged": false,
+      "A_u": 0.22381489215063283
+    },
+    {
+      "t": 1790769465.1100912,
+      "seed": "syn-u097",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.34977212112437855,
+      "flagged": false,
+      "A_u": 0.02908536782139047
+    },
+    {
+      "t": 1790857690.8910835,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6048221954466685,
+      "flagged": false,
+      "A_u": 0.19104930825525274
+    },
+    {
+      "t": 1790935142.7476473,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.42465233415195924,
+      "flagged": false,
+      "A_u": 0.07807359543628943
+    },
+    {
+      "t": 1790846644.234344,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7920623420944445,
+      "flagged": false,
+      "A_u": 0.3322188598805453
+    },
+    {
+      "t": 1790759712.289541,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7072096433206955,
+      "flagged": false,
+      "A_u": 0.2616633837933448
+    },
+    {
+      "t": 1790950093.1247785,
+      "seed": "syn-u001",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7193772554731118,
+      "flagged": false,
+      "A_u": 0.2709636418201462
+    },
+    {
+      "t": 1790858200.7835548,
+      "seed": "syn-u066",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7661776511362766,
+      "flagged": false,
+      "A_u": 0.3089375786670372
+    },
+    {
+      "t": 1790785246.3458538,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4467854610300764,
+      "flagged": false,
+      "A_u": 0.09208005802689898
+    },
+    {
+      "t": 1790856596.314027,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7369318597972017,
+      "flagged": false,
+      "A_u": 0.2846201594127849
+    },
+    {
+      "t": 1791276254.2624762,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6271176288725495,
+      "flagged": false,
+      "A_u": 0.2055989807078568
+    },
+    {
+      "t": 1790765174.456857,
+      "seed": "syn-u072",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790847642.2736845,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6748916407184639,
+      "flagged": false,
+      "A_u": 0.23825202637467843
+    },
+    {
+      "t": 1790844894.1748407,
+      "seed": "syn-u011",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4983534802470157,
+      "flagged": false,
+      "A_u": 0.12407165351028257
+    },
+    {
+      "t": 1790956194.880421,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.522185855952901,
+      "flagged": false,
+      "A_u": 0.13885534117777554
+    },
+    {
+      "t": 1790705746.269373,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30840422235453263,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790959143.6385367,
+      "seed": "syn-u068",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.43215056479620884,
+      "flagged": false,
+      "A_u": 0.08284675168697689
+    },
+    {
+      "t": 1791207204.6969488,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5576722205287845,
+      "flagged": false,
+      "A_u": 0.16101141040878245
+    },
+    {
+      "t": 1790936096.4672194,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3867481910178761,
+      "flagged": false,
+      "A_u": 0.05372210394197073
+    },
+    {
+      "t": 1791204848.1909368,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.569553942490851,
+      "flagged": false,
+      "A_u": 0.16847301147425223
+    },
+    {
+      "t": 1791202027.8863451,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791203371.7802787,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6696652523726349,
+      "flagged": false,
+      "A_u": 0.23452907909308054
+    },
+    {
+      "t": 1790674168.385985,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5860122919854014,
+      "flagged": false,
+      "A_u": 0.1789527353415462
+    },
+    {
+      "t": 1791298766.7771883,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4667413505282863,
+      "flagged": false,
+      "A_u": 0.10448265327915619
+    },
+    {
+      "t": 1790856734.5421824,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4434870329447049,
+      "flagged": false,
+      "A_u": 0.08990007031633199
+    },
+    {
+      "t": 1791278921.2403772,
+      "seed": "syn-u072",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4505110550252835,
+      "flagged": false,
+      "A_u": 0.09433478084495173
+    },
+    {
+      "t": 1791304607.127708,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.440366074222849,
+      "flagged": false,
+      "A_u": 0.08800168231852813
+    },
+    {
+      "t": 1790956600.207519,
+      "seed": "syn-u105",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5048852131983996,
+      "flagged": false,
+      "A_u": 0.12813592798817586
+    },
+    {
+      "t": 1790695640.8234105,
+      "seed": "syn-u000",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5622088214036988,
+      "flagged": false,
+      "A_u": 0.16386722090813785
+    },
+    {
+      "t": 1790938843.065119,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8198822348198833,
+      "flagged": false,
+      "A_u": 0.35985946318972756
+    },
+    {
+      "t": 1790866961.451129,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7369638810286545,
+      "flagged": false,
+      "A_u": 0.2847163895894665
+    },
+    {
+      "t": 1791301049.4974618,
+      "seed": "syn-u061",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791211476.3532271,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5157884550252279,
+      "flagged": false,
+      "A_u": 0.13493738299360364
+    },
+    {
+      "t": 1790676601.653598,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6994021260176017,
+      "flagged": false,
+      "A_u": 0.25586924172006653
+    },
+    {
+      "t": 1790765293.7391553,
+      "seed": "syn-u031",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8340240340227667,
+      "flagged": false,
+      "A_u": 0.3751771466133474
+    },
+    {
+      "t": 1790941007.4818637,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4355298672223643,
+      "flagged": false,
+      "A_u": 0.08498956997130556
+    },
+    {
+      "t": 1790678220.7385905,
+      "seed": "syn-u060",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.47017862705840774,
+      "flagged": false,
+      "A_u": 0.16011667023796147
+    },
+    {
+      "t": 1791203470.5612097,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.45788876089368413,
+      "flagged": false,
+      "A_u": 0.09894203063514999
+    },
+    {
+      "t": 1790764240.0067878,
+      "seed": "syn-u071",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8632162058502313,
+      "flagged": false,
+      "A_u": 0.4105120726620411
+    },
+    {
+      "t": 1790870840.765843,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4622998962791617,
+      "flagged": false,
+      "A_u": 0.10169281877443712
+    },
+    {
+      "t": 1791286817.1342535,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.600441517013206,
+      "flagged": false,
+      "A_u": 0.18823821841012886
+    },
+    {
+      "t": 1790692042.3272245,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5732956087408208,
+      "flagged": false,
+      "A_u": 0.17088104437743673
+    },
+    {
+      "t": 1790848772.0502646,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.41095879611361996,
+      "flagged": false,
+      "A_u": 0.0693575828516151
+    },
+    {
+      "t": 1790765051.3669567,
+      "seed": "syn-u000",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8678100205538164,
+      "flagged": false,
+      "A_u": 0.4166460102903263
+    },
+    {
+      "t": 1790937433.433319,
+      "seed": "syn-u021",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6048178304747179,
+      "flagged": false,
+      "A_u": 0.19104987367706622
+    },
+    {
+      "t": 1790767516.4692495,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.393264746427755,
+      "flagged": false,
+      "A_u": 0.05806025087466887
+    },
+    {
+      "t": 1790675087.023274,
+      "seed": "syn-u100",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4289242492155446,
+      "flagged": false,
+      "A_u": 0.08081466839299647
+    },
+    {
+      "t": 1791198386.726349,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5181230785462763,
+      "flagged": false,
+      "A_u": 0.13632316733595007
+    },
+    {
+      "t": 1790935929.1104581,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3776688554686552,
+      "flagged": false,
+      "A_u": 0.04775298128175176
+    },
+    {
+      "t": 1791304842.077531,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791284763.403013,
+      "seed": "syn-u031",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5359154897577846,
+      "flagged": false,
+      "A_u": 0.23912731703702417
+    },
+    {
+      "t": 1790670948.619174,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790766237.5677626,
+      "seed": "syn-u021",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7098520422650765,
+      "flagged": false,
+      "A_u": 0.2636713778494054
+    },
+    {
+      "t": 1790687635.9902475,
+      "seed": "syn-u066",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.308321923395341,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790680856.9815066,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7953432958976546,
+      "flagged": false,
+      "A_u": 0.3352845808530696
+    },
+    {
+      "t": 1790706031.2367208,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.375520659974684,
+      "flagged": false,
+      "A_u": 0.04633277419245368
+    },
+    {
+      "t": 1791291157.7284946,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8331901289029383,
+      "flagged": false,
+      "A_u": 0.3742175547565098
+    },
+    {
+      "t": 1790946866.4710383,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49487824794720714,
+      "flagged": false,
+      "A_u": 0.12193002316948956
+    },
+    {
+      "t": 1791195020.5195832,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5586172859235993,
+      "flagged": false,
+      "A_u": 0.1616083531614827
+    },
+    {
+      "t": 1790942326.5092943,
+      "seed": "syn-u106",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.027590754786566824,
+      "flagged": false,
+      "A_u": 0.21565317068954393
+    },
+    {
+      "t": 1790848287.8795671,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.565203033674486,
+      "flagged": false,
+      "A_u": 0.16571521323683994
+    },
+    {
+      "t": 1791210794.8361242,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6247165356504473,
+      "flagged": false,
+      "A_u": 0.20403384983175413
+    },
+    {
+      "t": 1790673335.293554,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3518713025377146,
+      "flagged": false,
+      "A_u": 0.03047623913201876
+    },
+    {
+      "t": 1791192370.2916827,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4441292282872847,
+      "flagged": false,
+      "A_u": 0.09033787522392951
+    },
+    {
+      "t": 1790791583.6644986,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9608390030866308,
+      "flagged": true,
+      "A_u": 0.6207726778802644
+    },
+    {
+      "t": 1791280937.5397053,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4944016271060368,
+      "flagged": false,
+      "A_u": 0.1216599997094802
+    },
+    {
+      "t": 1791192246.1419415,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5728472020340473,
+      "flagged": false,
+      "A_u": 0.1705589037231286
+    },
+    {
+      "t": 1790685238.2357326,
+      "seed": "syn-u008",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5040471947558323,
+      "flagged": false,
+      "A_u": 0.12759351066668861
+    },
+    {
+      "t": 1791211297.2074492,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6955847474752509,
+      "flagged": false,
+      "A_u": 0.2530772292136193
+    },
+    {
+      "t": 1791293462.0454283,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.37482533418813635,
+      "flagged": false,
+      "A_u": 0.04590082039967136
+    },
+    {
+      "t": 1790947408.3906279,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083211225592148,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791205703.2659836,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4393651098388154,
+      "flagged": false,
+      "A_u": 0.08737012517263937
+    },
+    {
+      "t": 1790867331.2327158,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5214173837744569,
+      "flagged": false,
+      "A_u": 0.13835974093602857
+    },
+    {
+      "t": 1790935690.730334,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.47521792634433146,
+      "flagged": false,
+      "A_u": 0.10977913498323986
+    },
+    {
+      "t": 1790696791.004511,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8400261906383779,
+      "flagged": false,
+      "A_u": 0.3820123299590679
+    },
+    {
+      "t": 1790858189.4654462,
+      "seed": "syn-u066",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7661627062611185,
+      "flagged": false,
+      "A_u": 0.3089375786670372
+    },
+    {
+      "t": 1790680199.0187624,
+      "seed": "syn-u110",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6647890712623128,
+      "flagged": false,
+      "A_u": 0.23115305194459274
+    },
+    {
+      "t": 1791189683.9327044,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6854574150741664,
+      "flagged": false,
+      "A_u": 0.2457814815737979
+    },
+    {
+      "t": 1790926431.2881782,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790766343.2839868,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6481882818457364,
+      "flagged": false,
+      "A_u": 0.21975756250895218
+    },
+    {
+      "t": 1791190286.7347877,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5492175362707732,
+      "flagged": false,
+      "A_u": 0.155748644025379
+    },
+    {
+      "t": 1790948793.9552133,
+      "seed": "syn-u000",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4214708134221746,
+      "flagged": false,
+      "A_u": 0.0760830122451002
+    },
+    {
+      "t": 1790762760.422203,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4045070745002158,
+      "flagged": false,
+      "A_u": 0.06521589116626111
+    },
+    {
+      "t": 1790674314.1898232,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6053926620364103,
+      "flagged": false,
+      "A_u": 0.19143255441236665
+    },
+    {
+      "t": 1790863637.4554267,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6586441250804668,
+      "flagged": false,
+      "A_u": 0.2269359491904133
+    },
+    {
+      "t": 1790685976.4133615,
+      "seed": "syn-u071",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5334197739182033,
+      "flagged": false,
+      "A_u": 0.14582782734052965
+    },
+    {
+      "t": 1790761380.6653557,
+      "seed": "syn-u011",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5703204259554006,
+      "flagged": false,
+      "A_u": 0.16896780405816086
+    },
+    {
+      "t": 1791189581.3166344,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6854963771370859,
+      "flagged": false,
+      "A_u": 0.2457814815737979
+    },
+    {
+      "t": 1790678782.5459208,
+      "seed": "syn-u048",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8259257006637696,
+      "flagged": false,
+      "A_u": 0.3662309753987765
+    },
+    {
+      "t": 1790765211.4778178,
+      "seed": "syn-u072",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790764753.526325,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8910970952700201,
+      "flagged": false,
+      "A_u": 0.45069644254642294
+    },
+    {
+      "t": 1790939075.8049762,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7520086542278022,
+      "flagged": false,
+      "A_u": 0.29688317953239834
+    },
+    {
+      "t": 1790715541.9437804,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791299769.3422873,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4101703997776851,
+      "flagged": false,
+      "A_u": 0.06884899267370538
+    },
+    {
+      "t": 1790864216.7106888,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5416825103874993,
+      "flagged": false,
+      "A_u": 0.15100588345229254
+    },
+    {
+      "t": 1790761772.4231224,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5903530238703657,
+      "flagged": false,
+      "A_u": 0.18165863090311649
+    },
+    {
+      "t": 1790692189.3807907,
+      "seed": "syn-u030",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9069331649902127,
+      "flagged": false,
+      "A_u": 0.47779658073644005
+    },
+    {
+      "t": 1790838813.7007418,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7171285617384899,
+      "flagged": false,
+      "A_u": 0.2692088195280253
+    },
+    {
+      "t": 1790866859.6480458,
+      "seed": "syn-u000",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7286024055925251,
+      "flagged": false,
+      "A_u": 0.27804668108986336
+    },
+    {
+      "t": 1790869047.4847949,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9649288255093774,
+      "flagged": true,
+      "A_u": 0.6385055966532854
+    },
+    {
+      "t": 1791196729.1120782,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4958391707068561,
+      "flagged": false,
+      "A_u": 0.12245391128424925
+    },
+    {
+      "t": 1791197925.814954,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.814670171082221,
+      "flagged": false,
+      "A_u": 0.3544687286211765
+    },
+    {
+      "t": 1791206158.192994,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4917917936277818,
+      "flagged": false,
+      "A_u": 0.12004703841471347
+    },
+    {
+      "t": 1791189772.8055656,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6462921629162637,
+      "flagged": false,
+      "A_u": 0.21850017256379495
+    },
+    {
+      "t": 1791203882.8296318,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5841034837929958,
+      "flagged": false,
+      "A_u": 0.17767649449470016
+    },
+    {
+      "t": 1790781782.1366029,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7160202817680097,
+      "flagged": false,
+      "A_u": 0.2683493366813884
+    },
+    {
+      "t": 1791302772.008007,
+      "seed": "syn-u107",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5719975843905634,
+      "flagged": false,
+      "A_u": 0.1699843788065517
+    },
+    {
+      "t": 1790778636.2244484,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7156064163832788,
+      "flagged": false,
+      "A_u": 0.26799867848049597
+    },
+    {
+      "t": 1790775996.5972745,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6580629599014342,
+      "flagged": false,
+      "A_u": 0.22653485676795138
+    },
+    {
+      "t": 1791293943.960565,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.604229348160583,
+      "flagged": false,
+      "A_u": 0.19061184038485687
+    },
+    {
+      "t": 1791303079.1557786,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3769937634464214,
+      "flagged": false,
+      "A_u": 0.047293246605751765
+    },
+    {
+      "t": 1790845600.024021,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8406693318537979,
+      "flagged": false,
+      "A_u": 0.3826791876264581
+    },
+    {
+      "t": 1790849495.5254247,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4861782685483648,
+      "flagged": false,
+      "A_u": 0.11656361601829637
+    },
+    {
+      "t": 1791301349.1210833,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.35882940497333593,
+      "flagged": false,
+      "A_u": 0.03518310224925348
+    },
+    {
+      "t": 1790862843.5801222,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5896205127495748,
+      "flagged": false,
+      "A_u": 0.18122497871169346
+    },
+    {
+      "t": 1790940096.0904799,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8872467141252025,
+      "flagged": false,
+      "A_u": 0.4446043077683722
+    },
+    {
+      "t": 1791203744.3213534,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.45247569986385505,
+      "flagged": false,
+      "A_u": 0.0955794922426062
+    },
+    {
+      "t": 1790934520.0001352,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.42501659952163573,
+      "flagged": false,
+      "A_u": 0.07828829466001185
+    },
+    {
+      "t": 1790942762.8529787,
+      "seed": "syn-u106",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0346667382074287,
+      "flagged": false,
+      "A_u": 0.25216412378742
+    },
+    {
+      "t": 1791287330.5975995,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8990069508757536,
+      "flagged": false,
+      "A_u": 0.46373626571568477
+    },
+    {
+      "t": 1790849972.619907,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8102802406871353,
+      "flagged": false,
+      "A_u": 0.34998958619905063
+    },
+    {
+      "t": 1790991636.0714867,
+      "seed": "syn-u019",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791288657.0887759,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7653125324015326,
+      "flagged": false,
+      "A_u": 0.3081880411098426
+    },
+    {
+      "t": 1790773753.603232,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.48523255516693165,
+      "flagged": false,
+      "A_u": 0.11597271152067885
+    },
+    {
+      "t": 1791287443.1344295,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5737007704572351,
+      "flagged": false,
+      "A_u": 0.17112203419916877
+    },
+    {
+      "t": 1790853543.5627024,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.41193864501222893,
+      "flagged": false,
+      "A_u": 0.0699355254544974
+    },
+    {
+      "t": 1790679749.1662617,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8585402345453188,
+      "flagged": false,
+      "A_u": 0.4044300556727902
+    },
+    {
+      "t": 1790697152.3603208,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9786652270166881,
+      "flagged": true,
+      "A_u": 0.7177300109172207
+    },
+    {
+      "t": 1791199031.639775,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49250621817654,
+      "flagged": false,
+      "A_u": 0.12044575281544449
+    },
+    {
+      "t": 1790686555.4145424,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790861363.122637,
+      "seed": "syn-u110",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5117526166443751,
+      "flagged": false,
+      "A_u": 0.13244581538723124
+    },
+    {
+      "t": 1790695946.7102997,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5957588709904493,
+      "flagged": false,
+      "A_u": 0.1851353168536493
+    },
+    {
+      "t": 1790872291.1459167,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3084507557503257,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790847321.085082,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5368955098052802,
+      "flagged": false,
+      "A_u": 0.14801916686932232
+    },
+    {
+      "t": 1790771668.4807308,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4704401537153606,
+      "flagged": false,
+      "A_u": 0.10674434053429699
+    },
+    {
+      "t": 1790682052.475241,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.728281260510645,
+      "flagged": false,
+      "A_u": 0.27774395047594447
+    },
+    {
+      "t": 1790872699.8745573,
+      "seed": "syn-u021",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4116022164330046,
+      "flagged": false,
+      "A_u": 0.06976130108583756
+    },
+    {
+      "t": 1790685911.9748647,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8298607952798621,
+      "flagged": false,
+      "A_u": 0.3706081610720168
+    },
+    {
+      "t": 1791207913.2642508,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5956353956727942,
+      "flagged": false,
+      "A_u": 0.18509114178658762
+    },
+    {
+      "t": 1790705303.2931666,
+      "seed": "syn-u015",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30840449230727307,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790930958.5683455,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831943001266193,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790939184.6090553,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7618416409240507,
+      "flagged": false,
+      "A_u": 0.3051646436439902
+    },
+    {
+      "t": 1791277143.6198394,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7895185493250733,
+      "flagged": false,
+      "A_u": 0.3299094835292389
+    },
+    {
+      "t": 1790953655.8396819,
+      "seed": "syn-u048",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3892718430884628,
+      "flagged": false,
+      "A_u": 0.21590172329272167
+    },
+    {
+      "t": 1790953170.6010463,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.519948200795916,
+      "flagged": false,
+      "A_u": 0.13748073481964226
+    },
+    {
+      "t": 1791191842.1807997,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4025913136845262,
+      "flagged": false,
+      "A_u": 0.06396056166402414
+    },
+    {
+      "t": 1790854659.1582928,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5665884793272126,
+      "flagged": false,
+      "A_u": 0.16662539360771145
+    },
+    {
+      "t": 1791291219.3447218,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4892599498375072,
+      "flagged": false,
+      "A_u": 0.11848481730806266
+    },
+    {
+      "t": 1790948543.1420188,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49462398898614396,
+      "flagged": false,
+      "A_u": 0.12180530483696207
+    },
+    {
+      "t": 1790936842.2875993,
+      "seed": "syn-u021",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6242974946981031,
+      "flagged": false,
+      "A_u": 0.20377531408496166
+    },
+    {
+      "t": 1791212048.3364098,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5319082207264008,
+      "flagged": false,
+      "A_u": 0.1449732256861759
+    },
+    {
+      "t": 1790869152.789721,
+      "seed": "syn-u105",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6018207765496992,
+      "flagged": false,
+      "A_u": 0.18912176868117803
+    },
+    {
+      "t": 1791189422.587913,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6854613671840044,
+      "flagged": false,
+      "A_u": 0.2457814815737979
+    },
+    {
+      "t": 1791118249.2216642,
+      "seed": "syn-u009",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8305878649405576,
+      "flagged": false,
+      "A_u": 0.3712795731535351
+    },
+    {
+      "t": 1790940084.9158971,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8872502116330251,
+      "flagged": false,
+      "A_u": 0.4446043077683722
+    },
+    {
+      "t": 1790931233.9307685,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.308326387338821,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790955317.0001314,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3337214134745483,
+      "flagged": false,
+      "A_u": 0.01802503905231126
+    },
+    {
+      "t": 1791310241.1880617,
+      "seed": "syn-u107",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9507416213795719,
+      "flagged": true,
+      "A_u": 0.583568728004086
+    },
+    {
+      "t": 1791292587.0195124,
+      "seed": "syn-u072",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5584207601942142,
+      "flagged": false,
+      "A_u": 0.16143039079029706
+    },
+    {
+      "t": 1790691795.571042,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790841306.0961833,
+      "seed": "syn-u086",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.45562867807394347,
+      "flagged": false,
+      "A_u": 0.09761217610401261
+    },
+    {
+      "t": 1790776081.4797144,
+      "seed": "syn-u059",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.43328064193775234,
+      "flagged": false,
+      "A_u": 0.08355005442572812
+    },
+    {
+      "t": 1791277532.9813719,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5554219668674599,
+      "flagged": false,
+      "A_u": 0.1595661069995965
+    },
+    {
+      "t": 1790773317.989804,
+      "seed": "syn-u105",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.43797176982389424,
+      "flagged": false,
+      "A_u": 0.0865076729432387
+    },
+    {
+      "t": 1791207007.9774225,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5420411282441963,
+      "flagged": false,
+      "A_u": 0.15123635178953387
+    },
+    {
+      "t": 1790846139.9768796,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7485167617151829,
+      "flagged": false,
+      "A_u": 0.2940146747148297
+    },
+    {
+      "t": 1790946098.489097,
+      "seed": "syn-u027",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5548731716240045,
+      "flagged": false,
+      "A_u": 0.15925564147372218
+    },
+    {
+      "t": 1790695004.7967236,
+      "seed": "syn-u102",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9259751134768082,
+      "flagged": true,
+      "A_u": 0.5164167890330268
+    },
+    {
+      "t": 1790840506.218837,
+      "seed": "syn-u066",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.44319092349964434,
+      "flagged": false,
+      "A_u": 0.08973627317600842
+    },
+    {
+      "t": 1791196292.6370745,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5667028023786138,
+      "flagged": false,
+      "A_u": 0.1667122467697208
+    },
+    {
+      "t": 1790932112.9521394,
+      "seed": "syn-u071",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5014073557724695,
+      "flagged": false,
+      "A_u": 0.12598541053804999
+    },
+    {
+      "t": 1790689847.6515012,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.47535952235103957,
+      "flagged": false,
+      "A_u": 0.10979658752206534
+    },
+    {
+      "t": 1790684316.0656383,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.44619363187958183,
+      "flagged": false,
+      "A_u": 0.0916482788858914
+    },
+    {
+      "t": 1790935923.9079194,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4218096717828629,
+      "flagged": false,
+      "A_u": 0.07626416988998122
+    },
+    {
+      "t": 1791300926.748079,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5719131381456749,
+      "flagged": false,
+      "A_u": 0.16997291318396318
+    },
+    {
+      "t": 1790952888.131602,
+      "seed": "syn-u092",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7721871236208592,
+      "flagged": false,
+      "A_u": 0.31421255741664234
+    },
+    {
+      "t": 1791273951.1598752,
+      "seed": "syn-u008",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790695401.463182,
+      "seed": "syn-u079",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5577431404700882,
+      "flagged": false,
+      "A_u": 0.16100608809904615
+    },
+    {
+      "t": 1790763881.4456391,
+      "seed": "syn-u073",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.46733729132702495,
+      "flagged": false,
+      "A_u": 0.10485531234179034
+    },
+    {
+      "t": 1790761445.737611,
+      "seed": "syn-u108",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790763911.382662,
+      "seed": "syn-u073",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4672958825815676,
+      "flagged": false,
+      "A_u": 0.10485531234179034
+    },
+    {
+      "t": 1790846997.5253713,
+      "seed": "syn-u078",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8650075871028735,
+      "flagged": false,
+      "A_u": 0.4127898218785163
+    },
+    {
+      "t": 1791196449.7525384,
+      "seed": "syn-u011",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6235855681312702,
+      "flagged": false,
+      "A_u": 0.20329950569365127
+    },
+    {
+      "t": 1790767308.045031,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3809385064898643,
+      "flagged": false,
+      "A_u": 0.0500103780151602
+    },
+    {
+      "t": 1790775817.060709,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8925730784191824,
+      "flagged": false,
+      "A_u": 0.45306971353590275
+    },
+    {
+      "t": 1790848310.3812325,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6226724479183312,
+      "flagged": false,
+      "A_u": 0.20268913713022801
+    },
+    {
+      "t": 1790786487.3642232,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.42336857552073476,
+      "flagged": false,
+      "A_u": 0.07721863698149277
+    },
+    {
+      "t": 1790851490.687531,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6021396099616353,
+      "flagged": false,
+      "A_u": 0.1892705062937729
+    },
+    {
+      "t": 1791121249.5324178,
+      "seed": "syn-u028",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790680388.2962172,
+      "seed": "syn-u089",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.811660616367816,
+      "flagged": false,
+      "A_u": 0.3513347976809412
+    },
+    {
+      "t": 1791222913.972564,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30843341460234586,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791193330.2100773,
+      "seed": "syn-u105",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.73822267382789,
+      "flagged": false,
+      "A_u": 0.28569661846703565
+    },
+    {
+      "t": 1790944890.078312,
+      "seed": "syn-u001",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5289220572992502,
+      "flagged": false,
+      "A_u": 0.14306277228099104
+    },
+    {
+      "t": 1790941446.2156522,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5575977245489697,
+      "flagged": false,
+      "A_u": 0.1609286066866851
+    },
+    {
+      "t": 1791288682.2958028,
+      "seed": "syn-u113",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7147758700276536,
+      "flagged": false,
+      "A_u": 0.26745244256366757
+    },
+    {
+      "t": 1790847772.5971513,
+      "seed": "syn-u116",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.34245463938952975,
+      "flagged": false,
+      "A_u": 0.024140016007635066
+    },
+    {
+      "t": 1790671570.350001,
+      "seed": "syn-u094",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7594683170756186,
+      "flagged": false,
+      "A_u": 0.30330561073499857
+    },
+    {
+      "t": 1790862834.9500723,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7883347472355069,
+      "flagged": false,
+      "A_u": 0.3287745242921394
+    },
+    {
+      "t": 1791308434.2338448,
+      "seed": "syn-u021",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4863657991256467,
+      "flagged": false,
+      "A_u": 0.11669489532441286
+    },
+    {
+      "t": 1790849496.50178,
+      "seed": "syn-u117",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3406093025513686,
+      "flagged": false,
+      "A_u": 0.022813716924703697
+    },
+    {
+      "t": 1790854653.9714038,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6445332567752401,
+      "flagged": false,
+      "A_u": 0.2172827882022306
+    },
+    {
+      "t": 1791295208.1038222,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5602852556737193,
+      "flagged": false,
+      "A_u": 0.16265520758822974
+    },
+    {
+      "t": 1791221195.9469645,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.36617151325526937,
+      "flagged": false,
+      "A_u": 0.040156521083804506
+    },
+    {
+      "t": 1790939325.6135454,
+      "seed": "syn-u002",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7489863577906353,
+      "flagged": false,
+      "A_u": 0.29438510897253817
+    },
+    {
+      "t": 1790776851.9784808,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4312514007123387,
+      "flagged": false,
+      "A_u": 0.08226963939071433
+    },
+    {
+      "t": 1790716058.22286,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790687792.3754187,
+      "seed": "syn-u119",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.932004211750955,
+      "flagged": true,
+      "A_u": 0.5305823979664784
+    },
+    {
+      "t": 1790862766.3303182,
+      "seed": "syn-u100",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5636509309215593,
+      "flagged": false,
+      "A_u": 0.164772168031048
+    },
+    {
+      "t": 1791293827.9385526,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5628031006062765,
+      "flagged": false,
+      "A_u": 0.16420021441332303
+    },
+    {
+      "t": 1790955342.9379385,
+      "seed": "syn-u107",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7354001801564537,
+      "flagged": false,
+      "A_u": 0.28346945694414527
+    },
+    {
+      "t": 1790957925.3154047,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.570657960001614,
+      "flagged": false,
+      "A_u": 0.1691417134662197
+    },
+    {
+      "t": 1790770933.6391144,
+      "seed": "syn-u016",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.39840110939983353,
+      "flagged": false,
+      "A_u": 0.06126722899833918
+    },
+    {
+      "t": 1790681100.678357,
+      "seed": "syn-u093",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9364525214272841,
+      "flagged": true,
+      "A_u": 0.541812945188892
+    },
+    {
+      "t": 1790958062.7917016,
+      "seed": "syn-u047",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6083625792738658,
+      "flagged": false,
+      "A_u": 0.19330481538996538
+    },
+    {
+      "t": 1790853322.5683181,
+      "seed": "syn-u040",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4053159719588036,
+      "flagged": false,
+      "A_u": 0.06571547212319369
+    },
+    {
+      "t": 1790849985.3631432,
+      "seed": "syn-u058",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4395712736684955,
+      "flagged": false,
+      "A_u": 0.08749739654976266
+    },
+    {
+      "t": 1790856738.2451465,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5501427542177167,
+      "flagged": false,
+      "A_u": 0.156286615230903
+    },
+    {
+      "t": 1790764131.490847,
+      "seed": "syn-u086",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7155548888455118,
+      "flagged": false,
+      "A_u": 0.26806714221039635
+    },
+    {
+      "t": 1791201968.4390364,
+      "seed": "syn-u072",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6430848095092431,
+      "flagged": false,
+      "A_u": 0.21625711197618036
+    },
+    {
+      "t": 1790850373.131588,
+      "seed": "syn-u099",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4571055702611215,
+      "flagged": false,
+      "A_u": 0.09850467616049431
+    },
+    {
+      "t": 1791196272.965097,
+      "seed": "syn-u085",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5831517550742288,
+      "flagged": false,
+      "A_u": 0.17713176219282833
+    },
+    {
+      "t": 1790695333.2026947,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.45548538960654317,
+      "flagged": false,
+      "A_u": 0.09743336748007224
+    },
+    {
+      "t": 1791207443.3451757,
+      "seed": "syn-u090",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.45913260714893306,
+      "flagged": false,
+      "A_u": 0.0997262402870873
+    },
+    {
+      "t": 1791290799.9339926,
+      "seed": "syn-u026",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8614837538877289,
+      "flagged": false,
+      "A_u": 0.40818336739141287
+    },
+    {
+      "t": 1791282068.7741537,
+      "seed": "syn-u056",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5929879444982057,
+      "flagged": false,
+      "A_u": 0.18341701987188255
+    },
+    {
+      "t": 1791199040.31184,
+      "seed": "syn-u063",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791278589.4137905,
+      "seed": "syn-u074",
+      "kind": "pathB_like:sensitive_access",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4323708885020565,
+      "flagged": false,
+      "A_u": 0.08294663968431559
+    },
+    {
+      "t": 1790866728.3868551,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790960333.9795387,
+      "seed": "syn-u040",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6048874833766616,
+      "flagged": false,
+      "A_u": 0.19105331008676227
+    },
+    {
+      "t": 1790957106.8615959,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4352839251543759,
+      "flagged": false,
+      "A_u": 0.08481321401952392
+    },
+    {
+      "t": 1790854794.086261,
+      "seed": "syn-u076",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083360345959678,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790848660.6996102,
+      "seed": "syn-u047",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.47941515676809715,
+      "flagged": false,
+      "A_u": 0.1123560135571559
+    },
+    {
+      "t": 1790959658.2947319,
+      "seed": "syn-u028",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6762621050845721,
+      "flagged": false,
+      "A_u": 0.23920048391493598
+    },
+    {
+      "t": 1791211405.6210055,
+      "seed": "syn-u045",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832482977135595,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790775760.4268327,
+      "seed": "syn-u003",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790779478.092445,
+      "seed": "syn-u024",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791281039.9139268,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5288953599964682,
+      "flagged": false,
+      "A_u": 0.14303252179305456
+    },
+    {
+      "t": 1790679459.4181716,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.753559292659175,
+      "flagged": false,
+      "A_u": 0.2981650849298024
+    },
+    {
+      "t": 1790778453.9297743,
+      "seed": "syn-u023",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790785758.8413281,
+      "seed": "syn-u025",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790678420.4923189,
+      "seed": "syn-u117",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.862850786757052,
+      "flagged": false,
+      "A_u": 0.4099765100243462
+    },
+    {
+      "t": 1790941121.089277,
+      "seed": "syn-u106",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.030632637776691948,
+      "flagged": false,
+      "A_u": 0.23228259756975295
+    },
+    {
+      "t": 1790687930.10418,
+      "seed": "syn-u044",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083292627430775,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790682271.6687727,
+      "seed": "syn-u046",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.00829559370328151,
+      "flagged": false,
+      "A_u": 0.026362901520774768
+    },
+    {
+      "t": 1790679736.4879687,
+      "seed": "syn-u017",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5028348297821265,
+      "flagged": false,
+      "A_u": 0.12690561770966696
+    },
+    {
+      "t": 1790852836.5897386,
+      "seed": "syn-u040",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6538506114583044,
+      "flagged": false,
+      "A_u": 0.22357783261366407
+    },
+    {
+      "t": 1791120973.4525025,
+      "seed": "syn-u028",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790777334.5139468,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.712021358348704,
+      "flagged": false,
+      "A_u": 0.26541370108716356
+    },
+    {
+      "t": 1790763353.8588376,
+      "seed": "syn-u101",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4342147918699586,
+      "flagged": false,
+      "A_u": 0.08411929115445695
+    },
+    {
+      "t": 1790764994.8094432,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790934524.2899232,
+      "seed": "syn-u004",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083150349948301,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791213253.858264,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790937302.1282394,
+      "seed": "syn-u064",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832324749775664,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791300632.305949,
+      "seed": "syn-u053",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.308246484392258,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790947643.2228327,
+      "seed": "syn-u004",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082609343782842,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790950321.6335557,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4679839770277111,
+      "flagged": false,
+      "A_u": 0.10530408556155693
+    },
+    {
+      "t": 1790689821.904863,
+      "seed": "syn-u061",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5456187315756487,
+      "flagged": false,
+      "A_u": 0.15343936549716147
+    },
+    {
+      "t": 1790702264.7698214,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5283166932806987,
+      "flagged": false,
+      "A_u": 0.14264605061430866
+    },
+    {
+      "t": 1790670874.0988371,
+      "seed": "syn-u076",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790703258.3645658,
+      "seed": "syn-u095",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082984255200319,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791280778.0540037,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49002416870517124,
+      "flagged": false,
+      "A_u": 0.11894480379432543
+    },
+    {
+      "t": 1790689013.3028772,
+      "seed": "syn-u057",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791284172.3892028,
+      "seed": "syn-u076",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790846032.5769446,
+      "seed": "syn-u006",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791219736.8421261,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3578699857448568,
+      "flagged": false,
+      "A_u": 0.034588944569149134
+    },
+    {
+      "t": 1791222266.1411667,
+      "seed": "syn-u025",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790680997.012761,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6904255137027774,
+      "flagged": false,
+      "A_u": 0.24937596759482647
+    },
+    {
+      "t": 1791187400.6465821,
+      "seed": "syn-u038",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790935206.3305895,
+      "seed": "syn-u047",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.36242276949005986,
+      "flagged": false,
+      "A_u": 0.03765683368378336
+    },
+    {
+      "t": 1791195609.097738,
+      "seed": "syn-u003",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791124848.1189063,
+      "seed": "syn-u028",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791291209.7707632,
+      "seed": "syn-u023",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.014673866289616972,
+      "flagged": false,
+      "A_u": 0.11572816489971545
+    },
+    {
+      "t": 1791191879.422095,
+      "seed": "syn-u064",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791082604.629212,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791297388.6811957,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.33731325929416084,
+      "flagged": false,
+      "A_u": 0.02052255855440147
+    },
+    {
+      "t": 1790785485.5031552,
+      "seed": "syn-u069",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791196223.16839,
+      "seed": "syn-u098",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791206459.1968806,
+      "seed": "syn-u018",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791226147.3013985,
+      "seed": "syn-u019",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790779109.7174635,
+      "seed": "syn-u006",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791105152.933139,
+      "seed": "syn-u108",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790683672.2074444,
+      "seed": "syn-u019",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.007687961639653434,
+      "flagged": false,
+      "A_u": 0.014513071395787891
+    },
+    {
+      "t": 1790678786.2262697,
+      "seed": "syn-u014",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790704355.8118157,
+      "seed": "syn-u089",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8420168860976712,
+      "flagged": false,
+      "A_u": 0.3842700889478753
+    },
+    {
+      "t": 1790756027.801112,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082859134768291,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790689855.7221415,
+      "seed": "syn-u061",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5455879994502686,
+      "flagged": false,
+      "A_u": 0.15343936549716147
+    },
+    {
+      "t": 1790687077.8248754,
+      "seed": "syn-u070",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.41587352164105573,
+      "flagged": false,
+      "A_u": 0.0725073210848075
+    },
+    {
+      "t": 1790946831.7775214,
+      "seed": "syn-u098",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790669161.87331,
+      "seed": "syn-u056",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791190961.7331092,
+      "seed": "syn-u079",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4355113831847126,
+      "flagged": false,
+      "A_u": 0.08495088884098446
+    },
+    {
+      "t": 1790760382.9504745,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790939062.0273817,
+      "seed": "syn-u002",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7520041520120853,
+      "flagged": false,
+      "A_u": 0.29688317953239834
+    },
+    {
+      "t": 1790697385.4286385,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790849070.286674,
+      "seed": "syn-u056",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3919805010712471,
+      "flagged": false,
+      "A_u": 0.057118009407212435
+    },
+    {
+      "t": 1790687622.65382,
+      "seed": "syn-u106",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30829042004384044,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790770512.0695004,
+      "seed": "syn-u012",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832493095939584,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790675229.1044118,
+      "seed": "syn-u090",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4591760275647875,
+      "flagged": false,
+      "A_u": 0.31378774379583785
+    },
+    {
+      "t": 1790932376.1487186,
+      "seed": "syn-u096",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082761926827327,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790853694.4511156,
+      "seed": "syn-u038",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832797769831244,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791285668.5857933,
+      "seed": "syn-u098",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082553905278764,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790941620.05231,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.007660492712121925,
+      "flagged": false,
+      "A_u": 0.013936547412894412
+    },
+    {
+      "t": 1791290868.849305,
+      "seed": "syn-u056",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.39163021040647794,
+      "flagged": false,
+      "A_u": 0.05691626465641161
+    },
+    {
+      "t": 1791213604.9712203,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790696430.314859,
+      "seed": "syn-u073",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790762458.5551546,
+      "seed": "syn-u068",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.40471543875562344,
+      "flagged": false,
+      "A_u": 0.06537621498753145
+    },
+    {
+      "t": 1790758708.6513882,
+      "seed": "syn-u030",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4815990439839346,
+      "flagged": false,
+      "A_u": 0.11373153780962544
+    },
+    {
+      "t": 1790865907.206552,
+      "seed": "syn-u024",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30825217076875616,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791212884.1738853,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6263994082287023,
+      "flagged": false,
+      "A_u": 0.20514606228483662
+    },
+    {
+      "t": 1790761471.153814,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30828126953888185,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790950747.5683503,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832110936933904,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791206816.4803596,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790935158.5120018,
+      "seed": "syn-u059",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6135744605830208,
+      "flagged": false,
+      "A_u": 0.19676295850754427
+    },
+    {
+      "t": 1791206151.814847,
+      "seed": "syn-u073",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30836275849093236,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790847750.8305056,
+      "seed": "syn-u082",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831397884703204,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790674028.5052345,
+      "seed": "syn-u092",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9807490019516512,
+      "flagged": true,
+      "A_u": 0.7339640141555078
+    },
+    {
+      "t": 1790696032.6337488,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.308337923032839,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790792159.588128,
+      "seed": "syn-u070",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790694872.207334,
+      "seed": "syn-u005",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790958249.844099,
+      "seed": "syn-u068",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.42700538291972695,
+      "flagged": false,
+      "A_u": 0.07960689665449235
+    },
+    {
+      "t": 1790693200.753557,
+      "seed": "syn-u013",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790850621.7171855,
+      "seed": "syn-u075",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790691611.3269522,
+      "seed": "syn-u003",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791201189.4419098,
+      "seed": "syn-u078",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.39892650519444234,
+      "flagged": false,
+      "A_u": 0.06161461068173879
+    },
+    {
+      "t": 1790864021.9193838,
+      "seed": "syn-u089",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6006700495328596,
+      "flagged": false,
+      "A_u": 0.18835752957068294
+    },
+    {
+      "t": 1790777737.0814474,
+      "seed": "syn-u047",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6083815871920086,
+      "flagged": false,
+      "A_u": 0.19338439499796997
+    },
+    {
+      "t": 1790848404.452012,
+      "seed": "syn-u084",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833329848080304,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791212762.7041247,
+      "seed": "syn-u069",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791291050.8426678,
+      "seed": "syn-u109",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790959583.2348707,
+      "seed": "syn-u012",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833058638902033,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791194963.774748,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082554836377396,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791194091.1603298,
+      "seed": "syn-u117",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790681098.4794385,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6628291612682615,
+      "flagged": false,
+      "A_u": 0.22980296453176846
+    },
+    {
+      "t": 1790677151.8768923,
+      "seed": "syn-u113",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6133126609245964,
+      "flagged": false,
+      "A_u": 0.19654757671721407
+    },
+    {
+      "t": 1790753317.920325,
+      "seed": "syn-u090",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790772752.1251683,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.32030581330139135,
+      "flagged": false,
+      "A_u": 0.008616348735786384
+    },
+    {
+      "t": 1791286277.27519,
+      "seed": "syn-u013",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791215804.574118,
+      "seed": "syn-u008",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4038120058701842,
+      "flagged": false,
+      "A_u": 0.064800746081307
+    },
+    {
+      "t": 1790848228.2125905,
+      "seed": "syn-u061",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6225588130121719,
+      "flagged": false,
+      "A_u": 0.20262041748404566
+    },
+    {
+      "t": 1791201376.4706373,
+      "seed": "syn-u036",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.41951410771366204,
+      "flagged": false,
+      "A_u": 0.07488212645596204
+    },
+    {
+      "t": 1791214249.4475188,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790931771.6723459,
+      "seed": "syn-u099",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4257528094015404,
+      "flagged": false,
+      "A_u": 0.07878990727014507
+    },
+    {
+      "t": 1791206015.1325166,
+      "seed": "syn-u061",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5676624982817945,
+      "flagged": false,
+      "A_u": 0.1672946225239791
+    },
+    {
+      "t": 1791195359.6869242,
+      "seed": "syn-u109",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30835319438884956,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790847710.9132721,
+      "seed": "syn-u040",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5280219347485758,
+      "flagged": false,
+      "A_u": 0.14245606112595027
+    },
+    {
+      "t": 1790929785.8640895,
+      "seed": "syn-u110",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.36827308428386224,
+      "flagged": false,
+      "A_u": 0.041583728895067784
+    },
+    {
+      "t": 1790962254.580289,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7844862060484387,
+      "flagged": false,
+      "A_u": 0.32518287693474196
+    },
+    {
+      "t": 1791201197.5193655,
+      "seed": "syn-u032",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791212363.4629097,
+      "seed": "syn-u043",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791292802.6047802,
+      "seed": "syn-u072",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6305333071265766,
+      "flagged": false,
+      "A_u": 0.20785610160679752
+    },
+    {
+      "t": 1790932684.5618947,
+      "seed": "syn-u114",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833587762720616,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791212303.0957696,
+      "seed": "syn-u043",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790956028.427794,
+      "seed": "syn-u079",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.46095638445361,
+      "flagged": false,
+      "A_u": 0.10085249550111298
+    },
+    {
+      "t": 1790936700.5164342,
+      "seed": "syn-u031",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.690873926844558,
+      "flagged": false,
+      "A_u": 0.24969162554347596
+    },
+    {
+      "t": 1791286257.032138,
+      "seed": "syn-u071",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083150724314333,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790766384.2247522,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6482213601533119,
+      "flagged": false,
+      "A_u": 0.21975756250895218
+    },
+    {
+      "t": 1790772443.3976347,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3194193466457102,
+      "flagged": false,
+      "A_u": 0.008000895254658786
+    },
+    {
+      "t": 1790778049.7520883,
+      "seed": "syn-u093",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5643281466361466,
+      "flagged": false,
+      "A_u": 0.16522532643185575
+    },
+    {
+      "t": 1790669490.0911565,
+      "seed": "syn-u009",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791213074.8290641,
+      "seed": "syn-u073",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790957816.0258384,
+      "seed": "syn-u036",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.37540100032709495,
+      "flagged": false,
+      "A_u": 0.04628254283384036
+    },
+    {
+      "t": 1790681247.2776806,
+      "seed": "syn-u115",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790859115.4076786,
+      "seed": "syn-u030",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791201891.048485,
+      "seed": "syn-u079",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4435246615938575,
+      "flagged": false,
+      "A_u": 0.08994091293672349
+    },
+    {
+      "t": 1790688198.0995357,
+      "seed": "syn-u072",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7189129752599892,
+      "flagged": false,
+      "A_u": 0.2705945132035323
+    },
+    {
+      "t": 1790707896.2725437,
+      "seed": "syn-u047",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790868140.8525991,
+      "seed": "syn-u023",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791279716.1380754,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790867883.5691555,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083367350093827,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790679975.7522771,
+      "seed": "syn-u021",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7219016658482704,
+      "flagged": false,
+      "A_u": 0.2727678831833626
+    },
+    {
+      "t": 1790778016.0306304,
+      "seed": "syn-u114",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791301336.5717819,
+      "seed": "syn-u082",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790767456.159512,
+      "seed": "syn-u064",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791195684.445135,
+      "seed": "syn-u081",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790947727.523311,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6358409072218209,
+      "flagged": false,
+      "A_u": 0.21150110790177742
+    },
+    {
+      "t": 1790879816.026941,
+      "seed": "syn-u034",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790685315.7409213,
+      "seed": "syn-u036",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833526471161576,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790691250.0162647,
+      "seed": "syn-u118",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083583426623942,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791211371.0337064,
+      "seed": "syn-u074",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4569907261329787,
+      "flagged": false,
+      "A_u": 0.09839319032903009
+    },
+    {
+      "t": 1791285539.6101458,
+      "seed": "syn-u051",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30830205709726166,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791286408.1921859,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083681320499114,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790935283.329034,
+      "seed": "syn-u035",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831863377165425,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790769681.1796033,
+      "seed": "syn-u015",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4403238725624806,
+      "flagged": false,
+      "A_u": 0.08801093173770055
+    },
+    {
+      "t": 1791294903.7238193,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5488988906242593,
+      "flagged": false,
+      "A_u": 0.15545410479420602
+    },
+    {
+      "t": 1790952390.942316,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790878824.7330062,
+      "seed": "syn-u071",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791208542.1480572,
+      "seed": "syn-u007",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833708647985514,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791288939.3696623,
+      "seed": "syn-u043",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790940012.2079918,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30829416613828015,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790681868.552088,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7282785081756692,
+      "flagged": false,
+      "A_u": 0.27774395047594447
+    },
+    {
+      "t": 1790856440.9325895,
+      "seed": "syn-u090",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.736920715446715,
+      "flagged": false,
+      "A_u": 0.2846201594127849
+    },
+    {
+      "t": 1790872682.2362905,
+      "seed": "syn-u041",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791307965.2067962,
+      "seed": "syn-u117",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30835668178162645,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790763400.9499094,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8280972572939687,
+      "flagged": false,
+      "A_u": 0.368635810090646
+    },
+    {
+      "t": 1790883573.8103085,
+      "seed": "syn-u107",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790870196.127025,
+      "seed": "syn-u007",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30829994626790497,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790695618.0389776,
+      "seed": "syn-u074",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.829574611932904,
+      "flagged": false,
+      "A_u": 0.37022456274598015
+    },
+    {
+      "t": 1791285456.0588305,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8395870549123785,
+      "flagged": false,
+      "A_u": 0.3814788498690607
+    },
+    {
+      "t": 1791207059.0005846,
+      "seed": "syn-u089",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5577242796628327,
+      "flagged": false,
+      "A_u": 0.16101141040878245
+    },
+    {
+      "t": 1790950528.9130628,
+      "seed": "syn-u066",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4677824242233722,
+      "flagged": false,
+      "A_u": 0.10515051339586691
+    },
+    {
+      "t": 1791027769.083091,
+      "seed": "syn-u098",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791189577.2026792,
+      "seed": "syn-u115",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790871840.4178996,
+      "seed": "syn-u000",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.34170356111144046,
+      "flagged": false,
+      "A_u": 0.023582784907248577
+    },
+    {
+      "t": 1790682242.306938,
+      "seed": "syn-u066",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5567886814204691,
+      "flagged": false,
+      "A_u": 0.16053163772810292
+    },
+    {
+      "t": 1790941133.4340854,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6258347831644279,
+      "flagged": false,
+      "A_u": 0.2047837211841889
+    },
+    {
+      "t": 1791298125.620672,
+      "seed": "syn-u037",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4023527102186165,
+      "flagged": false,
+      "A_u": 0.06386030689767047
+    },
+    {
+      "t": 1790766258.4715903,
+      "seed": "syn-u071",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8842503029092974,
+      "flagged": false,
+      "A_u": 0.44000728438576087
+    },
+    {
+      "t": 1791196221.3313737,
+      "seed": "syn-u110",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5457002976705393,
+      "flagged": false,
+      "A_u": 0.15358061186698405
+    },
+    {
+      "t": 1790696763.917749,
+      "seed": "syn-u073",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790845641.834838,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833572480254323,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791287872.6453655,
+      "seed": "syn-u013",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790764919.0576882,
+      "seed": "syn-u116",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831112563278734,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790672845.310071,
+      "seed": "syn-u062",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790694015.3828268,
+      "seed": "syn-u107",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.40295693703045243,
+      "flagged": false,
+      "A_u": 0.06424320635457151
+    },
+    {
+      "t": 1791229539.0207918,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5390578901383464,
+      "flagged": false,
+      "A_u": 0.14938557597166077
+    },
+    {
+      "t": 1790933937.5453808,
+      "seed": "syn-u056",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30834273042122445,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790686533.4367409,
+      "seed": "syn-u070",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083065671910039,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791275137.297822,
+      "seed": "syn-u118",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790770733.084017,
+      "seed": "syn-u095",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30830913260276,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790782437.8378716,
+      "seed": "syn-u116",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791213821.1751506,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790674211.3307352,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790689079.5538733,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5781220566597187,
+      "flagged": false,
+      "A_u": 0.17393049102905153
+    },
+    {
+      "t": 1790781495.933682,
+      "seed": "syn-u037",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30828786525618596,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790766409.4543228,
+      "seed": "syn-u057",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790687350.4921494,
+      "seed": "syn-u106",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082872732130289,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790773610.099372,
+      "seed": "syn-u109",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082983652836731,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791022643.9168031,
+      "seed": "syn-u091",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791201906.882751,
+      "seed": "syn-u077",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831378721730657,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790679279.405995,
+      "seed": "syn-u085",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.36796089888227385,
+      "flagged": false,
+      "A_u": 0.041360508912174396
+    },
+    {
+      "t": 1790766047.624761,
+      "seed": "syn-u011",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.37383078163663,
+      "flagged": false,
+      "A_u": 0.045218683112316804
+    },
+    {
+      "t": 1790935539.2281923,
+      "seed": "syn-u096",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790952917.2456834,
+      "seed": "syn-u018",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083026364215263,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790696348.5778337,
+      "seed": "syn-u002",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6918487967188305,
+      "flagged": false,
+      "A_u": 0.250420954827891
+    },
+    {
+      "t": 1790674137.6272411,
+      "seed": "syn-u031",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5727061502057544,
+      "flagged": false,
+      "A_u": 0.17054650586618575
+    },
+    {
+      "t": 1790770563.6232045,
+      "seed": "syn-u035",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790862089.6164103,
+      "seed": "syn-u073",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30838913189625244,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791295107.6025934,
+      "seed": "syn-u019",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082696092987371,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791270769.7391706,
+      "seed": "syn-u077",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790939763.3954344,
+      "seed": "syn-u002",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.87738910922478,
+      "flagged": false,
+      "A_u": 0.4299103176082608
+    },
+    {
+      "t": 1790950590.9020236,
+      "seed": "syn-u089",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7197977788102543,
+      "flagged": false,
+      "A_u": 0.27123970406164716
+    },
+    {
+      "t": 1791205578.1858773,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30835107281298463,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791212614.4327176,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6883428583809882,
+      "flagged": false,
+      "A_u": 0.24785578229118366
+    },
+    {
+      "t": 1790938203.0418952,
+      "seed": "syn-u035",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791290315.7169583,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8894210602048064,
+      "flagged": false,
+      "A_u": 0.4480461131969187
+    },
+    {
+      "t": 1791030084.4525635,
+      "seed": "syn-u105",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790936165.1763012,
+      "seed": "syn-u071",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.48319513790514,
+      "flagged": false,
+      "A_u": 0.114697296667746
+    },
+    {
+      "t": 1790782946.6319983,
+      "seed": "syn-u032",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.34484023933967334,
+      "flagged": false,
+      "A_u": 0.02573548380466039
+    },
+    {
+      "t": 1790778293.932222,
+      "seed": "syn-u006",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790846274.918658,
+      "seed": "syn-u063",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30832480320372296,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790689714.0962894,
+      "seed": "syn-u087",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790782081.6444418,
+      "seed": "syn-u043",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790675848.0846896,
+      "seed": "syn-u075",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083533734985136,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790764752.0237257,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.9141692088326633,
+      "flagged": false,
+      "A_u": 0.49154808973596625
+    },
+    {
+      "t": 1791304367.8285422,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5792347473077311,
+      "flagged": false,
+      "A_u": 0.17464800959621654
+    },
+    {
+      "t": 1791287976.4057314,
+      "seed": "syn-u009",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.49860970945192185,
+      "flagged": false,
+      "A_u": 0.12429293503592939
+    },
+    {
+      "t": 1790873640.7348173,
+      "seed": "syn-u012",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083932945902771,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791292412.8103812,
+      "seed": "syn-u116",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7358790421209416,
+      "flagged": false,
+      "A_u": 0.28381329466947175
+    },
+    {
+      "t": 1790943444.9824145,
+      "seed": "syn-u007",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790852648.5211146,
+      "seed": "syn-u081",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791282443.7517462,
+      "seed": "syn-u039",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790941262.166105,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790950447.6521504,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5694770547161038,
+      "flagged": false,
+      "A_u": 0.16848653689849108
+    },
+    {
+      "t": 1790949179.9223948,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790936462.2513525,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3081567027741289,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790764757.9119203,
+      "seed": "syn-u072",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5815113855511337,
+      "flagged": false,
+      "A_u": 0.17603634580858935
+    },
+    {
+      "t": 1790853985.490644,
+      "seed": "syn-u045",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790949336.819018,
+      "seed": "syn-u036",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30829081800251557,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790863015.9364142,
+      "seed": "syn-u078",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5013497752191193,
+      "flagged": false,
+      "A_u": 0.125890794373154
+    },
+    {
+      "t": 1790869977.901345,
+      "seed": "syn-u095",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082993718612295,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791220587.993032,
+      "seed": "syn-u034",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082973829872467,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790781764.1744537,
+      "seed": "syn-u048",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30831105266023096,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791288800.9189763,
+      "seed": "syn-u006",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790688033.8331442,
+      "seed": "syn-u119",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5827759392763144,
+      "flagged": false,
+      "A_u": 0.17686079932215948
+    },
+    {
+      "t": 1791198856.3150778,
+      "seed": "syn-u004",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.308347671289663,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790934513.7436328,
+      "seed": "syn-u113",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4748099648778347,
+      "flagged": false,
+      "A_u": 0.10952617934033548
+    },
+    {
+      "t": 1791022227.786779,
+      "seed": "syn-u091",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790695308.8165147,
+      "seed": "syn-u093",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7050001947832911,
+      "flagged": false,
+      "A_u": 0.26004335849758614
+    },
+    {
+      "t": 1790850697.237084,
+      "seed": "syn-u033",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791278429.8019302,
+      "seed": "syn-u094",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791201423.8022256,
+      "seed": "syn-u052",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30833266427514305,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791124486.5457437,
+      "seed": "syn-u083",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790956756.1036732,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.31840004129743865,
+      "flagged": false,
+      "A_u": 0.007253888615329008
+    },
+    {
+      "t": 1790961252.9624932,
+      "seed": "syn-u025",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083410593736801,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791190576.0992424,
+      "seed": "syn-u093",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6125797485803356,
+      "flagged": false,
+      "A_u": 0.19612363726199777
+    },
+    {
+      "t": 1790760267.1553314,
+      "seed": "syn-u110",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3867261930410258,
+      "flagged": false,
+      "A_u": 0.053703152756980364
+    },
+    {
+      "t": 1790771459.728738,
+      "seed": "syn-u027",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4424494004268713,
+      "flagged": false,
+      "A_u": 0.0893842851617748
+    },
+    {
+      "t": 1790661890.6182768,
+      "seed": "syn-u091",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790662324.0818038,
+      "seed": "syn-u104",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790697309.2961836,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7758647839001613,
+      "flagged": false,
+      "A_u": 0.3174528702935357
+    },
+    {
+      "t": 1791202339.0595412,
+      "seed": "syn-u086",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3828331779191373,
+      "flagged": false,
+      "A_u": 0.05116464182394539
+    },
+    {
+      "t": 1790679774.5283904,
+      "seed": "syn-u021",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6626667371795149,
+      "flagged": false,
+      "A_u": 0.22961332136645105
+    },
+    {
+      "t": 1790939903.182193,
+      "seed": "syn-u059",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.54452594011342,
+      "flagged": false,
+      "A_u": 0.15277638516631173
+    },
+    {
+      "t": 1790958298.7735274,
+      "seed": "syn-u012",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790850149.921888,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30834519735416593,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790764238.4802606,
+      "seed": "syn-u071",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.8632189154041708,
+      "flagged": false,
+      "A_u": 0.4105120726620411
+    },
+    {
+      "t": 1790992540.3706455,
+      "seed": "syn-u019",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790769402.3971794,
+      "seed": "syn-u011",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4233253002345017,
+      "flagged": false,
+      "A_u": 0.07723887340427274
+    },
+    {
+      "t": 1790931508.1648893,
+      "seed": "syn-u103",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790763853.6818237,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.503165816075453,
+      "flagged": false,
+      "A_u": 0.12709101769053655
+    },
+    {
+      "t": 1790699429.8433714,
+      "seed": "syn-u026",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.38496021245331113,
+      "flagged": false,
+      "A_u": 0.101922593895587
+    },
+    {
+      "t": 1790952106.2127323,
+      "seed": "syn-u068",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.592318950080898,
+      "flagged": false,
+      "A_u": 0.18304704367027236
+    },
+    {
+      "t": 1791276887.8216617,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6134019640046998,
+      "flagged": false,
+      "A_u": 0.1966163531696002
+    },
+    {
+      "t": 1790785406.4522595,
+      "seed": "syn-u115",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790769437.8449268,
+      "seed": "syn-u060",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3082869111958268,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1791284708.7452238,
+      "seed": "syn-u104",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790936679.544605,
+      "seed": "syn-u100",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4191410281052751,
+      "flagged": false,
+      "A_u": 0.0746112587613318
+    },
+    {
+      "t": 1790756171.2915795,
+      "seed": "syn-u020",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30828440396534623,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790698363.0846884,
+      "seed": "syn-u080",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790941833.1727593,
+      "seed": "syn-u025",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790674610.9247181,
+      "seed": "syn-u090",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.6626973838343451,
+      "flagged": false,
+      "A_u": 0.3099733650218495
+    },
+    {
+      "t": 1791197884.366113,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7834928986600072,
+      "flagged": false,
+      "A_u": 0.32436669642512345
+    },
+    {
+      "t": 1790713020.2411964,
+      "seed": "syn-u088",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790945517.0282588,
+      "seed": "syn-u016",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.4852700154228256,
+      "flagged": false,
+      "A_u": 0.11597471960059275
+    },
+    {
+      "t": 1790855236.2044158,
+      "seed": "syn-u099",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7386212212133618,
+      "flagged": false,
+      "A_u": 0.2860238387230467
+    },
+    {
+      "t": 1790846464.2017224,
+      "seed": "syn-u028",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7192894773552159,
+      "flagged": false,
+      "A_u": 0.27086725460393946
+    },
+    {
+      "t": 1790701159.4790628,
+      "seed": "syn-u042",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791285992.7877572,
+      "seed": "syn-u032",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5671487776781178,
+      "flagged": false,
+      "A_u": 0.16697657799739987
+    },
+    {
+      "t": 1791283753.079872,
+      "seed": "syn-u031",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.5042508449012355,
+      "flagged": false,
+      "A_u": 0.2562126972054922
+    },
+    {
+      "t": 1791307718.1072114,
+      "seed": "syn-u097",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.3083060371843662,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790783105.8485992,
+      "seed": "syn-u032",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.336231064694264,
+      "flagged": false,
+      "A_u": 0.019796526003584915
+    },
+    {
+      "t": 1791214637.174953,
+      "seed": "syn-u116",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.00827993597688353,
+      "flagged": false,
+      "A_u": 0.02605941734163936
+    },
+    {
+      "t": 1791291825.064704,
+      "seed": "syn-u103",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.30830705596187485,
+      "flagged": false,
+      "A_u": 0.0
+    },
+    {
+      "t": 1790950505.057429,
+      "seed": "syn-u058",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.7780897774574254,
+      "flagged": false,
+      "A_u": 0.31943256660264957
+    },
+    {
+      "t": 1791288616.0654702,
+      "seed": "syn-u049",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1791306398.8730485,
+      "seed": "syn-u007",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790766558.7643557,
+      "seed": "syn-u046",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    },
+    {
+      "t": 1790958293.6121392,
+      "seed": "syn-u070",
+      "kind": "pathD_like:random",
+      "instance": null,
+      "seed_label": 0,
+      "s_coll": 0.0,
+      "flagged": false,
+      "A_u": null
+    }
+  ],
+  "native_seed_metrics": {
+    "anchors": 607,
+    "positives": 0,
+    "roc_auc": null,
+    "pr_auc": null,
+    "at_theta_C": {
+      "tp": 0,
+      "fp": 12,
+      "fn": 0,
+      "tn": 595,
+      "precision": 0.0,
+      "recall": 0.0,
+      "fpr": 0.019769357495881382
+    }
+  },
+  "native_group_coverage": {
+    "test_groups": 0,
+    "detected": 0
+  },
+  "native_per_group": {},
+  "evaluation_unit": "Test anchors, same dataset. TGNv3 native member/group score, not raw event anomaly."
+}

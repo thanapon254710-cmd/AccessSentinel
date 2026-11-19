@@ -1,0 +1,8 @@
+﻿method,boundary,p50_latency_ms,p95_latency_ms,status
+AccessSentinel TCN v3,local window->model->score->threshold,5.84677,9.292442999999999,MEASURED_LOCAL_ONLY
+Ref. 14 DynAD,local window->model->score->threshold,,,NO_ONLINE_ADAPTER
+Ref. 17 PG-AID,local window->model->score->threshold,,,NO_ONLINE_ADAPTER
+Ref. 21 ACOBE,local window->model->score->threshold,,,NO_ONLINE_ADAPTER
+Ref. 22 FGDT,local window->model->score->threshold,,,NO_ONLINE_ADAPTER
+Ref. 24 User-resource embedding,local window->model->score->threshold,,,NO_ONLINE_ADAPTER
+Ref. 25 DEEPRO,local window->model->score->threshold,,,NO_ONLINE_ADAPTER

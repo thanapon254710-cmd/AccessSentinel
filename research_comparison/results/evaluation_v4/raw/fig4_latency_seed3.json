@@ -1,0 +1,13 @@
+{
+  "seed": 3,
+  "dataset_fingerprint": "b345b11e45d03d26",
+  "boundary": "window gather -> model forward -> sigmoid -> local threshold decision",
+  "excluded": "gateway, Kafka, network, queuing, PDP, enforcement, Web UI",
+  "metric_type": "local_event_to_decision_ms",
+  "samples": 100,
+  "p50_latency_ms": 5.647,
+  "p95_latency_ms": 8.483054999999998,
+  "p99_latency_ms": 11.503634000000009,
+  "device": "cuda",
+  "torch_threads": 1
+}

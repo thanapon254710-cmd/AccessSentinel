@@ -5,15 +5,18 @@
   "figures_requested": [
     2,
     3,
-    4
+    4,
+    5,
+    6,
+    7
   ],
   "seeds": [
     0
   ],
-  "device": "cpu",
-  "tgn_epochs": 6,
-  "load_duration_seconds": 2.0,
-  "elapsed_seconds": 95.0401074999827,
+  "device": "cuda",
+  "tgn_epochs": 2,
+  "load_duration_seconds": 0.6,
+  "elapsed_seconds": 401.32444399999804,
   "datasets": [
     {
       "seed": 0,
@@ -23,6 +26,7 @@
     }
   ],
   "methods_completed": [
+    "AccessSentinel TCN v3",
     "Ref. 14 DynAD",
     "Ref. 17 PG-AID",
     "Ref. 21 ACOBE",
@@ -35,6 +39,7 @@
     "fig2": {
       "generated": true,
       "present": [
+        "AccessSentinel",
         "DynAD",
         "PG-AID",
         "ACOBE",
@@ -42,11 +47,12 @@
         "User-resource embedding",
         "DEEPRO"
       ],
-      "complete_comparison": false
+      "complete_comparison": true
     },
     "fig3": {
       "generated": true,
       "present": [
+        "AccessSentinel",
         "DynAD",
         "PG-AID",
         "ACOBE",
@@ -54,11 +60,23 @@
         "User-resource embedding",
         "DEEPRO"
       ],
-      "complete_comparison": false
+      "complete_comparison": true
     },
     "fig4": {
       "generated": true,
       "latency_boundary": "local AccessSentinel TCN score and threshold; not system end-to-end"
+    },
+    "fig5": {
+      "generated": true,
+      "qualification": "Native TGN member/group score vs adapted individual event-score proxies at common test anchors"
+    },
+    "fig6": {
+      "generated": true,
+      "details": "Measured 5 components \u00d7 4 rates \u00d7 1 seed(s), fully populated"
+    },
+    "fig7": {
+      "generated": true,
+      "details": "Measured all 6 ablations across 1 seed(s)"
     }
   },
   "limitations": [

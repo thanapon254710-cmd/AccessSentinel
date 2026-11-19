@@ -1,9 +1,13 @@
 {
   "seeds_requested": [
-    0
+    0,
+    1,
+    2,
+    3,
+    4
   ],
-  "quick_smoke_only": true,
-  "accesssentinel_tcn_training_skipped": true,
+  "quick_smoke_only": false,
+  "accesssentinel_tcn_training_skipped": false,
   "methods_requested": [
     "AccessSentinel TCN v3",
     "Reference [24]",
@@ -14,6 +18,7 @@
     "Reference [25] DEEPRO"
   ],
   "methods_with_results": [
+    "AccessSentinel TCN v3",
     "Ref. 14 DynAD",
     "Ref. 17 PG-AID",
     "Ref. 21 ACOBE",
@@ -22,8 +27,8 @@
     "Ref. 25 DEEPRO"
   ],
   "failures": [],
-  "runs_completed": 6,
-  "elapsed_seconds": 46.5041698999994,
+  "runs_completed": 35,
+  "elapsed_seconds": 5605.6445106,
   "protocol": "same generated AccessSentinel tcn_v3_eval dataset per seed; chronological train/validation/test windows; threshold calibrated on nominal validation scores; no test-label threshold tuning",
   "timing_boundary": "Per-method fit_and_score_seconds excludes shared dataset generation and shared build_v3 window-index construction; includes method-specific graph/features/model fit and scoring.",
   "limitations": [

@@ -17,7 +17,7 @@
     "fp": 871,
     "fn": 96
   },
-  "fit_and_score_seconds": 8.105584200005978,
+  "fit_and_score_seconds": 3.674400499992771,
   "protocol_note": "MAGNN process/file/network meta-path core trained on train-period interaction provenance; user/resource nodes proxy process/entity nodes. Unseen test users remain unscored.",
   "extra": {},
   "seed": 0,

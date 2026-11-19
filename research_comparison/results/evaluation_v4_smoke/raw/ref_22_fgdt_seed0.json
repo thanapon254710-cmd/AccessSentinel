@@ -17,7 +17,7 @@
     "fp": 1462,
     "fn": 120
   },
-  "fit_and_score_seconds": 10.946436300000641,
+  "fit_and_score_seconds": 7.9458544999943115,
   "protocol_note": "Co-access groups with train-fitted feature scaling, weighted member cross-entropy and group BCE; event behavior vectors replace review representations.",
   "extra": {
     "feature_mean_abs": 2.3417224884033203,

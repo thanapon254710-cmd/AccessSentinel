@@ -17,7 +17,7 @@
     "fp": 800,
     "fn": 151
   },
-  "fit_and_score_seconds": 4.041869500011671,
+  "fit_and_score_seconds": 1.9974998999969102,
   "protocol_note": "Aspect autoencoders and rank-based investigation priority; train-fitted role cohorts and categorical vocabulary. User-level scores are broadcast to events.",
   "extra": {
     "n_train_users": 120,

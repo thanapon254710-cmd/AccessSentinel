@@ -1,0 +1,274 @@
+{
+  "version": "tgn3-20261115T094228Z-ccc61d",
+  "created_at": 1794735748.552602,
+  "arch": "tgn-v3",
+  "calibration": {
+    "coef": [
+      6.230350554897232,
+      5.1920798976986715,
+      -0.47142410984863836
+    ],
+    "intercept": -3.0899784465564153,
+    "features": [
+      "TM_pi(eps)",
+      "A_u",
+      "Nov(u,g)"
+    ],
+    "n_train_members": 3577,
+    "positives": 151
+  },
+  "thresholds": {
+    "theta_C": 0.8608929125141486,
+    "theta_A": 0.36426879546899593,
+    "alpha_coll": 0.01,
+    "alpha_attr": 0.05,
+    "n_nominal_members": 2452
+  },
+  "tgn_config": {
+    "mem_dim": 100,
+    "msg_dim": 100,
+    "time_dim": 100,
+    "emb_dim": 100,
+    "n_neighbors": 10,
+    "n_hops": 1,
+    "n_heads": 2,
+    "edge_feat_dim": 7,
+    "lr": 0.0001,
+    "epochs": 50,
+    "weight_decay": 1e-06,
+    "batch_size": 200,
+    "self_supervised_epochs": 3,
+    "sup_weight": 1.0,
+    "window": 3600.0,
+    "delta_c": 1800.0,
+    "h_min": 1,
+    "d_cap": 25,
+    "tau": 900.0,
+    "n_min": 2,
+    "ns_min": 1,
+    "delta_min": 0.3,
+    "trim_pi": 0.1,
+    "alpha_coll": 0.01,
+    "alpha_attr": 0.05
+  },
+  "data": {
+    "source": "synthetic",
+    "synth_config": {
+      "n_users": 700,
+      "days": 28,
+      "start": "2026-09-07",
+      "split_days": [
+        16,
+        5,
+        7
+      ],
+      "seed": 11,
+      "role_mix": {
+        "staff": 0.34,
+        "hr_manager": 0.1,
+        "finance_analyst": 0.13,
+        "legal": 0.1,
+        "executive": 0.07,
+        "auditor": 0.12,
+        "it_admin": 0.14
+      },
+      "attacks": {
+        "compromised_account": [
+          2,
+          1,
+          1
+        ],
+        "insider_exfiltration": [
+          2,
+          1,
+          1
+        ],
+        "bac_probe": [
+          2,
+          1,
+          1
+        ],
+        "low_and_slow": [
+          2,
+          1,
+          1
+        ]
+      },
+      "collusion_groups": {
+        "coordinated_collection": [
+          6,
+          2,
+          4
+        ],
+        "split_exfiltration": [
+          5,
+          2,
+          4
+        ]
+      },
+      "group_size": 3,
+      "max_attacker_share_per_role": 0.25,
+      "collusion_v2": true,
+      "benign_teams": true,
+      "attack_margin_days": [
+        0,
+        0,
+        0
+      ],
+      "events_per_day_median": 22.0,
+      "office_subnets": 5
+    },
+    "fingerprint": "ccc61d9776e34709",
+    "events": 347914
+  },
+  "training": {
+    "history": [
+      {
+        "epoch": 0,
+        "stage": "self_supervised",
+        "loss": 0.7886681044897982,
+        "val_edge_pr_auc": 0.02859897022695963,
+        "seconds": 19.33672261238098
+      },
+      {
+        "epoch": 1,
+        "stage": "self_supervised",
+        "loss": 0.6888847015257149,
+        "val_edge_pr_auc": 0.02526180002741313,
+        "seconds": 18.39484715461731
+      },
+      {
+        "epoch": 2,
+        "stage": "self_supervised",
+        "loss": 0.6166626748422455,
+        "val_edge_pr_auc": 0.019569435064606146,
+        "seconds": 17.690208673477173
+      },
+      {
+        "epoch": 3,
+        "stage": "joint",
+        "loss": 0.6913133804818898,
+        "val_edge_pr_auc": 0.026778664277946618,
+        "seconds": 18.784919023513794
+      },
+      {
+        "epoch": 4,
+        "stage": "joint",
+        "loss": 0.6693776359805064,
+        "val_edge_pr_auc": 0.029521637083776267,
+        "seconds": 17.88007426261902
+      },
+      {
+        "epoch": 5,
+        "stage": "joint",
+        "loss": 0.6525118434071425,
+        "val_edge_pr_auc": 0.03536316254225489,
+        "seconds": 17.917370319366455
+      },
+      {
+        "epoch": 6,
+        "stage": "joint",
+        "loss": 0.643980320315855,
+        "val_edge_pr_auc": 0.048297780876894424,
+        "seconds": 18.08743119239807
+      },
+      {
+        "epoch": 7,
+        "stage": "joint",
+        "loss": 0.6396414540051721,
+        "val_edge_pr_auc": 0.0379471883756848,
+        "seconds": 17.819568395614624
+      },
+      {
+        "epoch": 8,
+        "stage": "joint",
+        "loss": 0.6259340533963247,
+        "val_edge_pr_auc": 0.05520537333657502,
+        "seconds": 19.676451206207275
+      },
+      {
+        "epoch": 9,
+        "stage": "joint",
+        "loss": 0.6116471828068791,
+        "val_edge_pr_auc": 0.08060177529446866,
+        "seconds": 18.262160301208496
+      },
+      {
+        "epoch": 10,
+        "stage": "joint",
+        "loss": 0.6005058614582198,
+        "val_edge_pr_auc": 0.0492644498367805,
+        "seconds": 17.91921377182007
+      },
+      {
+        "epoch": 11,
+        "stage": "joint",
+        "loss": 0.5974270223359517,
+        "val_edge_pr_auc": 0.0693986510550334,
+        "seconds": 18.54993987083435
+      },
+      {
+        "epoch": 12,
+        "stage": "joint",
+        "loss": 0.5854126749864967,
+        "val_edge_pr_auc": 0.11158454232133692,
+        "seconds": 19.38771390914917
+      },
+      {
+        "epoch": 13,
+        "stage": "joint",
+        "loss": 0.578175301790699,
+        "val_edge_pr_auc": 0.06389890466749631,
+        "seconds": 19.29786229133606
+      },
+      {
+        "epoch": 14,
+        "stage": "joint",
+        "loss": 0.5696517641350468,
+        "val_edge_pr_auc": 0.0985349720855445,
+        "seconds": 19.967047214508057
+      },
+      {
+        "epoch": 15,
+        "stage": "joint",
+        "loss": 0.5676039716108032,
+        "val_edge_pr_auc": 0.0662149840588948,
+        "seconds": 18.606767416000366
+      },
+      {
+        "epoch": 16,
+        "stage": "joint",
+        "loss": 0.5567987559494876,
+        "val_edge_pr_auc": 0.05943507932290803,
+        "seconds": 19.99181818962097
+      },
+      {
+        "epoch": 17,
+        "stage": "joint",
+        "loss": 0.5533749520028549,
+        "val_edge_pr_auc": 0.0607941948692403,
+        "seconds": 20.443374395370483
+      }
+    ],
+    "best_val_edge_pr_auc": 0.11158454232133692,
+    "seed": 0,
+    "device": "cuda"
+  },
+  "test_summary": {
+    "anchors": 690,
+    "positives": 64,
+    "roc_auc": 0.6808731030351438,
+    "pr_auc": 0.3547481765688419,
+    "at_theta_C": {
+      "tp": 15,
+      "fp": 8,
+      "fn": 49,
+      "tn": 618,
+      "precision": 0.6521739130434783,
+      "recall": 0.234375,
+      "fpr": 0.012779552715654952
+    }
+  },
+  "git_commit": "3fe2978",
+  "torch": "2.14.1+cu130"
+}

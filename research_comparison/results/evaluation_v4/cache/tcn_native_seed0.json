@@ -1,0 +1,46 @@
+{
+  "seed": 0,
+  "dataset_fingerprint": "fc867de8b9b12cd2",
+  "dataset_events": 506161,
+  "config": {
+    "window_len": 128,
+    "feature_dim": 43,
+    "kernel_size": 2,
+    "dilations": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "filters": [
+      256,
+      256,
+      128,
+      128,
+      64,
+      64
+    ],
+    "dropout": 0.2,
+    "head_hidden": 32,
+    "lambdas": [
+      1.0,
+      1.0,
+      0.5,
+      1.0
+    ],
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "lr": 0.001,
+    "batch_size": 256,
+    "pretrain_epochs": 1,
+    "finetune_epochs": 3,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001
+  },
+  "n_res": 50,
+  "n_op": 6,
+  "n_net": 65
+}

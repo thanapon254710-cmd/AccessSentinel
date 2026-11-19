@@ -1,0 +1,44 @@
+{
+  "method": "Ref. 21 ACOBE",
+  "metrics": {
+    "roc_auc": 0.3626244450684727,
+    "pr_auc": 0.018122985130283605,
+    "n_scored": 88910,
+    "n_unscored": 0,
+    "precision": 0.024499411071849234,
+    "recall": 0.05787423483583751,
+    "f1": 0.034425686858656074,
+    "validation_threshold": 0.02631578947368421,
+    "validation_roc_auc": 0.3474301335817166,
+    "score_direction_warning": true,
+    "test_coverage": 1.0,
+    "n_unscored_positives": 0,
+    "tp": 104,
+    "fp": 4141,
+    "fn": 1693
+  },
+  "fit_and_score_seconds": 35.357706199996755,
+  "protocol_note": "Aspect autoencoders and rank-based investigation priority; train-fitted role cohorts and categorical vocabulary. User-level scores are broadcast to events.",
+  "extra": {
+    "n_train_users": 400,
+    "n_validation_users": 400,
+    "n_test_users": 400,
+    "n_nominal_train_users": 362,
+    "n_anomalous_train_users": 38,
+    "priority_std": 83.68144821285063,
+    "priority_min": 9,
+    "priority_max": 388,
+    "aspect_score_std": {
+      "resource_access": 0.005615802016109228,
+      "operation": 0.006377422716468573,
+      "environment": 0.00039755701436661184,
+      "policy": 0.016006307676434517
+    },
+    "vocabulary_fit_split": "train",
+    "cohort_baseline_fit_split": "train",
+    "future_split_features_used": false
+  },
+  "seed": 3,
+  "dataset_events": 497405,
+  "dataset_fingerprint": "b345b11e45d03d26"
+}

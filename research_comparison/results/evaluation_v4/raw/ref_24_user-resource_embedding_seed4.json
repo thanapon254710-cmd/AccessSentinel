@@ -1,0 +1,29 @@
+{
+  "method": "Ref. 24 User-resource embedding",
+  "metrics": {
+    "roc_auc": 0.5174417537175267,
+    "pr_auc": 0.04941576015173733,
+    "n_scored": 84078,
+    "n_unscored": 3,
+    "precision": 0.022728894597873403,
+    "recall": 0.9984326018808778,
+    "f1": 0.04444599497627686,
+    "validation_threshold": 0.0,
+    "validation_roc_auc": 0.523990901039952,
+    "score_direction_warning": false,
+    "test_coverage": 0.9999643201198843,
+    "n_unscored_positives": 3,
+    "tp": 1911,
+    "fp": 82167,
+    "fn": 3
+  },
+  "fit_and_score_seconds": 2.0247535000089556,
+  "protocol_note": "Regularized bipartite spectral embedding and nearest prior user on resource; fitted on training-period interactions only.",
+  "extra": {
+    "embedding_dim": 8,
+    "distance": "cosine"
+  },
+  "seed": 4,
+  "dataset_events": 480288,
+  "dataset_fingerprint": "6f7fa63ddf318d69"
+}

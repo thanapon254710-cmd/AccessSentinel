@@ -1,0 +1,266 @@
+{
+  "version": "tcn3-20261115T091825Z-0c7a4e",
+  "created_at": 1794734306.9568772,
+  "arch": "tcn-v3",
+  "thresholds": {
+    "theta_low": 0.028383921831846237,
+    "theta_high": 0.048195429146289825,
+    "theta_B": 0.08493063598871231,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001,
+    "n_nominal": 41826
+  },
+  "parent_version": null,
+  "tcn_config": {
+    "window_len": 128,
+    "feature_dim": 43,
+    "kernel_size": 2,
+    "dilations": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "filters": [
+      256,
+      256,
+      128,
+      128,
+      64,
+      64
+    ],
+    "dropout": 0.2,
+    "head_hidden": 32,
+    "lambdas": [
+      1.0,
+      1.0,
+      0.5,
+      1.0
+    ],
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "lr": 0.001,
+    "batch_size": 256,
+    "pretrain_epochs": 3,
+    "finetune_epochs": 8,
+    "alpha_low": 0.05,
+    "alpha_high": 0.01,
+    "alpha_block": 0.001
+  },
+  "receptive_field": 127,
+  "data": {
+    "source": "synthetic",
+    "synth_config": {
+      "n_users": 400,
+      "days": 70,
+      "start": "2026-09-07",
+      "split_days": [
+        36,
+        14,
+        20
+      ],
+      "seed": 23,
+      "role_mix": {
+        "staff": 0.34,
+        "hr_manager": 0.1,
+        "finance_analyst": 0.13,
+        "legal": 0.1,
+        "executive": 0.07,
+        "auditor": 0.12,
+        "it_admin": 0.14
+      },
+      "attacks": {
+        "compromised_account": [
+          6,
+          3,
+          5
+        ],
+        "insider_exfiltration": [
+          6,
+          3,
+          5
+        ],
+        "bac_probe": [
+          6,
+          3,
+          5
+        ],
+        "low_and_slow": [
+          5,
+          2,
+          4
+        ]
+      },
+      "collusion_groups": {
+        "coordinated_collection": [
+          3,
+          1,
+          2
+        ],
+        "split_exfiltration": [
+          2,
+          1,
+          2
+        ]
+      },
+      "group_size": 3,
+      "max_attacker_share_per_role": 0.25,
+      "collusion_v2": false,
+      "benign_teams": false,
+      "attack_margin_days": [
+        0,
+        10,
+        10
+      ],
+      "events_per_day_median": 22.0,
+      "office_subnets": 5
+    },
+    "fingerprint": "0c7a4e032ad5bd45",
+    "events": 502859,
+    "timer_context": "simulated (SimulatedThreatFeed, SimulatedDevPosture)"
+  },
+  "encoder": {
+    "n_res": 50,
+    "n_op": 6,
+    "n_net": 65,
+    "fingerprint": "b6cd8f274f6c"
+  },
+  "split": {
+    "rule": "Eq. 7 chronological, gap g = L - 1 events per user",
+    "windows": {
+      "train": 262406,
+      "val": 50642,
+      "test": 89843
+    },
+    "removed_by_gap": {
+      "val": {
+        "windows": 49396,
+        "attack_events_in_gap": 3
+      },
+      "test": {
+        "windows": 50572,
+        "attack_events_in_gap": 58
+      }
+    }
+  },
+  "training": {
+    "history": [
+      {
+        "stage": "pretrain",
+        "epoch": 0,
+        "loss": 2.216682331255305,
+        "next_res": 1.481385394146568,
+        "next_op": 0.1784728764071625,
+        "time_gap": 1.1136481159205094,
+        "seconds": 77.14658045768738
+      },
+      {
+        "stage": "pretrain",
+        "epoch": 1,
+        "loss": 2.0101500842538726,
+        "next_res": 1.3123687645148117,
+        "next_op": 0.15522596047969706,
+        "time_gap": 1.0851107206609514,
+        "seconds": 74.45889568328857
+      },
+      {
+        "stage": "pretrain",
+        "epoch": 2,
+        "loss": 1.9793860997140524,
+        "next_res": 1.288390364563256,
+        "next_op": 0.15101479028476872,
+        "time_gap": 1.0799618880999715,
+        "seconds": 74.66411018371582
+      },
+      {
+        "stage": "finetune",
+        "epoch": 0,
+        "loss": 1.9605186988271004,
+        "next_res": 1.2723919552901568,
+        "next_op": 0.14866764391781526,
+        "time_gap": 1.0758434016453593,
+        "sup": 0.001537398646208329,
+        "val_pr_auc": 0.921614864652188,
+        "seconds": 81.8238594532013
+      },
+      {
+        "stage": "finetune",
+        "epoch": 1,
+        "loss": 1.9478354255358379,
+        "next_res": 1.262886306172923,
+        "next_op": 0.14734936076203692,
+        "time_gap": 1.0737512859336116,
+        "sup": 0.0007241132496517034,
+        "val_pr_auc": 0.9203899685506237,
+        "seconds": 81.43589997291565
+      },
+      {
+        "stage": "finetune",
+        "epoch": 2,
+        "loss": 1.9386577460965682,
+        "next_res": 1.2550587922508953,
+        "next_op": 0.14628290981925718,
+        "time_gap": 1.0735989158962205,
+        "sup": 0.0005165854782871603,
+        "val_pr_auc": 0.9430768355845865,
+        "seconds": 81.61931371688843
+      },
+      {
+        "stage": "finetune",
+        "epoch": 3,
+        "loss": 1.9294736235462435,
+        "next_res": 1.2481619379906161,
+        "next_op": 0.14543165031232333,
+        "time_gap": 1.070829483442604,
+        "sup": 0.000465293191439065,
+        "val_pr_auc": 0.933476322989592,
+        "seconds": 86.21772336959839
+      },
+      {
+        "stage": "finetune",
+        "epoch": 4,
+        "loss": 1.9228164510652568,
+        "next_res": 1.2430559469942462,
+        "next_op": 0.14452337788247283,
+        "time_gap": 1.0697528273157673,
+        "sup": 0.0003607105104262326,
+        "val_pr_auc": 0.924859017625547,
+        "seconds": 84.43443202972412
+      },
+      {
+        "stage": "finetune",
+        "epoch": 5,
+        "loss": 1.915986850596311,
+        "next_res": 1.2376103906022642,
+        "next_op": 0.1440420636714783,
+        "time_gap": 1.0679849805074362,
+        "sup": 0.00034190470510135856,
+        "val_pr_auc": 0.9406033419336404,
+        "seconds": 92.14093041419983
+      }
+    ],
+    "best_val_pr_auc": 0.9430768355845865,
+    "seed": 0,
+    "device": "cuda"
+  },
+  "test_summary": {
+    "pr_auc": 0.8899916097890143,
+    "roc_auc": 0.9787529986425462,
+    "at_theta_high": {
+      "threshold": 0.048195429146289825,
+      "tp": 1050,
+      "fp": 1137,
+      "tn": 87526,
+      "fn": 130,
+      "precision": 0.48010973936899864,
+      "recall": 0.8898305084745762,
+      "f1": 0.6237006237006237,
+      "fpr": 0.012823838579790893
+    }
+  },
+  "git_commit": "3fe2978",
+  "torch": "2.14.1+cu130"
+}
