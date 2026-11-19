@@ -46,9 +46,24 @@ ABLATIONS = (
 )
 
 
+def _json_safe(value):
+    """Represent undefined numeric metrics as JSON null, never as zero."""
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, np.ndarray):
+        return _json_safe(value.tolist())
+    if isinstance(value, np.generic):
+        return _json_safe(value.item())
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
+
+
 def _json(path: Path, payload):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, default=str, allow_nan=False), encoding='utf-8')
+    path.write_text(json.dumps(_json_safe(payload), indent=2, allow_nan=False), encoding='utf-8')
 
 
 def _percentile(x, q):
@@ -222,25 +237,60 @@ def _at_anchor(series, user, t):
 
 
 def _binary_metrics(labels, scores, threshold):
+    """Explicitly report score coverage and undefined-class metrics.
+
+    A reference event-score proxy may not cover every TGN anchor. Its metrics
+    are conditional on *scored* anchors, not silently evaluated on a reduced
+    set as though that set were the original population.
+    """
     y = np.asarray(labels, dtype=int)
     s = np.asarray([np.nan if x is None else x for x in scores], dtype=float)
+    if y.shape != s.shape:
+        raise ValueError('Anchor labels and scores must be aligned')
     ok = np.isfinite(s)
-    if not ok.any():
-        return {'precision':None,'recall':None,'f1':None,'roc_auc':None,'pr_auc':None,
-                'n_scored':0,'n_total':len(y),'positive_anchors':int(y.sum()),'coverage':0.0}
+    scored_y = y[ok]
+    total_positive = int((y == 1).sum())
+    positive_scored = int((scored_y == 1).sum())
+    common = {'n_total':len(y), 'n_scored':int(ok.sum()),
+              'positive_anchors':total_positive, 'positive_scored':positive_scored,
+              'unscored_positives':total_positive-positive_scored,
+              'coverage':float(ok.mean()) if len(y) else None}
+    if len(y) == 0 or not ok.any():
+        return {**common, 'status':'NO_SCORES', 'precision':None, 'recall':None,
+                'f1':None,'roc_auc':None,'pr_auc':None,'tp':None,'fp':None,'fn':None}
+    if len(np.unique(scored_y)) < 2:
+        return {**common, 'status':'UNDEFINED_SINGLE_CLASS',
+                'precision':None,'recall':None,'f1':None,'roc_auc':None,'pr_auc':None,
+                'tp':None,'fp':None,'fn':None}
     pred = s[ok] >= threshold
-    precision,recall,f1,_ = precision_recall_fscore_support(y[ok], pred, average='binary',zero_division=0)
-    return {'precision':float(precision),'recall':float(recall),'f1':float(f1),
-            'roc_auc':float(roc_auc_score(y[ok],s[ok])) if np.unique(y[ok]).size==2 else None,
-            'pr_auc':float(average_precision_score(y[ok],s[ok])) if np.unique(y[ok]).size==2 else None,
-            'n_scored':int(ok.sum()),'n_total':len(y),'positive_anchors':int(y.sum()),
-            'coverage':float(ok.mean()),'tp':int(np.sum(pred & (y[ok]==1))),
-            'fp':int(np.sum(pred & (y[ok]==0))), 'fn':int(np.sum(~pred & (y[ok]==1)))}
+    precision,recall,f1,_ = precision_recall_fscore_support(
+        scored_y, pred, average='binary', zero_division=0)
+    return {**common, 'status':'VALID_FULL' if ok.all() else 'VALID_SCORED_SUBSET_ONLY',
+            'precision':float(precision),'recall':float(recall),'f1':float(f1),
+            'roc_auc':float(roc_auc_score(scored_y,s[ok])),
+            'pr_auc':float(average_precision_score(scored_y,s[ok])),
+            'tp':int(np.sum(pred & (scored_y==1))),
+            'fp':int(np.sum(pred & (scored_y==0))),
+            'fn':int(np.sum(~pred & (scored_y==1)))}
 
+
+def _validate_native_anchors(anchors, stage):
+    labels = [int(a['seed_label']) for a in anchors]
+    positives = sum(labels)
+    negatives = len(labels) - positives
+    if positives == 0 or negatives == 0:
+        raise RuntimeError(
+            f'{stage} cannot be evaluated: test anchors have '
+            f'{positives} positive and {negatives} negative collusion examples. '
+            'Fix group generation / anchor sampling before reporting metrics.'
+        )
+    if any(a.get('s_coll') is None or not np.isfinite(float(a['s_coll'])) for a in anchors):
+        raise RuntimeError(f'{stage} has missing/nonfinite native TGN scores')
 
 def evaluate_anchors(ds, tgn_meta, records, seed, tcn_scores_all, idx, output: Path):
-    """Fig.5 native TGN score and six *non-group* method proxies at common test anchors."""
+    """Figure 6 native TGN score and six *non-group* method proxies at common test anchors."""
     anchors = tgn_meta['test_anchors']
+    _validate_native_anchors(anchors, 'Figure 6')
     y = [int(a['seed_label']) for a in anchors]
     thr = tgn_meta['thresholds']['theta_C']
     rows = [{'method':'AccessSentinel TCN + TGN (native group)', 'seed':seed,
@@ -261,14 +311,18 @@ def evaluate_anchors(ds, tgn_meta, records, seed, tcn_scores_all, idx, output: P
                      **_binary_metrics(y, [_at_anchor(scores, a['seed'],a['t']) for a in anchors],threshold)})
     _json(output, {'status':'complete', 'seed':seed, 'dataset_events':len(ds.events),
                    'dataset_fingerprint':ds.fingerprint(), 'anchor_sampling':'AccessSentinel TGN evaluation_v3 test anchors',
-                   'n_test_anchors':len(anchors), 'comparability_warning':
-                   'Only AccessSentinel outputs a native collective score; reference adapters are anchor-projected individual event anomaly proxies, not faithful group detectors.',
+                   'n_test_anchors':len(anchors),
+                   'positive_test_anchors':sum(y),
+                   'negative_test_anchors':len(y)-sum(y),
+                   'comparability_warning':
+                   'Only AccessSentinel outputs a native collective score; reference adapters are anchor-projected individual event anomaly proxies, not faithful group detectors. Proxy metrics are conditional on scored anchors; consult coverage.',
                    'measurements':rows})
     return rows
 
 
 def evaluate_ablation(ds, idx, tcn_scores_all, tgn_meta, seed, output: Path):
     anchors = tgn_meta['test_anchors']
+    _validate_native_anchors(anchors, 'Figure 9')
     y = [int(a['seed_label']) for a in anchors]
     threshold = tgn_meta['thresholds']['theta_C']
     val = idx.mask('val')
@@ -310,6 +364,7 @@ def evaluate_ablation(ds, idx, tcn_scores_all, tgn_meta, seed, output: Path):
         trace_reports[name]=meta
     _json(output, {'status':'complete','seed':seed,'dataset_events':len(ds.events),
                    'dataset_fingerprint':ds.fingerprint(),'evaluation_unit':'collusion-labelled test anchors',
+                   'positive_test_anchors':sum(y),'negative_test_anchors':len(y)-sum(y),
                    'notes':'TCN+TGN is an ungated full-compute reference. Other TGN configs require an actual Escalator admission in the previous 3600 event-time seconds; TCN remains online for every variant. Independent Escalator state per ablation.',
                    'measurements':measurements,'escalation_trace_metadata':trace_reports})
     return measurements
@@ -460,9 +515,9 @@ def run_load_test(ds, idx, tcn_model, tgn_model, cfg_tgn, seed, device,
         start_wall[0]=time.perf_counter();barrier.set()
         thread.join();consumer.join()
         if worker_errors:
-            raise RuntimeError(f'Fig6 consumer failed at offered rate {rate}/s') from worker_errors[0]
+            raise RuntimeError(f'Fig7/8 consumer failed at offered rate {rate}/s') from worker_errors[0]
         if n_processed[0] != requested:
-            raise RuntimeError(f'Fig6 processed {n_processed[0]} of {requested} events at {rate}/s')
+            raise RuntimeError(f'Fig7/8 processed {n_processed[0]} of {requested} events at {rate}/s')
         elapsed=time.perf_counter()-start_wall[0]
         end_offered=offered_stamps[-1]-offered_stamps[0] if len(offered_stamps)>1 else 0.0
         for comp in ('TCN','TGN','Resource-triggered escalation','Periodic sweep','Random sampling'):
@@ -477,7 +532,7 @@ def run_load_test(ds, idx, tcn_model, tgn_model, cfg_tgn, seed, device,
                             'attained_end_to_end_events_per_second':n_processed[0]/elapsed,
                             'event_response_p95_ms':_percentile(total_lat,95),
                             'emission_span_seconds':end_offered})
-        print(f'  -> Fig6 rate {rate}/s: {n_processed[0]}/{len(selected)} processed in {elapsed:.3f}s, '
+        print(f'  -> Fig7/8 rate {rate}/s: {n_processed[0]}/{len(selected)} processed in {elapsed:.3f}s, '
               f'attained {n_processed[0]/elapsed:.2f}/s',flush=True)
     output={'status':'complete','seed':seed,'dataset_events':len(ds.events),'dataset_fingerprint':ds.fingerprint(),
             'quick_smoke_only':quick,'device':device,'python':platform.python_version(),

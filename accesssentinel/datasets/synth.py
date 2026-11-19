@@ -102,6 +102,16 @@ class SynthConfig:
         """Experiment A dataset: the TCN v3 study preset plus the Phase 8 individual scenarios."""
         c = cls.tcn_v3_study(seed)
         c.attacks = {**c.attacks, "horizontal_abuse": (5, 2, 4), "unusual_sequence": (5, 2, 4), "unusual_time": (5, 2, 4)}
+        # The common-data evaluation also measures TGN collusion detection.
+        # Collusion v2 records genuine burst times (required by the anchor sampler),
+        # and benign team co-access supplies hard negative graph examples.
+        # With 400 users and all seven individual attack types, the Phase-5
+        # 25%-per-role allocation exhausts eligible users before val/test groups
+        # can be formed. 42% is an explicit evaluation-only allocation ceiling;
+        # document the realised attacker prevalence and do not compare old caches.
+        c.collusion_v2 = True
+        c.benign_teams = True
+        c.max_attacker_share_per_role = 0.42
         return c
 
     @classmethod
@@ -663,10 +673,15 @@ class _Gen:
                                     members.append(u)
                                 if len(members) == gsize:
                                     break
-                    if len(members) < 2:
+                    if len(members) != gsize:
                         if cfg.collusion_v2:
-                            raise ValueError(f"population too small to form {kind} group {split}-{i} under the per-role cap")
-                        continue
+                            raise ValueError(
+                                f"population cannot form the specified {gsize}-member "
+                                f"{kind} group {split}-{i} under the per-role cap "
+                                f"(found {len(members)})"
+                            )
+                        if len(members) < 2:
+                            continue
                     for m in members:
                         take(m)
                     plan.append((kind, members, split, f"{kind}-{split}-{i}"))

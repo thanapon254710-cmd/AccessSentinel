@@ -1,0 +1,195 @@
+{
+  "status": "valid",
+  "mode": "full_synthetic",
+  "seeds_requested": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "datasets": [
+    {
+      "seed": 0,
+      "events": 506438,
+      "fingerprint": "a6f5b54220b04c5e",
+      "collusion": {
+        "train": {
+          "groups": 5,
+          "bursts": 18,
+          "collusion_events": 346
+        },
+        "val": {
+          "groups": 2,
+          "bursts": 8,
+          "collusion_events": 202
+        },
+        "test": {
+          "groups": 4,
+          "bursts": 17,
+          "collusion_events": 353
+        }
+      },
+      "anchor_classes": {
+        "train": {
+          "positive": 37,
+          "negative": 394
+        },
+        "val": {
+          "positive": 17,
+          "negative": 336
+        },
+        "test": {
+          "positive": 41,
+          "negative": 645
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "events": 510856,
+      "fingerprint": "deb6587d822fa054",
+      "collusion": {
+        "train": {
+          "groups": 5,
+          "bursts": 17,
+          "collusion_events": 313
+        },
+        "val": {
+          "groups": 2,
+          "bursts": 8,
+          "collusion_events": 182
+        },
+        "test": {
+          "groups": 4,
+          "bursts": 15,
+          "collusion_events": 321
+        }
+      },
+      "anchor_classes": {
+        "train": {
+          "positive": 36,
+          "negative": 402
+        },
+        "val": {
+          "positive": 20,
+          "negative": 337
+        },
+        "test": {
+          "positive": 33,
+          "negative": 659
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "events": 478558,
+      "fingerprint": "3fd7b6a855176a4c",
+      "collusion": {
+        "train": {
+          "groups": 5,
+          "bursts": 19,
+          "collusion_events": 407
+        },
+        "val": {
+          "groups": 2,
+          "bursts": 6,
+          "collusion_events": 138
+        },
+        "test": {
+          "groups": 4,
+          "bursts": 16,
+          "collusion_events": 359
+        }
+      },
+      "anchor_classes": {
+        "train": {
+          "positive": 42,
+          "negative": 384
+        },
+        "val": {
+          "positive": 13,
+          "negative": 338
+        },
+        "test": {
+          "positive": 34,
+          "negative": 648
+        }
+      }
+    },
+    {
+      "seed": 3,
+      "events": 500830,
+      "fingerprint": "e3dafd83ac513e9c",
+      "collusion": {
+        "train": {
+          "groups": 5,
+          "bursts": 19,
+          "collusion_events": 398
+        },
+        "val": {
+          "groups": 2,
+          "bursts": 8,
+          "collusion_events": 218
+        },
+        "test": {
+          "groups": 4,
+          "bursts": 15,
+          "collusion_events": 361
+        }
+      },
+      "anchor_classes": {
+        "train": {
+          "positive": 40,
+          "negative": 395
+        },
+        "val": {
+          "positive": 18,
+          "negative": 342
+        },
+        "test": {
+          "positive": 35,
+          "negative": 643
+        }
+      }
+    },
+    {
+      "seed": 4,
+      "events": 484507,
+      "fingerprint": "040e1b077ecd28ba",
+      "collusion": {
+        "train": {
+          "groups": 5,
+          "bursts": 18,
+          "collusion_events": 387
+        },
+        "val": {
+          "groups": 2,
+          "bursts": 7,
+          "collusion_events": 177
+        },
+        "test": {
+          "groups": 4,
+          "bursts": 15,
+          "collusion_events": 339
+        }
+      },
+      "anchor_classes": {
+        "train": {
+          "positive": 37,
+          "negative": 384
+        },
+        "val": {
+          "positive": 16,
+          "negative": 338
+        },
+        "test": {
+          "positive": 33,
+          "negative": 647
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "note": "No model training or detection measurement took place in preflight."
+}

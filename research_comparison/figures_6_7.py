@@ -1,4 +1,4 @@
-"""Figures 6 and 7 from fully measured, reproducible JSON records only.
+"""Figures 7, 8, and 9 from fully measured, reproducible JSON records only.
 
 No placeholder PNG, empty CSV, interpolated datum or partial-configuration
 figure is ever produced. A failed completeness check removes stale PNG.
@@ -59,18 +59,32 @@ def _complete(files, mandatory, method, units):
     return None
 
 
-def plot_fig6(raw_dir:Path, out_path:Path, seeds=None):
+def _load_scalability(raw_dir:Path, out_path:Path, seeds=None):
+    # The underlying records retain their v5 internal filenames for cache compatibility.
     files,error=_load(raw_dir, 'fig6_scalability', seeds)
-    if error:return _fail(out_path,error)
+    if error:return None, _fail(out_path,error)
     expected={(rate, comp) for rate in RATES for comp in COMPONENT_ORDER}
-    error=_complete(files,['event_rate_per_second','component'],'Fig6',expected)
-    if error:return _fail(out_path,error)
+    error=_complete(files,['event_rate_per_second','component'],'scalability',expected)
+    if error:return None, _fail(out_path,error)
     for record in files:
         for row in record['measurements']:
             if any(not np.isfinite(float(row[k])) for k in ('throughput_events_per_second','p95_latency_ms','attained_end_to_end_events_per_second')):
-                return _fail(out_path,'Nonfinite Fig. 6 measurement')
-            if row['n_operations']<=0:return _fail(out_path,'A Fig6 component did no work')
-    fig, axes=plt.subplots(1,2,figsize=(14,6.2))
+                return None, _fail(out_path,'Nonfinite scalability measurement')
+            if row['n_operations']<=0:return None, _fail(out_path,'A component did no work')
+    return files, None
+
+
+def _scalability_tag(files):
+    return ('ENGINEERING SMOKE ONLY — NOT PAPER RESULTS'
+            if any(f.get('quick_smoke_only') for f in files)
+            else 'In-process component replay; not deployed Kafka/Redis/HDFS throughput')
+
+
+def plot_fig7(raw_dir:Path, out_path:Path, seeds=None):
+    """Figure 7: attained throughput versus offered load."""
+    files,failure=_load_scalability(raw_dir,out_path,seeds)
+    if failure is not None:return failure
+    fig,ax=plt.subplots(figsize=(10.2,6.0))
     x=np.array(RATES,dtype=float)
     achieved=[]; achieved_sd=[]
     for rate in RATES:
@@ -78,10 +92,22 @@ def plot_fig6(raw_dir:Path, out_path:Path, seeds=None):
               if r['component']=='TCN' and r['event_rate_per_second']==rate]
         achieved.append(float(np.mean(vals)))
         achieved_sd.append(float(np.std(vals,ddof=1)) if len(vals)>1 else 0.0)
-    axes[0].plot(x,x,'--',label='Ideal attained = offered')
-    axes[0].errorbar(x,achieved,yerr=achieved_sd,marker='o',capsize=4,label='Measured complete in-process pipeline')
-    axes[0].set_xlabel('Offered rate (requests/s)');axes[0].set_ylabel('Attained throughput (requests/s)')
-    axes[0].set_xticks(RATES);axes[0].set_title('Actual processed access requests');axes[0].legend(fontsize=8)
+    ax.plot(x,x,'--',label='Ideal attained = offered')
+    ax.errorbar(x,achieved,yerr=achieved_sd,marker='o',capsize=4,label='Measured complete in-process pipeline')
+    ax.set_xlabel('Offered rate (requests/s)');ax.set_ylabel('Attained throughput (requests/s)')
+    ax.set_xticks(RATES);ax.grid(alpha=.25);ax.legend(fontsize=9)
+    ax.set_title(f'Figure 7 — Throughput ({len(files)} seed(s))\n{_scalability_tag(files)}',fontsize=11)
+    fig.tight_layout();out_path.parent.mkdir(parents=True,exist_ok=True)
+    fig.savefig(out_path,dpi=230,bbox_inches='tight');plt.close(fig)
+    return True,f'Measured attained throughput at 4 rates across {len(files)} seed(s)'
+
+
+def plot_fig8(raw_dir:Path, out_path:Path, seeds=None):
+    """Figure 8: P95 local component execution latency versus offered load."""
+    files,failure=_load_scalability(raw_dir,out_path,seeds)
+    if failure is not None:return failure
+    fig,ax=plt.subplots(figsize=(11.2,6.2))
+    x=np.array(RATES,dtype=float)
     for comp in COMPONENT_ORDER:
         means=[];errs=[]
         for rate in RATES:
@@ -89,31 +115,32 @@ def plot_fig6(raw_dir:Path, out_path:Path, seeds=None):
                   if r['component']==comp and r['event_rate_per_second']==rate]
             means.append(float(np.mean(vals)))
             errs.append(float(np.std(vals,ddof=1)) if len(vals)>1 else 0.0)
-        axes[1].errorbar(x,means,yerr=errs,marker='o',capsize=2,label=comp)
-    axes[1].set_xticks(RATES);axes[1].set_xlabel('Offered rate (requests/s)')
-    axes[1].set_ylabel('P95 local component execution time (ms)')
-    axes[1].set_title('Measured component service latency')
-    axes[1].legend(fontsize=7,frameon=False)
-    for ax in axes:ax.grid(alpha=.25)
-    tag='ENGINEERING SMOKE ONLY — NOT PAPER RESULTS' if any(f.get('quick_smoke_only') for f in files) else 'In-process component replay; not deployed Kafka/Redis/HDFS throughput'
-    fig.suptitle(f'Figure 6 — Scalability ({len(files)} seed(s))\n{tag}',fontsize=11)
+        ax.errorbar(x,means,yerr=errs,marker='o',capsize=2,label=comp)
+    ax.set_xticks(RATES);ax.set_xlabel('Offered rate (requests/s)')
+    ax.set_ylabel('P95 local component execution time (ms)')
+    ax.grid(alpha=.25);ax.legend(fontsize=9,frameon=False)
+    ax.set_title(f'Figure 8 — Component Latency ({len(files)} seed(s))\n{_scalability_tag(files)}',fontsize=11)
     fig.tight_layout();out_path.parent.mkdir(parents=True,exist_ok=True)
     fig.savefig(out_path,dpi=230,bbox_inches='tight');plt.close(fig)
-    return True,f'Measured 5 components × 4 rates × {len(files)} seed(s), fully populated'
+    return True,f'Measured 5 components × 4 rates across {len(files)} seed(s)'
 
 
-def plot_fig7(raw_dir:Path, out_path:Path, seeds=None):
+def plot_fig9(raw_dir:Path, out_path:Path, seeds=None):
+    """Figure 9: six ablations, same anchors and validated class coverage."""
     files,error=_load(raw_dir,'fig7_ablation',seeds)
     if error:return _fail(out_path,error)
     units={(name,) for name in ABLATION_ORDER}
-    error=_complete(files,['configuration'],'Fig7',units)
+    error=_complete(files,['configuration'],'Fig9',units)
     if error:return _fail(out_path,error)
     for f in files:
-        if any(int(row.get('n_test_anchors', 0)) <= 0 for row in f['measurements']):
-            return _fail(out_path,'Fig7 has no test anchors')
+        if int(f.get('positive_test_anchors', 0)) <= 0 or int(f.get('negative_test_anchors', 0)) <= 0:
+            return _fail(out_path,'Fig9 is invalid: absent positive or negative collusion anchors')
+        if any(int(row.get('n_test_anchors', 0)) <= 0 or int(row.get('positive_anchors', 0)) <= 0
+               or row.get('status') not in ('VALID_FULL',) for row in f['measurements']):
+            return _fail(out_path,'Fig9 has missing classes, missing predictions or non-full coverage')
         for row in f['measurements']:
             if any(row.get(k) is None or not 0<=float(row[k])<=1 for k in ('precision','recall','f1')):
-                return _fail(out_path,'Missing/invalid Fig7 measured metric')
+                return _fail(out_path,'Missing/invalid Fig9 measured metric')
     fig,ax=plt.subplots(figsize=(14.5,6.5))
     x=np.arange(len(ABLATION_ORDER));width=.25
     for j,metric in enumerate(('precision','recall','f1')):
@@ -128,7 +155,7 @@ def plot_fig7(raw_dir:Path, out_path:Path, seeds=None):
     ax.legend(ncol=3,frameon=False)
     ax.grid(axis='y',alpha=.25)
     tag='ENGINEERING SMOKE ONLY — NOT PAPER RESULTS' if any(f.get('quick_smoke_only') for f in files) else 'Shared test anchors; independent four-path Escalator replay per configuration'
-    ax.set_title(f'Figure 7 — Six AccessSentinel ablations ({len(files)} seed(s))\n{tag}',fontsize=11)
+    ax.set_title(f'Figure 9 — Ablation Study: Six AccessSentinel Configurations ({len(files)} seed(s))\n{tag}',fontsize=11)
     fig.tight_layout();out_path.parent.mkdir(parents=True,exist_ok=True)
     fig.savefig(out_path,dpi=230,bbox_inches='tight');plt.close(fig)
     return True,f'Measured all 6 ablations across {len(files)} seed(s)'

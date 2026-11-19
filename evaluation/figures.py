@@ -41,8 +41,17 @@ def _plt():
 
 def _save(fig, name):
     os.makedirs(FIG, exist_ok=True)
+    legacy = {
+        "fig10_group_detection_by_size": "exp_b_fig1_by_size",
+        "fig11_individual_path_latency": "exp_c_fig_stages",
+        "fig12_escalation_path_ablation": "exp_f_fig_paths",
+    }
     for ext in ("png", "pdf"):
         fig.savefig(os.path.join(FIG, f"{name}.{ext}"), dpi=300, bbox_inches="tight")
+        if name in legacy:
+            old = os.path.join(FIG, f"{legacy[name]}.{ext}")
+            if os.path.exists(old):
+                os.unlink(old)  # remove superseded render only, never raw measurement files
     import matplotlib.pyplot as plt
     plt.close(fig)
     return f"{FIG}/{name}.png"
@@ -240,7 +249,7 @@ def exp_a(summary):
         import textwrap
         ax.set_xticks(x); ax.set_xticklabels([chr(10).join(textwrap.wrap(MODEL_NAMES[m], 14)) for m in abl], fontsize=7)
         ax.set_ylim(0, 1.05); ax.grid(axis="x", visible=False)
-        ax.set_ylabel("test PR-AUC"); ax.set_title("Experiment F — TCN ablation", loc="left")
+        ax.set_ylabel("test PR-AUC"); ax.set_title("Supplementary — TCN ablation", loc="left")
         summary["figures"].append(_save(fig, "exp_f_fig_tcn_ablation"))
 
 
@@ -313,16 +322,25 @@ def exp_b(summary):
     plt = _plt()
     fig, ax = plt.subplots(figsize=(6.0, 2.8))
     sizes = sorted(by_size)
-    use_own = all(by_size[k]["posthoc"] for k in sizes)
-    tk, ek = ("tcn_own", "either_own") if use_own else ("tcn_span", "tcn_span")
-    den = "posthoc" if use_own else "groups"
-    vals = {str(k): {"TGN v3": by_size[k]["tgn"] / by_size[k]["groups"], "TCN-only": by_size[k][tk] / max(by_size[k][den], 1),
-                     "TGN or TCN": by_size[k][ek] / max(by_size[k][den], 1)} for k in sizes}
+    # The old fallback silently plotted multi-day TCN *span* alarms as if
+    # they were the group's own attack events, and duplicated the TCN bar as
+    # the union. Refuse an incomplete posthoc series rather than mislabel it.
+    missing_posthoc = {k: (by_size[k]['posthoc'], by_size[k]['groups'])
+                       for k in sizes if by_size[k]['posthoc'] != by_size[k]['groups']}
+    if missing_posthoc:
+        raise ValueError(f'Experiment B needs own-event TCN posthoc for every test group: {missing_posthoc}')
+    vals = {str(k): {"TGN v3": by_size[k]["tgn"] / by_size[k]["groups"],
+                     "TCN-only": by_size[k]["tcn_own"] / by_size[k]["groups"],
+                     "TGN or TCN": by_size[k]["either_own"] / by_size[k]["groups"]} for k in sizes}
+    # Put denominators on the x axis; pooled group count is not 5 independent observations.
+    labels = [f'{k}\n(n={by_size[k]["groups"]})' for k in sizes]
     _bars(ax, [str(k) for k in sizes], ["TGN v3", "TCN-only", "TGN or TCN"], vals, fmt="{:.2f}")
-    ax.set_xlabel("group size (members)"); ax.set_ylabel("share of test groups detected"); ax.set_ylim(0, 1.1)
+    ax.set_xticklabels(labels)
+    ax.set_xlabel("group size (members; number of test groups)")
+    ax.set_ylabel("share of test groups detected"); ax.set_ylim(0, 1.1)
     _legend_top(ax, 3)
-    ax.set_title(f"Experiment B — group detection vs size ({_n(len(runs), 'seed')} pooled)", loc="left", pad=22)
-    summary.setdefault("figures", []).append(_save(fig, "exp_b_fig1_by_size"))
+    ax.set_title(f"Figure 10 — Group Detection vs. Group Size ({_n(len(runs), 'seed')} pooled)", loc="left", pad=22)
+    summary.setdefault("figures", []).append(_save(fig, "fig10_group_detection_by_size"))
     # hard negatives / anchor kinds: flag rate (rule keys collapsed exactly like evaluate_v3's)
     norm = lambda k: k.split(":")[0] + (":" + k.split(":")[1] if k.startswith(("hard", "collusion")) else "")
 
@@ -390,12 +408,19 @@ def exp_e(summary):
     abl = [k for k in order if k.startswith("union") and k in by]
     if abl:
         fig, ax = plt.subplots(figsize=(6.0, 2.6))
+        group_counts = {len(run['groups']) for k in abl for run in by[k]}
+        individual_counts = {len(run['individual']) for k in abl for run in by[k]}
+        if len(group_counts)!=1 or len(individual_counts)!=1 or not min(*group_counts,*individual_counts):
+            raise ValueError('Experiment F has inconsistent or empty evaluation denominators')
+        n_g, n_i = next(iter(group_counts)), next(iter(individual_counts))
         vals = {k.replace("union-no-", "− "): {"groups": np.mean([x["group_coverage"] for x in by[k]]),
                                                 "individual": np.mean([x["individual_coverage"] for x in by[k]])} for k in abl}
         _bars(ax, list(vals), ["groups", "individual"], vals)
-        ax.set_ylim(0, 1.1); ax.set_ylabel("admission coverage"); _legend_top(ax, 2)
-        ax.set_title("Experiment F — escalation path ablation (union without one path)", loc="left", pad=22)
-        summary.setdefault("figures", []).append(_save(fig, "exp_f_fig_paths"))
+        ax.set_ylim(0, 1.1); ax.set_ylabel("admission coverage (NOT detection)"); _legend_top(ax, 2)
+        ax.set_title(f"Figure 12 — Escalation-Path Ablation (group n={n_g}, individual n={n_i})", loc="left", pad=22)
+        fig.text(0.5,-0.035,'Admission = at least one member processed; this is not a group-detection metric.',
+                 ha='center',va='top',fontsize=7,color=TEXT2)
+        summary.setdefault("figures", []).append(_save(fig, "fig12_escalation_path_ablation"))
     summary["E"] = {k: {"group_coverage": [x["group_coverage"] for x in v], "individual_coverage": [x["individual_coverage"] for x in v],
                         "work_ms_per_window_mean": [x["work_ms_per_window_mean"] for x in v],
                         "windows_over_budget": [x["windows_over_budget"] for x in v]} for k, v in by.items()}
@@ -458,13 +483,16 @@ def exp_c(summary):
         ax.bar([f"{r:g}" for r in rates], med[k], 0.55, bottom=bottom, color=SERIES[:4][j % 4], edgecolor=SURFACE,
                linewidth=1.5, label=lab)
         bottom += med[k]
-    ax.set_xlabel("background load (requests/s)"); ax.set_ylabel("median ms (p50 per stage)")
+    ax.set_xlabel("background load (requests/s)")
+    ax.set_ylabel("sum of per-stage p50 values (ms)")
     _legend_top(ax, len(shown), fontsize=7)
-    ax.set_title("Experiment C — individual path, stage medians (Eq. 31)", loc="left", pad=22)
+    ax.set_title("Figure 11 — Individual-Path Stage Latency (NOT end-to-end p50)", loc="left", pad=22)
     if hidden:
         ax.text(0.01, 0.97, f"{', '.join(hidden)}: 0 ms in every run", transform=ax.transAxes, ha="left", va="top",
                 fontsize=6.5, color=TEXT2)
-    summary.setdefault("figures", []).append(_save(fig, "exp_c_fig_stages"))
+    fig.text(0.5,-0.035,'Summed stage medians are descriptive; end-to-end latency must come from full request traces.',
+             ha='center',va='top',fontsize=7,color=TEXT2)
+    summary.setdefault("figures", []).append(_save(fig, "fig11_individual_path_latency"))
     stage_rows = [[f"{rt:g}"] + [f"{np.median([x['stages_ms'][k]['p50'] for x in by[rt] if x['stages_ms'].get(k)]):.1f} / "
                                  f"{np.median([x['stages_ms'][k]['p99'] for x in by[rt] if x['stages_ms'].get(k)]):.1f}" for k, _ in STAGES] for rt in rates]
     _table("exp_c_stages", ["rate"] + [f"{lab} p50 / p99 ms" for _, lab in STAGES], stage_rows, "Median over runs of the per-run percentiles.")

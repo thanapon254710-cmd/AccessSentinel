@@ -190,9 +190,41 @@ from .tgn_train import StreamV3, anchor_replay_v3, train_tgn_v3  # noqa: E402
 
 
 def _anchor_labels(rec, true_members):
-    """Member label = the user has a collusion-labelled edge in the anchor window."""
-    coll_users = {e["u"] for e in rec["edges"] if e["coll"] > 0}
-    return coll_users
+    """Ground-truth colluders visible to the replayed model at this anchor.
+
+    true_members comes from the labelled, *time-causal* graph sample (not
+    model predictions). Replay neighbourhoods can differ from the sample;
+    intersect with feature-bearing users so only observed members are fitted.
+    """
+    return set(true_members).intersection(rec.get("features", {}))
+
+
+def collusion_preflight(ds):
+    """Fail before GPU training if the evaluation has no identifiable target."""
+    from collections import Counter
+    groups = Counter()
+    bursts = Counter()
+    labelled_events = Counter()
+    for group in ds.instances.values():
+        if group.get("kind") in COLLUSION_V3:
+            split = group.get("split")
+            groups[split] += 1
+            bursts[split] += len(group.get("bursts", ()))
+    for event in ds.events:
+        if ds.labels[event.event_id].collusion:
+            labelled_events[ds.split_of(event.t)] += 1
+    status = {split: {"groups": groups[split], "bursts": bursts[split],
+                      "collusion_events": labelled_events[split]}
+              for split in ("train", "val", "test")}
+    missing = [split for split, v in status.items()
+               if min(v["groups"], v["bursts"], v["collusion_events"]) <= 0]
+    if missing:
+        raise RuntimeError(
+            f"TGN evaluation has no identifiable collusion examples in {missing}. "
+            f"Per-split diagnostic: {status}. Check the synthetic group "
+            "allocation and burst-generating preset before training."
+        )
+    return status
 
 
 def evaluate_v3(ds, seed=0, device="cpu", cfg=None, log=print) -> dict:
@@ -202,18 +234,33 @@ def evaluate_v3(ds, seed=0, device="cpu", cfg=None, log=print) -> dict:
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import average_precision_score, roc_auc_score
     cfg = cfg or TGNv3Config()
+    coverage = collusion_preflight(ds)
+    log(f"[tgn-v3 preflight] collusion ground truth: {coverage}")
+    # Build and audit time-causal anchors BEFORE expensive GPU training.
+    corpus = Corpus(ds, GraphParams())
+    anchors = []
+    anchor_classes = {}
+    for split, k in (("train", 1), ("val", 2), ("test", 3)):
+        items = corpus.evaluation_set(split, random.Random(seed + k), anchors_per_burst=2,
+                                      n_random=150 if split != "test" else 300,
+                                      n_resource=150 if split != "test" else 300)
+        n_positive = sum(bool(it.seed_label) for it in items)
+        anchor_classes[split] = {"positive": n_positive, "negative": len(items)-n_positive}
+        for it in items:
+            anchors.append({"t": float(it.sample.t1), "seed": it.sample.seeds[0],
+                            "kind": it.kind, "split": split,
+                            "seed_label": int(it.seed_label), "true": it.true_members,
+                            "instance": getattr(it, "instance", None)})
+    log(f"[tgn-v3 preflight] sampled anchor classes: {anchor_classes}")
+    missing = [split for split, counts in anchor_classes.items() if min(counts.values()) <= 0]
+    if missing:
+        raise RuntimeError(
+            f"TGN sampled anchors lack positive/negative classes in {missing}: "
+            f"{anchor_classes}. Do not calibrate or report undefined collusion metrics."
+        )
     st = StreamV3(ds)
     log(f"stream: {len(st.t)} events, {st.n_nodes} nodes ({st.U} users, {st.R} resources)")
     model, hist, best_ap = train_tgn_v3(st, cfg, device, seed, log)
-    # ---- escalation-like anchors (same sampling as the Phase 7 evaluation)
-    corpus = Corpus(ds, GraphParams())
-    anchors = []
-    for split, k in (("train", 1), ("val", 2), ("test", 3)):
-        for it in corpus.evaluation_set(split, random.Random(seed + k), anchors_per_burst=2, n_random=150 if split != "test" else 300,
-                                        n_resource=150 if split != "test" else 300):
-            anchors.append({"t": float(it.sample.t1), "seed": it.sample.seeds[0], "kind": it.kind, "split": split,
-                            "seed_label": it.seed_label, "true": it.true_members,
-                            "instance": getattr(it, "instance", None)})
     log(f"anchors: {len(anchors)}; replaying the stream with memory ...")
     t_rep = time.time()
     recs = anchor_replay_v3(model, st, cfg, device, [(a["t"], a["seed"]) for a in anchors])
@@ -230,10 +277,16 @@ def evaluate_v3(ds, seed=0, device="cpu", cfg=None, log=print) -> dict:
         for m, f in a["rec"].get("features", {}).items():
             X.append(f); y.append(int(m in coll_users))
     if len(set(y)) < 2:
-        raise RuntimeError("training anchors produced no positive or no negative group members; cannot fit Eq. 19")
+        raise RuntimeError(
+            "Eq. 19 requires both positive and negative feature-bearing training "
+            f"members; observed positives={sum(y)}, negatives={len(y)-sum(y)}, "
+            f"anchor classes={anchor_classes}. No surrogate labels were introduced."
+        )
     lr = LogisticRegression(class_weight="balanced", max_iter=2000).fit(np.array(X), np.array(y))
     cal = {"coef": lr.coef_[0].tolist(), "intercept": float(lr.intercept_[0]), "features": ["TM_pi(eps)", "A_u", "Nov(u,g)"],
-           "n_train_members": len(y), "positives": int(sum(y))}
+           "n_train_members": len(y), "positives": int(sum(y)),
+           "ground_truth": "collusion-labelled members from the causal anchor sample, intersected with replay-visible users",
+           "anchor_classes": anchor_classes, "collusion_preflight": coverage}
     s_of = lambda f: 1.0 / (1.0 + np.exp(-(np.dot(cal["coef"], f) + cal["intercept"])))
     # ---- theta_C, theta_A: quantiles over NOMINAL validation members (Eq. 8 style)
     nom_s, nom_a = [], []
@@ -262,19 +315,21 @@ def evaluate_v3(ds, seed=0, device="cpu", cfg=None, log=print) -> dict:
         d = by_kind.setdefault(k, {"anchors": 0, "flagged": 0}); d["anchors"] += 1; d["flagged"] += int(f)
     att_tp = att_fp = att_fn = 0
     for a, f in zip(test, flag):
-        if not f:
-            continue
         coll_users = _anchor_labels(a["rec"], a["true"])
-        flagged_members = {m for m, ft in a["rec"]["features"].items() if s_of(ft) >= th["theta_C"]}
-        att_tp += len(flagged_members & coll_users); att_fp += len(flagged_members - coll_users); att_fn += len(coll_users - flagged_members)
+        flagged_members = ({m for m, ft in a["rec"]["features"].items()
+                            if s_of(ft) >= th["theta_C"]} if f else set())
+        # Unflagged true members are false negatives, not omitted cases.
+        att_tp += len(flagged_members & coll_users)
+        att_fp += len(flagged_members - coll_users)
+        att_fn += len(coll_users - flagged_members)
     groups_total = {i for i, inst in ds.instances.items() if inst.get("split") == "test" and "members" in inst
                     and inst.get("kind") in COLLUSION_V3}
     groups_hit = set()
     for a, f in zip(test, flag):
-        if f and a["seed_label"]:
-            for i in groups_total:
-                if a["seed"] in ds.instances[i]["members"]:
-                    groups_hit.add(i)
+        # Count a group only if its OWN sampled instance was detected;
+        # another group sharing a seed is not evidence for this group.
+        if f and a["seed_label"] and a.get("instance") in groups_total:
+            groups_hit.add(a["instance"])
     sizes = [(len(r["rec"]["edges"]), len({e["u"] for e in r["rec"]["edges"]}) + len({e["r"] for e in r["rec"]["edges"]})) for r in test]
     res = {"seed_level": {"anchors": len(test), "positives": int(ys.sum()),
                           "roc_auc": float(roc_auc_score(ys, ss)) if 0 < ys.sum() < len(ys) else None,

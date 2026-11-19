@@ -38,3 +38,13 @@ Rules for everything in this folder:
 ```
 python -m evaluation.env_info --out evaluation/results/raw/environment.json
 ```
+
+## Renumbered presentation figures
+
+Run `python -m evaluation.figures b c f` to recreate Figure 10 (group
+detection by size; Experiment B), Figure 11 (individual-path stage latency;
+Experiment C), and Figure 12 (escalation-path admission ablation; Experiment F)
+from the saved raw measurements. PNG and PDF outputs are written to
+`evaluation/results/figures/` under the `fig10_*`, `fig11_*`, and `fig12_*` names.
+The raw experiment identifiers, raw JSON files, and score definitions remain
+unchanged. The TCN-only ablation figure from Experiment A is supplementary.

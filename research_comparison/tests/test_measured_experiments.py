@@ -16,7 +16,7 @@ from accesssentinel.tcn import TCNv3
 from accesssentinel.tgn import TGNv3
 from research_comparison.memory_redis import MemoryRedis
 from research_comparison.measured_experiments import _traces, evaluate_ablation, local_inference_latency, run_load_test
-from research_comparison.figures_6_7 import plot_fig6, plot_fig7
+from research_comparison.figures_6_7 import plot_fig7, plot_fig8, plot_fig9
 
 
 def _tiny():
@@ -75,16 +75,17 @@ def test_offered_rate_runs_real_tcn_and_tgn_callbacks(tmp_path):
     assert len(data)==20
     payload=json.loads((tmp_path/'fig6_scalability_seed3.json').read_text())
     assert payload['status']=='complete' and payload['dataset_fingerprint']==ds.fingerprint()
-    assert plot_fig6(tmp_path,tmp_path/'fig6.png')[0]
+    assert plot_fig7(tmp_path,tmp_path/'fig7.png')[0]
+    assert plot_fig8(tmp_path,tmp_path/'fig8.png')[0]
 
 
 def test_incomplete_measurements_refuse_png(tmp_path):
-    out=tmp_path/'fig7.png'
+    out=tmp_path/'fig9.png'
     out.write_bytes(b'stale')
     p=tmp_path/'fig7_ablation_seed0.json'
     p.write_text(json.dumps({'status':'complete','seed':0,'dataset_events':506000,
                              'dataset_fingerprint':'unit-test','measurements':[{'configuration':'TCN only','f1':1.}]}))
-    ok,msg=plot_fig7(tmp_path,out)
+    ok,msg=plot_fig9(tmp_path,out)
     assert not ok and not out.exists() and 'Incomplete' in msg
 
 
@@ -102,10 +103,10 @@ def test_all_six_policy_ablations_generate_only_from_real_replay(tmp_path):
     assert obj['status']=='complete'
     assert obj['escalation_trace_metadata']['Full AccessSentinel']['enabled_paths'] == {
         'high':True,'resource':True,'sweep':True,'sample':True}
-    ok, msg = plot_fig7(tmp_path,tmp_path/'fig7.png',seeds=[3])
+    ok, msg = plot_fig9(tmp_path,tmp_path/'fig9.png',seeds=[3])
     assert ok, msg
-    assert (tmp_path/'fig7.png').stat().st_size > 10_000
-    wrong, _ = plot_fig7(tmp_path,tmp_path/'wrong_seed.png',seeds=[0])
+    assert (tmp_path/'fig9.png').stat().st_size > 10_000
+    wrong, _ = plot_fig9(tmp_path,tmp_path/'wrong_seed.png',seeds=[0])
     assert not wrong and not (tmp_path/'wrong_seed.png').exists()
 
 

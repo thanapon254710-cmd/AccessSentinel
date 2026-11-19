@@ -70,9 +70,9 @@ The [17] and [25] adapters are **interaction-provenance approximations**, not OS
 - A method that fails or cannot score a sample is not silently replaced with another model. Failures and unscored samples are recorded.
 - Reference [24] is not itself a group-collusion or policy-enforcement method. Capability dimensions outside a paper's scope should be marked not applicable, not zero.
 
-## Current measured evaluation suite (Figures 2–7)
+## Current measured evaluation suite (Figures 2–9)
 
-**v4 is the current executable suite:** [`EVALUATION_V4.md`](EVALUATION_V4.md).
+**The v5 evaluation suite** is described in [`REVISION_V5_NOTES.md`](REVISION_V5_NOTES.md). The older [`EVALUATION_V4.md`](EVALUATION_V4.md) is retained as history.
 It trains TCN-v3 and TGN-v3 on the common synthetic dataset, runs the six
 reference adapters, measures local inference latency, performs a real paced
 component load test, and replays all four escalation paths for the six ablations.
@@ -81,10 +81,10 @@ component load test, and replays all four escalation paths for the six ablations
 python -m pip install -r requirements/evaluation.txt
 python -m pytest -q research_comparison/tests/test_measured_experiments.py
 python -m research_comparison.run_evaluation --quick --seeds 0 --tgn-epochs 2 --load-duration 0.6
-python -m research_comparison.run_evaluation --figures 2,3,4,5,6,7 --seeds 0,1,2,3,4 --device cuda
+python -m research_comparison.run_evaluation --figures 2,3,4,5,6,7,8,9 --seeds 0,1,2,3,4 --device cuda
 ```
 
-Full and quick results are isolated in `evaluation_v4/` and
-`evaluation_v4_smoke/` respectively. The earlier v3 Fig. 6/7 templates and
-status figures are superseded and must not be presented as scientific evidence.
-See the v4 document for the exact measured boundaries and limitations.
+Full and quick v5 results are isolated in `evaluation_v5/` and
+`evaluation_v5_smoke/` respectively. Figures 10–12 are generated separately with
+`python -m evaluation.figures b c f` from the independent experiment raw data.
+See the revision notes for precise measurement boundaries and limitations.

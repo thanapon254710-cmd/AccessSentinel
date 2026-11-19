@@ -31,7 +31,7 @@ def make_dataset(seed: int, quick: bool=False):
     cfg = SynthConfig.tcn_v3_eval(seed=23+seed)
     if quick:
         from dataclasses import replace
-        cfg = replace(cfg, n_users=120, days=30, split_days=(16,6,8),
+        cfg = replace(cfg, n_users=200, days=30, split_days=(16,6,8),
                       attack_margin_days=(0,3,3),
                       attacks={k:(1,1,1) for k in cfg.attacks},
                       collusion_groups={k:(1,1,1) for k in cfg.collusion_groups})
